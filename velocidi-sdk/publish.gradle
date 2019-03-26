@@ -6,10 +6,10 @@ def isSnapshot = version.endsWith('-SNAPSHOT')
 def ossrhUsername = hasProperty('ossrhUsername') ? ossrhUsername : ""
 def ossrhPassword = hasProperty('ossrhPassword') ? ossrhPassword : ""
 
-project.group = 'com.velocidi.android'
+project.group = 'com.velocidi'
 
 project.ext.name = 'Velocidi-SDK'
-project.ext.artifactId = "velocidi-sdk"
+project.ext.artifactId = "velocidi-android-sdk"
 project.ext.description = 'Velocidi Android SDK'
 project.ext.url = 'https://github.com/velocidi/velocidi-android-sdk'
 project.version = '0.0.1-SNAPSHOT'
