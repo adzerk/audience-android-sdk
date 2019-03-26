@@ -1,0 +1,15 @@
+language: android
+android:
+  components:
+  - build-tools-28
+  - android-28
+  - extra
+
+jdk:
+  - oraclejdk8
+  - openjdk8
+
+install:
+- "./gradlew assemble"
+script:
+- "./gradlew test -i"
