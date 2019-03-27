@@ -13,3 +13,5 @@ install:
 - "./gradlew assemble"
 script:
 - "./gradlew test -i"
+after_success:
+- bash <(curl -s https://codecov.io/bash)
