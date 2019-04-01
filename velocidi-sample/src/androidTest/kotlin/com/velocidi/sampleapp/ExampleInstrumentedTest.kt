@@ -1,4 +1,4 @@
-package com.velocidi
+package com.velocidi.sampleapp
 
 import android.support.test.InstrumentationRegistry
 import android.support.test.runner.AndroidJUnit4

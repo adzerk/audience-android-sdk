@@ -1,4 +1,4 @@
-package com.velocidi
+package com.velocidi.sampleapp
 
 import org.junit.Test
 
