@@ -1,6 +1,7 @@
 
 apply plugin: 'maven'
 apply plugin: 'signing'
+apply plugin: 'net.researchgate.release'
 
 def isSnapshot = version.endsWith('-SNAPSHOT')
 def ossrhUsername = hasProperty('ossrhUsername') ? ossrhUsername : ""
@@ -12,7 +13,7 @@ project.ext.name = 'Velocidi-SDK'
 project.ext.artifactId = "velocidi-android-sdk"
 project.ext.description = 'Velocidi Android SDK'
 project.ext.url = 'https://github.com/velocidi/velocidi-android-sdk'
-project.version = '0.0.1-SNAPSHOT'
+project.version = version
 
 uploadArchives {
     repositories.mavenDeployer {
@@ -61,3 +62,19 @@ signing {
     required { !isSnapshot && gradle.taskGraph.hasTask("uploadArchives") }
     sign configurations.archives
 }
+
+release {
+    failOnCommitNeeded = false
+    failOnPublishNeeded = false
+    preTagCommitMessage = "Set version to"
+    tagCommitMessage = "Set tag to"
+    newVersionCommitMessage = "Set version to"
+
+    git {
+        signTag = true
+        requireBranch = 'travis-ci'
+        pushToRemote = ''
+    }
+}
+
+afterReleaseBuild.dependsOn uploadArchives
