@@ -20,14 +20,16 @@ class HttpClient {
     }
 
     val headers = mutableMapOf(Pair("Content-Type", "application/json"))
+    val defaultParams = mutableMapOf<String,String>()
 
 
     fun sendRequest(verb: Int,url: String, payload: JSONObject? = null, listener: ResponseListener? = null) {
         val successListener = Response.Listener<String> { response -> listener?.onResponse(response) ?: Log.i("VOLLEY", response) }
         val errorListener = Response.ErrorListener { error -> listener?.onError(error.toString()) ?: Log.i("VOLLEY", error.toString()) }
 
+        val urlWithParams = Util.appendToUrl(url, defaultParams)
 
-        val stringRequest = object : StringRequest(verb, url,
+        val stringRequest = object : StringRequest(verb, urlWithParams,
             successListener, errorListener) {
 
             override fun getHeaders(): MutableMap<String, String> {

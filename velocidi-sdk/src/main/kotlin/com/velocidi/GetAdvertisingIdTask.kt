@@ -5,14 +5,16 @@ import android.os.AsyncTask
 import android.util.Log
 
 
+data class AdvertisingInfo(val id: String, val shouldTrack:Boolean)
+
 interface AdvertisingIdListener {
-    fun fetchAdvertisingIdCompleted(advertisingInfo: Pair<String, Boolean>? )
+    fun fetchAdvertisingIdCompleted(advertisingInfo: AdvertisingInfo)
 }
 
-internal class GetAdvertisingIdTask(val listener: AdvertisingIdListener) : AsyncTask<Context, Void, Pair<String, Boolean>>() {
+internal class GetAdvertisingIdTask(val listener: AdvertisingIdListener) : AsyncTask<Context, Void, AdvertisingInfo>() {
 
     @Throws(Exception::class)
-    fun getGooglePlayServicesAdvertisingID(context: Context): Pair<String, Boolean> {
+     fun getAdvertisingId(context: Context): AdvertisingInfo {
         val advertisingInfo = Class.forName("com.google.android.gms.ads.identifier.AdvertisingIdClient")
             .getMethod("getAdvertisingIdInfo", Context::class.java!!)
             .invoke(null, context)
@@ -26,16 +28,18 @@ internal class GetAdvertisingIdTask(val listener: AdvertisingIdListener) : Async
             Log.d("SDK",
                 "Not collecting advertising ID because isLimitAdTrackingEnabled (Google Play Services) is true."
             )
-            return Pair(advertisingId, false)
+            return AdvertisingInfo(advertisingId, false)
         }
 
-        return Pair(advertisingId, true)
+        return AdvertisingInfo(advertisingId, true)
     }
 
-    override fun doInBackground(vararg contexts: Context): Pair<String, Boolean>? {
+
+
+    override fun doInBackground(vararg contexts: Context): AdvertisingInfo? {
         val context = contexts[0]
         try {
-            return getGooglePlayServicesAdvertisingID(context)
+            return getAdvertisingId(context)
         } catch (e: Exception) {
             Log.e("SDK", "Unable to collect advertising ID from Google Play Services.")
         }
@@ -43,7 +47,7 @@ internal class GetAdvertisingIdTask(val listener: AdvertisingIdListener) : Async
         return null
     }
 
-    override fun onPostExecute(info: Pair<String, Boolean>?) {
+    override fun onPostExecute(info: AdvertisingInfo) {
         super.onPostExecute(info)
 
         listener.fetchAdvertisingIdCompleted(info)

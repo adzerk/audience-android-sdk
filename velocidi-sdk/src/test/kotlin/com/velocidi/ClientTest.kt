@@ -23,7 +23,7 @@ class ClientTest {
     var client = HttpClient()
 
     @Rule @JvmField
-    var globalTimeout = Timeout.seconds(10) // 5 seconds max per method tested
+    var globalTimeout = Timeout.seconds(10) // 10 seconds max per method tested
 
     @Test
     fun emptyRequest() {
@@ -83,6 +83,19 @@ class ClientTest {
 
         assertThat(client.requestQueue.sequenceNumber).isEqualTo(4)
         assertThat(server.requestCount).isEqualTo(3)
+    }
+
+    @Test
+    fun defaultParams(){
+        server.enqueue(MockResponse())
+        client.defaultParams["x"] = "foo"
+        client.defaultParams["y"] = "bar"
+
+        client.sendRequest(Request.Method.POST, url.toString())
+
+        val response = server.takeRequest()
+
+        response.containsRequestLine("POST /?x=foo&y=bar HTTP/1.1")
     }
 
 }
