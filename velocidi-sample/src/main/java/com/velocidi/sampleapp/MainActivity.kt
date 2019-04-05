@@ -1,9 +1,7 @@
 package com.velocidi.sampleapp
 
 import android.os.Bundle
-import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log
 import com.velocidi.Config
 import com.velocidi.UserId
 import com.velocidi.Velocidi
@@ -20,30 +18,24 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main2)
         setSupportActionBar(toolbar)
 
-        fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
-            Velocidi.track(JSONObject())
+        track_button.setOnClickListener {
+            val event = """
+                {
+                  "eventType": "productClick",
+                  "siteId": "1",
+                  "clientId": "client1"
+                }
+            """.trimIndent()
+            Velocidi.track(JSONObject(event))
         }
 
-        val callFuncBegin = System.currentTimeMillis()
+        match_button.setOnClickListener {
+            Velocidi.match("someProvider", listOf(UserId("eml", "useremail@example.com")))
+        }
 
         val config = Config(URL("http://test.com"))
 
         Velocidi.start(config, this)
-        Velocidi.track(JSONObject())
-        Velocidi.track(JSONObject())
-        Velocidi.track(JSONObject())
-        Velocidi.match("p1", listOf(UserId("eml", "123")))
-        Velocidi.match("p1", listOf(UserId("eml", "123")))
-
-        val callFuncEnd = System.currentTimeMillis()
-
-        val callFuncDiff = Math.abs(callFuncEnd - callFuncBegin)
-
-        Log.e("TEST", callFuncDiff.toString())
-
     }
-
 
 }

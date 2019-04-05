@@ -45,6 +45,9 @@ class Velocidi constructor(val config: Config, val adInfo: AdvertisingInfo, cont
              if(!Util.checkPermission(context, Manifest.permission.INTERNET))
                  Log.i("Velocidi - SDK", "Velocidi SDK requires Internet permission")
 
+             if(::instance.isInitialized)
+                 return
+
              val listener = object : AdvertisingIdListener {
                  override fun fetchAdvertisingIdCompleted(advertisingInfo: AdvertisingInfo) {
                      instance = Velocidi(config, advertisingInfo, context)
@@ -60,7 +63,7 @@ class Velocidi constructor(val config: Config, val adInfo: AdvertisingInfo, cont
          fun getInstance(): Velocidi? =
              when(::instance.isInitialized){
                  true -> instance
-                 false -> {Log.e("Velocidi SDK", "Velocidi must be initialized"); null}
+                 false -> {Log.e("Velocidi SDK", "Velocidi SDK must be initialized"); null}
              }
 
          fun track(attributes: JSONObject) {
@@ -71,8 +74,6 @@ class Velocidi constructor(val config: Config, val adInfo: AdvertisingInfo, cont
          fun match(providerId: String, userIds: List<UserId>) {
              val request = com.velocidi.Request.MatchRequest(providerId, userIds)
              getInstance()?.handleRequest(request) ?: queue.add(request)
-
-             Log.e("Velocidi - SDK", "queue ${queue.size}")
          }
      }
 }

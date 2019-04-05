@@ -21,14 +21,29 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_main2"/>
-
-    <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
-            android:layout_margin="@dimen/fab_margin"
-            app:srcCompat="@android:drawable/ic_dialog_email"/>
+    <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            tools:showIn="@layout/activity_main2"
+            tools:context=".MainActivity" android:layout_margin="16dp">
+        <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+        >
+            <Button
+                    android:text="Track"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" android:id="@+id/track_button"/>
+            <Button
+                    android:text="Match"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" android:id="@+id/match_button"/>
+        </LinearLayout>
+    </android.support.constraint.ConstraintLayout>
 
 </android.support.design.widget.CoordinatorLayout>
