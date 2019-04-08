@@ -52,6 +52,7 @@ uploadArchives {
                 developer {
                     id 'velocidi'
                     name 'Velocidi'
+                    email 'engineering@velocidi.com'
                 }
             }
         }

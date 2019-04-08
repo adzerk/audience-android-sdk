@@ -25,7 +25,7 @@ internal class GetAdvertisingIdTask(val listener: AdvertisingIdListener) : Async
         val advertisingId = advertisingInfo.javaClass.getMethod("getId").invoke(advertisingInfo) as String
 
         if (isLimitAdTrackingEnabled) {
-            Log.d("SDK",
+            Log.w(Constants.LOG_TAG,
                 "Not collecting advertising ID because isLimitAdTrackingEnabled (Google Play Services) is true."
             )
             return AdvertisingInfo(advertisingId, false)
@@ -41,7 +41,7 @@ internal class GetAdvertisingIdTask(val listener: AdvertisingIdListener) : Async
         try {
             return getAdvertisingId(context)
         } catch (e: Exception) {
-            Log.e("SDK", "Unable to collect advertising ID from Google Play Services.")
+            Log.e(Constants.LOG_TAG, "Unable to collect advertising ID from Google Play Services.")
         }
 
         return null

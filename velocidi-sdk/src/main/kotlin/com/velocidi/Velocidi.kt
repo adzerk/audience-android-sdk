@@ -43,7 +43,7 @@ class Velocidi constructor(val config: Config, val adInfo: AdvertisingInfo, cont
 
          fun start(config: Config, context: Context) {
              if(!Util.checkPermission(context, Manifest.permission.INTERNET))
-                 Log.i("Velocidi - SDK", "Velocidi SDK requires Internet permission")
+                 Log.e(Constants.LOG_TAG, "Velocidi SDK requires Internet permission")
 
              if(::instance.isInitialized)
                  return
@@ -63,7 +63,7 @@ class Velocidi constructor(val config: Config, val adInfo: AdvertisingInfo, cont
          fun getInstance(): Velocidi? =
              when(::instance.isInitialized){
                  true -> instance
-                 false -> {Log.e("Velocidi SDK", "Velocidi SDK must be initialized"); null}
+                 false -> {Log.e(Constants.LOG_TAG, "Velocidi SDK must be initialized"); null}
              }
 
          fun track(attributes: JSONObject) {

@@ -16,7 +16,7 @@ object Util {
             android.os.Build.DEVICE ?: ""
         }
 
-        try {
+        return try {
             val packageManager = context.packageManager
             val packageName = context.packageName
 
@@ -26,10 +26,10 @@ object Util {
             val appName = packageManager.getApplicationLabel(applicationInfo) ?: packageName ?: ""
             val appVersion = packageInfo.versionName ?: packageInfo.longVersionCode
 
-            return ApplicationInfo(appName.toString(), appVersion.toString(), sdkVersion, device)
+            ApplicationInfo(appName.toString(), appVersion.toString(), sdkVersion, device)
 
         } catch (e: PackageManager.NameNotFoundException) {
-            return ApplicationInfo(androidSDK = sdkVersion, device = device)
+            ApplicationInfo(androidSDK = sdkVersion, device = device)
         }
     }
 

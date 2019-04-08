@@ -11,9 +11,9 @@ import java.nio.charset.Charset
 
 
 class HttpClient {
-    val cache = DiskBasedCache(File(CACHE_DIR), 1024 * 1024) // 1MB cap
+    private val cache = DiskBasedCache(File(Constants.CACHE_DIR), 1024 * 1024) // 1MB cap
 
-    val network = BasicNetwork(HurlStack())
+    private val network = BasicNetwork(HurlStack())
 
     val requestQueue = RequestQueue(cache, network).apply {
         start()
@@ -24,8 +24,11 @@ class HttpClient {
 
 
     fun sendRequest(verb: Int,url: String, payload: JSONObject? = null, listener: ResponseListener? = null) {
-        val successListener = Response.Listener<String> { response -> listener?.onResponse(response) ?: Log.i("VOLLEY", response) }
-        val errorListener = Response.ErrorListener { error -> listener?.onError(error.toString()) ?: Log.i("VOLLEY", error.toString()) }
+        val successListener = Response.Listener<String> {
+                response -> listener?.onResponse(response) ?: Log.i(Constants.LOG_TAG, response) }
+
+        val errorListener = Response.ErrorListener {
+                error -> listener?.onError(error.toString()) ?: Log.i(Constants.LOG_TAG, error.toString()) }
 
         val urlWithParams = Util.appendToUrl(url, defaultParams)
 
@@ -45,10 +48,6 @@ class HttpClient {
         }
 
         requestQueue.add(stringRequest)
-    }
-
-    companion object {
-        private const val CACHE_DIR = "velocidi-sdk-cache"
     }
 }
 
