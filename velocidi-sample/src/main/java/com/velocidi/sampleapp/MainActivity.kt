@@ -32,10 +32,6 @@ class MainActivity : AppCompatActivity() {
         match_button.setOnClickListener {
             Velocidi.match("someProvider", listOf(UserId("eml", "useremail@example.com")))
         }
-
-        val config = Config(URL("http://test.com"))
-
-        Velocidi.start(config, this)
     }
 
 }
