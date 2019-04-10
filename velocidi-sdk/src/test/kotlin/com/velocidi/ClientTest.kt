@@ -62,6 +62,8 @@ class ClientTest {
         val payload = """{"Ola":"Mundo"}"""
 
         client.sendRequest(Request.Method.POST, url.toString(), JSONObject(payload))
+
+        println(JSONObject(payload))
         val response = server.takeRequest()
         response.containsHeader("Content-Type", "application/json")
         response.containsBody(payload)

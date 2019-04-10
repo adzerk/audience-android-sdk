@@ -4,9 +4,13 @@ import com.velocidi.util.prettyPrintJson
 import org.junit.Test
 import kotlinx.serialization.*
 import kotlinx.serialization.json.Json
-import org.assertj.core.api.Assertions.assertThat
-import org.junit.Ignore
+import org.assertj.core.api.Assertions.*
+import org.json.JSONException
+import org.json.JSONObject
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
+@RunWith(RobolectricTestRunner::class)
 @ImplicitReflectionSerializer
 class TrackingEventsTest {
 
@@ -47,9 +51,45 @@ class TrackingEventsTest {
     )
 
   @Test
-  @Ignore
-  fun customTrackingEventSerialization() {
+  fun customTrackingEventCreation() {
+
+      val event = """
+        {
+            "type": "custom",
+            "siteId": "0"
+        }"""
+
+
+      val eventObj = CustomTrackingEvent(JSONObject(event))
+      assertThat(eventObj.type).isEqualTo("custom")
+      assertThat(eventObj.siteId).isEqualTo("0")
+      assertThat(eventObj.clientId).isNull()
   }
+
+    @Test(expected = JSONException::class)
+    fun invalidCustomTrackingEvent() {
+      val invalidEvent = """{"siteId": "0"}"""
+        CustomTrackingEvent(JSONObject(invalidEvent))
+    }
+
+    @Test
+    fun customTrackingEventSerialization() {
+        val event = """
+        {
+            "type": "custom",
+            "siteId": "0",
+            "test": {
+                "a": 1
+            }
+        }""".trimIndent()
+
+        val eventObj = CustomTrackingEvent(JSONObject(event))
+
+        val result = json.stringify(eventObj).trim('"').replace("\\","")
+
+        assertThat(result.prettyPrintJson()).isEqualTo(event.prettyPrintJson())
+    }
+
 
   @Test
   fun pageViewEventSerialization() {
