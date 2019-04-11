@@ -4,6 +4,10 @@ import android.Manifest
 import android.content.Context
 import android.util.Log
 import com.android.volley.Request
+import com.velocidi.events.*
+import kotlinx.serialization.ImplicitReflectionSerializer
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.stringify
 import org.json.JSONObject
 import java.util.*
 
@@ -66,8 +70,8 @@ class Velocidi constructor(val config: Config, val adInfo: AdvertisingInfo, cont
                  false -> {Log.e(Constants.LOG_TAG, "Velocidi SDK must be initialized"); null}
              }
 
-         fun track(attributes: JSONObject) {
-             val request = com.velocidi.Request.TrackRequest(attributes)
+         fun track(event: TrackingEvent) {
+             val request = com.velocidi.Request.TrackRequest(JSONObject(event.serialize()))
              getInstance()?.handleRequest(request) ?: queue.add(request)
          }
 

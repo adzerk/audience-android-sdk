@@ -2,7 +2,9 @@ package com.velocidi
 
 import com.squareup.okhttp.mockwebserver.MockResponse
 import com.squareup.okhttp.mockwebserver.MockWebServer
+import com.velocidi.events.PageView
 import com.velocidi.util.containsRequestLine
+import kotlinx.serialization.ImplicitReflectionSerializer
 import org.assertj.core.api.Assertions.assertThat
 import org.json.JSONObject
 import org.junit.Rule
@@ -40,20 +42,12 @@ class VelocidiTest {
         val url = server.url("/tr")
         val config = Config(Channel(URL(url.toString()), true), Channel(URL(url.toString()), false))
 
-        val event = """
-            {
-                "eventType":"pageView",
-                "clientId": "client1",
-                "siteId": "site1"
-            }
-            """
-
         val context = RuntimeEnvironment.application
 
         Velocidi.instance =  Velocidi(config, AdvertisingInfo("123", true), context)
 
         server.enqueue(MockResponse())
-        Velocidi.track(JSONObject(event))
+        Velocidi.track(PageView("site1", "clientId1"))
         val response = server.takeRequest()
         response.containsRequestLine("POST /tr?aaid=123&cookies=false HTTP/1.1")
     }
@@ -63,19 +57,11 @@ class VelocidiTest {
         val url = server.url("/tr")
         val config = Config(Channel(URL(url.toString()), false), Channel(URL(url.toString()), false))
 
-        val event = """
-            {
-                "eventType":"pageView",
-                "clientId": "client1",
-                "siteId": "site1"
-            }
-            """
-
         val context = RuntimeEnvironment.application
 
         Velocidi.instance =  Velocidi(config, AdvertisingInfo("123", true), context)
 
-        Velocidi.track(JSONObject(event))
+        Velocidi.track(PageView("site1", "clientId1"))
         val response = server.takeRequest(2, TimeUnit.SECONDS)
         assertThat(response).isNull()
     }
@@ -124,7 +110,7 @@ class VelocidiTest {
         Velocidi.instance =  Velocidi(config, AdvertisingInfo("123", false), context)
 
         Velocidi.match("provider1", listOf(UserId("eml","mail@example.com")))
-        Velocidi.track(JSONObject())
+        Velocidi.track(PageView())
         val response = server.takeRequest(2, TimeUnit.SECONDS)
         assertThat(response).isNull()
     }

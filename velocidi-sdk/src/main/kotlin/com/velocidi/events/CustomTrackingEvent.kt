@@ -2,11 +2,14 @@ package com.velocidi.events
 
 import kotlinx.serialization.*
 import kotlinx.serialization.internal.StringDescriptor
+import kotlinx.serialization.json.Json
 import org.json.JSONObject
 
 @Serializable
 class CustomTrackingEvent(@Transient val json: JSONObject = JSONObject()) :
     TrackingEvent(json.getString("type"), extractAttribute(json, "siteId"), extractAttribute(json, "clientId")) {
+    override fun serialize(): String =
+        Json.plain.stringify(serializer(), this)
 
     @Serializer(forClass = CustomTrackingEvent::class)
     companion object : SerializationStrategy<CustomTrackingEvent> {

@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import com.velocidi.Config
 import com.velocidi.UserId
 import com.velocidi.Velocidi
+import com.velocidi.events.PageView
 
 import kotlinx.android.synthetic.main.activity_main2.*
 import org.json.JSONObject
@@ -26,7 +27,7 @@ class MainActivity : AppCompatActivity() {
                   "clientId": "client1"
                 }
             """.trimIndent()
-            Velocidi.track(JSONObject(event))
+            Velocidi.track(PageView())
         }
 
         match_button.setOnClickListener {
