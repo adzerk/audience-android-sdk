@@ -16,7 +16,7 @@ internal class GetAdvertisingIdTask(val listener: AdvertisingIdListener) : Async
     @Throws(Exception::class)
      fun getAdvertisingId(context: Context): AdvertisingInfo {
         val advertisingInfo = Class.forName("com.google.android.gms.ads.identifier.AdvertisingIdClient")
-            .getMethod("getAdvertisingIdInfo", Context::class.java!!)
+            .getMethod("getAdvertisingIdInfo", Context::class.java)
             .invoke(null, context)
         val isLimitAdTrackingEnabled = advertisingInfo.javaClass
             .getMethod("isLimitAdTrackingEnabled")

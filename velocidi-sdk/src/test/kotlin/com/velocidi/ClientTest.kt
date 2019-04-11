@@ -59,7 +59,7 @@ class ClientTest {
     fun payloadRequest() {
         server.enqueue(MockResponse())
 
-        val payload = """{"Ola":"Mundo"}"""
+        val payload = """{"Hello":"World"}"""
 
         client.sendRequest(Request.Method.POST, url.toString(), JSONObject(payload))
         val response = server.takeRequest()
