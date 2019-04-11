@@ -29,13 +29,13 @@ class ClientTest {
     fun emptyRequest() {
         server.enqueue(MockResponse())
 
-        client.sendRequest(Request.Method.GET, url.toString())
+        client.sendRequest(HttpClient.Verb.GET, url.toString())
         val response1 = server.takeRequest()
         response1.containsRequestLine("GET / HTTP/1.1")
         response1.containsHeader("Content-Type", "application/json")
         assertThat(String(response1.body.readByteArray())).isEmpty()
 
-        client.sendRequest(Request.Method.POST, url.toString())
+        client.sendRequest(HttpClient.Verb.POST, url.toString())
         val response2 = server.takeRequest()
         response2.containsRequestLine("POST / HTTP/1.1")
         response2.containsHeader("Content-Type", "application/json")
@@ -47,7 +47,7 @@ class ClientTest {
         server.enqueue(MockResponse())
 
         client.headers["User-Agent"] = "CustomUA"
-        client.sendRequest(Request.Method.GET, url.toString())
+        client.sendRequest(HttpClient.Verb.GET, url.toString())
 
         val response = server.takeRequest()
         response.containsHeader("Content-Type", "application/json")
@@ -61,7 +61,7 @@ class ClientTest {
 
         val payload = """{"Hello":"World"}"""
 
-        client.sendRequest(Request.Method.POST, url.toString(), JSONObject(payload))
+        client.sendRequest(HttpClient.Verb.POST, url.toString(), JSONObject(payload))
         val response = server.takeRequest()
         response.containsHeader("Content-Type", "application/json")
         response.containsBody(payload)
@@ -71,9 +71,9 @@ class ClientTest {
     fun queueRequests() {
         server.enqueue(MockResponse())
 
-        client.sendRequest(Request.Method.GET, url.toString())
-        client.sendRequest(Request.Method.GET, url.toString())
-        client.sendRequest(Request.Method.GET, url.toString())
+        client.sendRequest(HttpClient.Verb.GET, url.toString())
+        client.sendRequest(HttpClient.Verb.GET, url.toString())
+        client.sendRequest(HttpClient.Verb.GET, url.toString())
 
         assertThat(server.requestCount).isEqualTo(0)
 
@@ -91,7 +91,7 @@ class ClientTest {
         client.defaultParams["x"] = "foo"
         client.defaultParams["y"] = "bar"
 
-        client.sendRequest(Request.Method.POST, url.toString())
+        client.sendRequest(HttpClient.Verb.POST, url.toString())
 
         val response = server.takeRequest()
 

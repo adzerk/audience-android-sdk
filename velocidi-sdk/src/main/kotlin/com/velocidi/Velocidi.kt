@@ -3,34 +3,35 @@ package com.velocidi
 import android.Manifest
 import android.content.Context
 import android.util.Log
-import com.android.volley.Request
 import org.json.JSONObject
-import java.util.*
 
 
-class Velocidi constructor(val config: Config, val adInfo: AdvertisingInfo, context: Context) {
+internal open class Velocidi constructor(val config: Config, context: Context): FetchAdvertisingId<Request>(context) {
 
-    private val client = HttpClient()
+    val client = HttpClient()
 
-    private val appInfo = Util.getApplicationInfo(context)
+    val appInfo = Util.getApplicationInfo(context)
 
     init {
         client.headers["User-Agent"] = "${appInfo.appName}/${appInfo.appVersion} ${appInfo.androidSDK} ${appInfo.device}"
-        client.defaultParams["aaid"] = adInfo.id
         client.defaultParams["cookies"] = "false"
     }
 
-     private fun handleRequest(req: com.velocidi.Request) {
+    override fun onFetchCompleted() {
+        client.defaultParams["aaid"] = adInfo.id
+    }
+
+     override fun handleTask(task: Request) {
         if(!adInfo.shouldTrack) return
 
-         return when(req) {
+         return when(task) {
             is com.velocidi.Request.TrackRequest ->
                 if(config.track.enabled)
-                    client.sendRequest(Request.Method.POST, config.track.host.toString(), req.attributes)
+                    client.sendRequest(HttpClient.Verb.POST, config.track.host.toString(), task.attributes)
                 else return
             is com.velocidi.Request.MatchRequest ->
                 if(config.match.enabled)
-                    client.sendRequest(Request.Method.GET, "${config.match.host}?${req.toQueryParams()}")
+                    client.sendRequest(HttpClient.Verb.GET, "${config.match.host}?${task.toQueryParams()}")
                 else return
 
         }
@@ -39,41 +40,30 @@ class Velocidi constructor(val config: Config, val adInfo: AdvertisingInfo, cont
      companion object {
          internal lateinit var instance: Velocidi
 
-         internal val queue: Queue<com.velocidi.Request> = FixedSizeQueue(300)
-
          fun start(config: Config, context: Context) {
              if(!Util.checkPermission(context, Manifest.permission.INTERNET))
                  Log.e(Constants.LOG_TAG, "Velocidi SDK requires Internet permission")
 
-             if(::instance.isInitialized)
-                 return
-
-             val listener = object : AdvertisingIdListener {
-                 override fun fetchAdvertisingIdCompleted(advertisingInfo: AdvertisingInfo) {
-                     instance = Velocidi(config, advertisingInfo, context)
-                     while(queue.size != 0){
-                         getInstance()?.handleRequest(queue.remove())
-                     }
-                 }
-             }
-             GetAdvertisingIdTask(listener).execute(context)
+             instance = Velocidi(config, context)
 
          }
 
          fun getInstance(): Velocidi? =
              when(::instance.isInitialized){
                  true -> instance
-                 false -> {Log.e(Constants.LOG_TAG, "Velocidi SDK must be initialized"); null}
+                 false ->throw IllegalStateException(
+                     """Velocidi SDK is not initialized
+                            Make sure to call Velocidi.start first.""")
              }
 
          fun track(attributes: JSONObject) {
              val request = com.velocidi.Request.TrackRequest(attributes)
-             getInstance()?.handleRequest(request) ?: queue.add(request)
+             getInstance()?.runTask(request)
          }
 
          fun match(providerId: String, userIds: List<UserId>) {
              val request = com.velocidi.Request.MatchRequest(providerId, userIds)
-             getInstance()?.handleRequest(request) ?: queue.add(request)
+             getInstance()?.runTask(request)
          }
      }
 }

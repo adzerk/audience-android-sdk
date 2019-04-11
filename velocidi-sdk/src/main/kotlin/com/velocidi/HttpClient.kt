@@ -23,7 +23,7 @@ class HttpClient {
     val defaultParams = mutableMapOf<String,String>()
 
 
-    fun sendRequest(verb: Int,url: String, payload: JSONObject? = null, listener: ResponseListener? = null) {
+    fun sendRequest(verb: Verb,url: String, payload: JSONObject? = null, listener: ResponseListener? = null) {
         val successListener = Response.Listener<String> {
                 response -> listener?.onResponse(response) ?: Log.i(Constants.LOG_TAG, response) }
 
@@ -32,7 +32,7 @@ class HttpClient {
 
         val urlWithParams = Util.appendToUrl(url, defaultParams)
 
-        val stringRequest = object : StringRequest(verb, urlWithParams,
+        val stringRequest = object : StringRequest(verb.i, urlWithParams,
             successListener, errorListener) {
 
             override fun getHeaders(): MutableMap<String, String> {
@@ -48,6 +48,11 @@ class HttpClient {
         }
 
         requestQueue.add(stringRequest)
+    }
+
+    enum class Verb(val i: Int) {
+        GET(0),
+        POST(1)
     }
 }
 
