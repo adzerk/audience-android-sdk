@@ -1,5 +1,6 @@
 package com.velocidi
 
+import com.velocidi.events.*
 import com.velocidi.util.prettyPrintJson
 import org.junit.Test
 import kotlinx.serialization.*
