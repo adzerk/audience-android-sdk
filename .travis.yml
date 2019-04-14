@@ -26,6 +26,7 @@ cache:
 
 install:
   - "./gradlew assemble"
+  - 'git diff --exit-code'
 
 script:
   - "./gradlew test jacocoTestReport"
