@@ -51,6 +51,7 @@ subprojects {
 
     // Optionally configure plugin
     ktlint {
+        version = "0.31.0"
         debug = true
         android = true
         ignoreFailures = true
