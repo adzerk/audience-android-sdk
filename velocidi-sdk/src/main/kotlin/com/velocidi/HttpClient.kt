@@ -49,7 +49,7 @@ class HttpClient {
                 headers.toMutableMap()
 
             override fun getBodyContentType(): String =
-                "application/json; charset=utf-8"
+                "application/json"
 
             override fun getBody(): ByteArray? =
                 payload?.toString()?.toByteArray(Charset.defaultCharset())

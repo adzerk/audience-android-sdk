@@ -30,13 +30,11 @@ class ClientTest {
         client.sendRequest(HttpClient.Verb.GET, url.url())
         val response1 = server.takeRequest()
         response1.containsRequestLine("GET / HTTP/1.1")
-        response1.containsHeader("Content-Type", "application/json")
         assertThat(String(response1.body.readByteArray())).isEmpty()
 
         client.sendRequest(HttpClient.Verb.POST, url.url())
         val response2 = server.takeRequest()
         response2.containsRequestLine("POST / HTTP/1.1")
-        response2.containsHeader("Content-Type", "application/json")
         assertThat(String(response2.body.readByteArray())).isEmpty()
     }
 
@@ -47,7 +45,6 @@ class ClientTest {
         client.sendRequest(HttpClient.Verb.GET, url.url(), headers = mapOf("User-Agent" to "CustomUA"))
 
         val response = server.takeRequest()
-        response.containsHeader("Content-Type", "application/json")
         response.containsHeader("User-Agent", "CustomUA")
     }
 
