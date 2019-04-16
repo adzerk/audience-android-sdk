@@ -75,7 +75,10 @@ class VelocidiTest {
     @Test
     fun trackingEventDisabled() {
         val url = server.url("/tr")
-        val config = Config(Channel(URL(url.toString()), false), Channel(URL(url.toString()), false))
+        val config = Config(
+            Channel(URL(url.toString()), false),
+            Channel(URL(url.toString()), false)
+        )
 
         val event = """
             {
@@ -111,7 +114,10 @@ class VelocidiTest {
     @Test
     fun matchEventDisabled() {
         val url = server.url("/match")
-        val config = Config(Channel(URL(url.toString()), false), Channel(URL(url.toString()), false))
+        val config = Config(
+            Channel(URL(url.toString()), false),
+            Channel(URL(url.toString()), false)
+        )
 
         val context = RuntimeEnvironment.application
         Velocidi.instance = VelocidiMock(config, context)
@@ -127,7 +133,10 @@ class VelocidiTest {
 
         val url = server.url("/")
 
-        val config = Config(Channel(URL(url.toString()), false), Channel(URL(url.toString()), false))
+        val config = Config(
+            Channel(URL(url.toString()), false),
+            Channel(URL(url.toString()), false)
+        )
 
         val context = RuntimeEnvironment.application
         val instance = VelocidiMock(config, context)
@@ -152,5 +161,4 @@ class VelocidiTest {
         val response = server.takeRequest(2, TimeUnit.SECONDS)
         assertThat(response).isNull()
     }
-
 }

@@ -42,7 +42,11 @@ class ClientTest {
     fun customHeaderRequest() {
         server.enqueue(MockResponse())
 
-        client.sendRequest(HttpClient.Verb.GET, url.url(), headers = mapOf("User-Agent" to "CustomUA"))
+        client.sendRequest(
+            HttpClient.Verb.GET,
+            url.url(),
+            headers = mapOf("User-Agent" to "CustomUA")
+        )
 
         val response = server.takeRequest()
         response.containsHeader("User-Agent", "CustomUA")
@@ -82,7 +86,13 @@ class ClientTest {
     fun queryParams() {
         server.enqueue(MockResponse())
 
-        client.sendRequest(HttpClient.Verb.POST, url.url(), parameters = mapOf("x" to "foo", "y" to "bar"))
+        client.sendRequest(
+            HttpClient.Verb.POST, url.url(),
+            parameters = mapOf(
+                "x" to "foo",
+                "y" to "bar"
+            )
+        )
 
         val response = server.takeRequest()
 

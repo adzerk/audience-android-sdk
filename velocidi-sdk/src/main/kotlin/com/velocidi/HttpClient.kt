@@ -26,17 +26,10 @@ class HttpClient {
         payload: JSONObject? = null,
         parameters: Map<String, String> = emptyMap(),
         headers: Map<String, String> = emptyMap(),
-        listener: ResponseListener? = null
+        listener: ResponseListener = defaultListener
     ) {
-        val successListener = Response.Listener<String> {
-            response ->
-                listener?.onResponse(response) ?: Log.i(Constants.LOG_TAG, response)
-            }
-
-        val errorListener = Response.ErrorListener {
-            error ->
-                listener?.onError(error) ?: Log.i(Constants.LOG_TAG, error.toString())
-            }
+        val successListener = Response.Listener<String> { response -> listener.onResponse(response) }
+        val errorListener = Response.ErrorListener { error -> listener.onError(error) }
 
         val urlWithParams = Util.appendToUrl(url, parameters)
 
@@ -61,6 +54,18 @@ class HttpClient {
     enum class Verb(val i: Int) {
         GET(0),
         POST(1)
+    }
+
+    companion object {
+        val defaultListener = object : ResponseListener {
+            override fun onResponse(response: String) {
+                Log.i(Constants.LOG_TAG, response)
+            }
+
+            override fun onError(message: Exception) {
+                Log.i(Constants.LOG_TAG, message.toString())
+            }
+        }
     }
 }
 
