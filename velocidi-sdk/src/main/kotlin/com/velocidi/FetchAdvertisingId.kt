@@ -4,6 +4,7 @@ import android.content.Context
 import java.util.*
 
 abstract class FetchAdvertisingId<T>(context: Context) {
+
     lateinit var adInfo: AdvertisingInfo
 
     internal val queue: Queue<T> = FixedSizeQueue(300)

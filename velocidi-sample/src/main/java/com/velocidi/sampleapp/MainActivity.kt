@@ -23,12 +23,12 @@ class MainActivity : AppCompatActivity() {
                   "siteId": "1",
                   "clientId": "client1"
                 }
-                """.trimIndent()
-            Velocidi.track(JSONObject(event))
+            """.trimIndent()
+            Velocidi.getInstance().track(JSONObject(event))
         }
 
         match_button.setOnClickListener {
-            Velocidi.match("someProvider", listOf(UserId("eml", "useremail@example.com")))
+            Velocidi.getInstance().match("someProvider", listOf(UserId("eml", "useremail@example.com")))
         }
     }
 }

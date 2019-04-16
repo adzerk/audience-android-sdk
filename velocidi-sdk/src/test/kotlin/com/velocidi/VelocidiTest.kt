@@ -50,7 +50,7 @@ class VelocidiTest {
         Velocidi.instance = VelocidiMock(config, context)
 
         server.enqueue(MockResponse())
-        Velocidi.track(JSONObject(event))
+        Velocidi.getInstance().track(JSONObject(event))
         val response = server.takeRequest()
         response.containsRequestLine("POST /tr?cookies=false&aaid=123 HTTP/1.1")
     }
@@ -70,9 +70,9 @@ class VelocidiTest {
 
         val context = RuntimeEnvironment.application
 
-        Velocidi.instance = Velocidi(config, context)
+        Velocidi.instance =  VelocidiMock(config, context)
 
-        Velocidi.track(JSONObject(event))
+        Velocidi.getInstance().track(JSONObject(event))
         val response = server.takeRequest(2, TimeUnit.SECONDS)
         assertThat(response).isNull()
     }
@@ -83,9 +83,10 @@ class VelocidiTest {
         val config = Config(Channel(URL(url.toString()), false), Channel(URL(url.toString()), true))
 
         val context = RuntimeEnvironment.application
-        Velocidi.instance = Velocidi(config, context)
 
-        Velocidi.match("provider1", listOf(UserId("eml", "mail@example.com")))
+        Velocidi.instance =  VelocidiMock(config, context)
+
+        Velocidi.getInstance().match("provider1", listOf(UserId("eml","mail@example.com")))
         val response = server.takeRequest()
         response.containsRequestLine("GET /match?providerId=provider1&id_eml=mail@example.com&aaid=123&cookies=false HTTP/1.1")
     }
@@ -96,20 +97,29 @@ class VelocidiTest {
         val config = Config(Channel(URL(url.toString()), false), Channel(URL(url.toString()), false))
 
         val context = RuntimeEnvironment.application
-        Velocidi.instance = Velocidi(config, context)
+        Velocidi.instance =  VelocidiMock(config, context)
 
-        Velocidi.match("provider1", listOf(UserId("eml", "mail@example.com")))
+        Velocidi.getInstance().match("provider1", listOf(UserId("eml","mail@example.com")))
         val response = server.takeRequest(2, TimeUnit.SECONDS)
         assertThat(response).isNull()
     }
 
     @Test
-    fun accumulateRequestWhileAaidUndefined() {
-        Velocidi.match("provider1", listOf(UserId("eml", "mail@example.com")))
-        Velocidi.match("provider1", listOf(UserId("eml", "mail@example.com")))
-        Velocidi.match("provider1", listOf(UserId("eml", "mail@example.com")))
 
-        // assertThat(Velocidi.queue.size).isEqualTo(3)
+    fun accumulateRequestWhileAaidUndefined(){
+
+        val url = server.url("/")
+
+        val config = Config(Channel(URL(url.toString()), false), Channel(URL(url.toString()), false))
+
+        val context = RuntimeEnvironment.application
+        val instance =  VelocidiMock(config, context)
+
+        instance.match("provider1", listOf(UserId("eml","mail@example.com")))
+        instance.match("provider1", listOf(UserId("eml","mail@example.com")))
+        instance.match("provider1", listOf(UserId("eml","mail@example.com")))
+
+        assertThat(instance.queue.size).isEqualTo(3)
     }
 
     @Test
@@ -118,10 +128,11 @@ class VelocidiTest {
         val config = Config(Channel(URL(url.toString()), true), Channel(URL(url.toString()), true))
 
         val context = RuntimeEnvironment.application
-        Velocidi.instance = Velocidi(config, context)
 
-        Velocidi.match("provider1", listOf(UserId("eml", "mail@example.com")))
-        Velocidi.track(JSONObject())
+        Velocidi.instance =  VelocidiMock(config, context)
+
+        Velocidi.getInstance().match("provider1", listOf(UserId("eml","mail@example.com")))
+        Velocidi.getInstance().track(JSONObject())
         val response = server.takeRequest(2, TimeUnit.SECONDS)
         assertThat(response).isNull()
     }

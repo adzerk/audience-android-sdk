@@ -7,6 +7,7 @@ import com.android.volley.toolbox.*
 import java.io.File
 import com.android.volley.toolbox.StringRequest
 import org.json.JSONObject
+import java.net.URL
 import java.nio.charset.Charset
 
 class HttpClient {
@@ -23,7 +24,7 @@ class HttpClient {
 
     fun sendRequest(
         verb: Verb,
-        url: String,
+        url: URL,
         payload: JSONObject? = null,
         listener: ResponseListener? = null
     ) {
@@ -40,7 +41,7 @@ class HttpClient {
         val urlWithParams = Util.appendToUrl(url, defaultParams)
 
         val stringRequest = object : StringRequest(
-            verb.i, urlWithParams,
+            verb.i, urlWithParams.toString(),
             successListener, errorListener
         ) {
 

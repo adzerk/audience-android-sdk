@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import java.net.URI
 import java.net.URISyntaxException
+import java.net.URL
 
 data class ApplicationInfo(
     val appName: String = "",
@@ -43,18 +44,18 @@ object Util {
     }
 
     @Throws(URISyntaxException::class)
-    fun appendToUrl(url: String, parameters: Map<String, String>): String {
+    fun appendToUrl(url: URL, parameters: Map<String, String>): URL {
         if (parameters.isEmpty())
             return url
 
-        val uri = URI(url)
+        val uri = url.toURI()
         val query = uri.query
 
         val params: List<String> = parameters.map { (k, v) -> "$k=$v" }
 
         val queryParams = (listOfNotNull(query) + params).joinToString("&")
 
-        val newUri = URI(uri.scheme, uri.authority, uri.path, queryParams, uri.fragment)
-        return newUri.toString()
+        val newUrl = URI(uri.scheme, uri.authority, uri.path, queryParams, uri.fragment).toURL()
+        return newUrl
     }
 }
