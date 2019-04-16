@@ -1,5 +1,8 @@
 package com.velocidi
 
+// @Rule
+// @JvmField
+
 import android.content.Context
 import com.squareup.okhttp.mockwebserver.MockResponse
 import com.squareup.okhttp.mockwebserver.MockWebServer
@@ -14,13 +17,26 @@ import org.robolectric.RuntimeEnvironment
 import java.net.URL
 import java.util.concurrent.TimeUnit
 
+internal class VelocidiMock(
+    config: Config,
+    context: Context,
+    advertisingInfo: AdvertisingInfo = AdvertisingInfo("123", true)
+) : Velocidi(config, context) {
+
+    init {
+        this.adInfo = advertisingInfo
+    }
+
+    override fun fetchAndSetAdvertisingId(context: Context) {
+        return
+    }
+}
+
 @RunWith(RobolectricTestRunner::class)
 class VelocidiTest {
 
     var server = MockWebServer()
 
-    // @Rule
-    // @JvmField
     // var globalTimeout = Timeout.seconds(10) // 10 seconds max per method tested
 
     @Test
@@ -122,7 +138,6 @@ class VelocidiTest {
 
         assertThat(instance.queue.size).isEqualTo(3)
     }
-
     @Test
     fun trackingDisabled() {
         val url = server.url("/")
@@ -130,31 +145,12 @@ class VelocidiTest {
 
         val context = RuntimeEnvironment.application
 
-        class VelocidiMockWithTrackingDisabled(config: Config, context: Context) : Velocidi(config, context) {
-            init {
-                adInfo = AdvertisingInfo("123", false)
-            }
-
-            override fun fetchAndSetAdvertisingId(context: Context) {
-                return
-            }
-        }
-
-        Velocidi.instance = VelocidiMockWithTrackingDisabled(config, context)
+        Velocidi.instance = VelocidiMock(config, context, AdvertisingInfo("123", false))
 
         Velocidi.getInstance().match("provider1", listOf(UserId("eml", "mail@example.com")))
         Velocidi.getInstance().track(JSONObject())
         val response = server.takeRequest(2, TimeUnit.SECONDS)
         assertThat(response).isNull()
     }
-}
 
-internal class VelocidiMock(config: Config, context: Context) : Velocidi(config, context) {
-    init {
-        adInfo = AdvertisingInfo("123", true)
-    }
-
-    override fun fetchAndSetAdvertisingId(context: Context) {
-        this.adInfo = AdvertisingInfo("123", true)
-    }
 }

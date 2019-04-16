@@ -14,8 +14,6 @@ abstract class FetchAdvertisingId<T>(context: Context) {
     }
 
     open fun fetchAndSetAdvertisingId(context: Context) {
-        if (::adInfo.isInitialized)
-            return
 
         val listener = object : AdvertisingIdListener {
             override fun fetchAdvertisingIdCompleted(advertisingInfo: AdvertisingInfo) {
