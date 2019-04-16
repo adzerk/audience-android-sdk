@@ -12,14 +12,14 @@ abstract class FetchAdvertisingId<T>(context: Context) {
         fetchAndSetAdvertisingId(context)
     }
 
-    open fun fetchAndSetAdvertisingId(context: Context){
+    open fun fetchAndSetAdvertisingId(context: Context) {
         val listener = object : AdvertisingIdListener {
             override fun fetchAdvertisingIdCompleted(advertisingInfo: AdvertisingInfo) {
                 this@FetchAdvertisingId.adInfo = advertisingInfo
 
                 onFetchCompleted()
 
-                while(queue.size != 0){
+                while (queue.size != 0) {
                     handleTask(queue.remove())
                 }
             }
@@ -28,7 +28,7 @@ abstract class FetchAdvertisingId<T>(context: Context) {
     }
 
     fun runTask(task: T) {
-        if(::adInfo.isInitialized) handleTask(task) else queue.add(task)
+        if (::adInfo.isInitialized) handleTask(task) else queue.add(task)
     }
     abstract fun handleTask(task: T)
 

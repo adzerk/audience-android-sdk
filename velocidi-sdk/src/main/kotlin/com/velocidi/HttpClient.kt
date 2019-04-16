@@ -9,7 +9,6 @@ import com.android.volley.toolbox.StringRequest
 import org.json.JSONObject
 import java.nio.charset.Charset
 
-
 class HttpClient {
     private val cache = DiskBasedCache(File(Constants.CACHE_DIR), 1024 * 1024) // 1MB cap
 
@@ -20,20 +19,30 @@ class HttpClient {
     }
 
     val headers = mutableMapOf(Pair("Content-Type", "application/json"))
-    val defaultParams = mutableMapOf<String,String>()
+    val defaultParams = mutableMapOf<String, String>()
 
-
-    fun sendRequest(verb: Verb,url: String, payload: JSONObject? = null, listener: ResponseListener? = null) {
+    fun sendRequest(
+        verb: Verb,
+        url: String,
+        payload: JSONObject? = null,
+        listener: ResponseListener? = null
+    ) {
         val successListener = Response.Listener<String> {
-                response -> listener?.onResponse(response) ?: Log.i(Constants.LOG_TAG, response) }
+            response ->
+                listener?.onResponse(response) ?: Log.i(Constants.LOG_TAG, response)
+            }
 
         val errorListener = Response.ErrorListener {
-                error -> listener?.onError(error.toString()) ?: Log.i(Constants.LOG_TAG, error.toString()) }
+            error ->
+                listener?.onError(error.toString()) ?: Log.i(Constants.LOG_TAG, error.toString())
+            }
 
         val urlWithParams = Util.appendToUrl(url, defaultParams)
 
-        val stringRequest = object : StringRequest(verb.i, urlWithParams,
-            successListener, errorListener) {
+        val stringRequest = object : StringRequest(
+            verb.i, urlWithParams,
+            successListener, errorListener
+        ) {
 
             override fun getHeaders(): MutableMap<String, String> {
                 return this@HttpClient.headers

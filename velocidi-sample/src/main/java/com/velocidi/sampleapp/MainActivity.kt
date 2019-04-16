@@ -1,15 +1,12 @@
 package com.velocidi.sampleapp
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity;
-import com.velocidi.Config
+import android.support.v7.app.AppCompatActivity
 import com.velocidi.UserId
 import com.velocidi.Velocidi
 
 import kotlinx.android.synthetic.main.activity_main2.*
 import org.json.JSONObject
-import java.net.URL
-
 
 class MainActivity : AppCompatActivity() {
 
@@ -19,13 +16,14 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
 
         track_button.setOnClickListener {
-            val event = """
+            val event =
+                """
                 {
                   "eventType": "productClick",
                   "siteId": "1",
                   "clientId": "client1"
                 }
-            """.trimIndent()
+                """.trimIndent()
             Velocidi.track(JSONObject(event))
         }
 
@@ -33,5 +31,4 @@ class MainActivity : AppCompatActivity() {
             Velocidi.match("someProvider", listOf(UserId("eml", "useremail@example.com")))
         }
     }
-
 }

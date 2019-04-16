@@ -1,6 +1,5 @@
 package com.velocidi
 
-import com.android.volley.Request
 import com.squareup.okhttp.mockwebserver.MockResponse
 import com.squareup.okhttp.mockwebserver.MockWebServer
 import com.velocidi.util.containsBody
@@ -13,7 +12,6 @@ import org.junit.Test
 import org.junit.rules.Timeout
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
-
 
 @RunWith(RobolectricTestRunner::class)
 class ClientTest {
@@ -52,7 +50,6 @@ class ClientTest {
         val response = server.takeRequest()
         response.containsHeader("Content-Type", "application/json")
         response.containsHeader("User-Agent", "CustomUA")
-
     }
 
     @Test
@@ -86,7 +83,7 @@ class ClientTest {
     }
 
     @Test
-    fun defaultParams(){
+    fun defaultParams() {
         server.enqueue(MockResponse())
         client.defaultParams["x"] = "foo"
         client.defaultParams["y"] = "bar"
@@ -97,5 +94,4 @@ class ClientTest {
 
         response.containsRequestLine("POST /?x=foo&y=bar HTTP/1.1")
     }
-
 }

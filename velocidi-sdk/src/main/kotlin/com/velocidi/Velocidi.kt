@@ -1,5 +1,6 @@
 package com.velocidi
 
+<<<<<<< HEAD
 import android.Manifest
 import android.content.Context
 import android.util.Log

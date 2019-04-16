@@ -5,7 +5,12 @@ import android.content.pm.PackageManager
 import java.net.URI
 import java.net.URISyntaxException
 
-data class ApplicationInfo(val appName: String = "", val appVersion: String = "", val androidSDK: String, val device: String)
+data class ApplicationInfo(
+    val appName: String = "",
+    val appVersion: String = "",
+    val androidSDK: String,
+    val device: String
+)
 
 object Util {
     fun getApplicationInfo(context: Context): ApplicationInfo {
@@ -27,7 +32,6 @@ object Util {
             val appVersion = packageInfo.versionName ?: packageInfo.longVersionCode
 
             ApplicationInfo(appName.toString(), appVersion.toString(), sdkVersion, device)
-
         } catch (e: PackageManager.NameNotFoundException) {
             ApplicationInfo(androidSDK = sdkVersion, device = device)
         }
@@ -40,7 +44,7 @@ object Util {
 
     @Throws(URISyntaxException::class)
     fun appendToUrl(url: String, parameters: Map<String, String>): String {
-        if(parameters.isEmpty())
+        if (parameters.isEmpty())
             return url
 
         val uri = URI(url)

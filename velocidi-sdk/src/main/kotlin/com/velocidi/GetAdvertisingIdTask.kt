@@ -4,8 +4,7 @@ import android.content.Context
 import android.os.AsyncTask
 import android.util.Log
 
-
-data class AdvertisingInfo(val id: String, val shouldTrack:Boolean)
+data class AdvertisingInfo(val id: String, val shouldTrack: Boolean)
 
 interface AdvertisingIdListener {
     fun fetchAdvertisingIdCompleted(advertisingInfo: AdvertisingInfo)
@@ -14,18 +13,21 @@ interface AdvertisingIdListener {
 internal class GetAdvertisingIdTask(val listener: AdvertisingIdListener) : AsyncTask<Context, Void, AdvertisingInfo>() {
 
     @Throws(Exception::class)
-     fun getAdvertisingId(context: Context): AdvertisingInfo {
-        val advertisingInfo = Class.forName("com.google.android.gms.ads.identifier.AdvertisingIdClient")
-            .getMethod("getAdvertisingIdInfo", Context::class.java)
-            .invoke(null, context)
-        val isLimitAdTrackingEnabled = advertisingInfo.javaClass
-            .getMethod("isLimitAdTrackingEnabled")
-            .invoke(advertisingInfo) as Boolean
+    fun getAdvertisingId(context: Context): AdvertisingInfo {
+        val advertisingInfo =
+            Class.forName("com.google.android.gms.ads.identifier.AdvertisingIdClient")
+                .getMethod("getAdvertisingIdInfo", Context::class.java)
+                .invoke(null, context)
+        val isLimitAdTrackingEnabled =
+            advertisingInfo.javaClass
+                .getMethod("isLimitAdTrackingEnabled")
+                .invoke(advertisingInfo) as Boolean
 
         val advertisingId = advertisingInfo.javaClass.getMethod("getId").invoke(advertisingInfo) as String
 
         if (isLimitAdTrackingEnabled) {
-            Log.w(Constants.LOG_TAG,
+            Log.w(
+                Constants.LOG_TAG,
                 "Not collecting advertising ID because isLimitAdTrackingEnabled (Google Play Services) is true."
             )
             return AdvertisingInfo(advertisingId, false)
@@ -33,8 +35,6 @@ internal class GetAdvertisingIdTask(val listener: AdvertisingIdListener) : Async
 
         return AdvertisingInfo(advertisingId, true)
     }
-
-
 
     override fun doInBackground(vararg contexts: Context): AdvertisingInfo? {
         val context = contexts[0]

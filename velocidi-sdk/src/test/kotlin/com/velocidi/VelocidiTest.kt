@@ -6,28 +6,24 @@ import com.squareup.okhttp.mockwebserver.MockWebServer
 import com.velocidi.util.containsRequestLine
 import org.assertj.core.api.Assertions.assertThat
 import org.json.JSONObject
-import org.junit.Rule
 import org.junit.Test
-import org.junit.rules.Timeout
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
 import java.net.URL
 import java.util.concurrent.TimeUnit
 
-
 @RunWith(RobolectricTestRunner::class)
 class VelocidiTest {
 
     var server = MockWebServer()
 
-    //@Rule
-    //@JvmField
-    //var globalTimeout = Timeout.seconds(10) // 10 seconds max per method tested
-
+    // @Rule
+    // @JvmField
+    // var globalTimeout = Timeout.seconds(10) // 10 seconds max per method tested
 
     @Test
-    fun configSDK(){
+    fun configSDK() {
         val config = Config(URL("http://example.com"))
 
         assertThat(config.track.host.toString()).isEqualTo("http://tr.example.com")
@@ -37,7 +33,7 @@ class VelocidiTest {
     }
 
     @Test
-    fun trackingEvent(){
+    fun trackingEvent() {
         val url = server.url("/tr")
         val config = Config(Channel(URL(url.toString()), true), Channel(URL(url.toString()), false))
 
@@ -51,7 +47,7 @@ class VelocidiTest {
 
         val context = RuntimeEnvironment.application
 
-        Velocidi.instance =  VelocidiMock(config, context)
+        Velocidi.instance = VelocidiMock(config, context)
 
         server.enqueue(MockResponse())
         Velocidi.track(JSONObject(event))
@@ -60,7 +56,7 @@ class VelocidiTest {
     }
 
     @Test
-    fun trackingEventDisabled(){
+    fun trackingEventDisabled() {
         val url = server.url("/tr")
         val config = Config(Channel(URL(url.toString()), false), Channel(URL(url.toString()), false))
 
@@ -74,7 +70,7 @@ class VelocidiTest {
 
         val context = RuntimeEnvironment.application
 
-        Velocidi.instance =  Velocidi(config, context)
+        Velocidi.instance = Velocidi(config, context)
 
         Velocidi.track(JSONObject(event))
         val response = server.takeRequest(2, TimeUnit.SECONDS)
@@ -82,49 +78,49 @@ class VelocidiTest {
     }
 
     @Test
-    fun matchEvent(){
+    fun matchEvent() {
         val url = server.url("/match")
         val config = Config(Channel(URL(url.toString()), false), Channel(URL(url.toString()), true))
 
         val context = RuntimeEnvironment.application
-        Velocidi.instance =  Velocidi(config, context)
+        Velocidi.instance = Velocidi(config, context)
 
-        Velocidi.match("provider1", listOf(UserId("eml","mail@example.com")))
+        Velocidi.match("provider1", listOf(UserId("eml", "mail@example.com")))
         val response = server.takeRequest()
         response.containsRequestLine("GET /match?providerId=provider1&id_eml=mail@example.com&aaid=123&cookies=false HTTP/1.1")
     }
 
     @Test
-    fun matchEventDisabled(){
+    fun matchEventDisabled() {
         val url = server.url("/match")
         val config = Config(Channel(URL(url.toString()), false), Channel(URL(url.toString()), false))
 
         val context = RuntimeEnvironment.application
-        Velocidi.instance =  Velocidi(config, context)
+        Velocidi.instance = Velocidi(config, context)
 
-        Velocidi.match("provider1", listOf(UserId("eml","mail@example.com")))
+        Velocidi.match("provider1", listOf(UserId("eml", "mail@example.com")))
         val response = server.takeRequest(2, TimeUnit.SECONDS)
         assertThat(response).isNull()
     }
 
     @Test
-    fun accumulateRequestWhileAaidUndefined(){
-        Velocidi.match("provider1", listOf(UserId("eml","mail@example.com")))
-        Velocidi.match("provider1", listOf(UserId("eml","mail@example.com")))
-        Velocidi.match("provider1", listOf(UserId("eml","mail@example.com")))
+    fun accumulateRequestWhileAaidUndefined() {
+        Velocidi.match("provider1", listOf(UserId("eml", "mail@example.com")))
+        Velocidi.match("provider1", listOf(UserId("eml", "mail@example.com")))
+        Velocidi.match("provider1", listOf(UserId("eml", "mail@example.com")))
 
-        //assertThat(Velocidi.queue.size).isEqualTo(3)
+        // assertThat(Velocidi.queue.size).isEqualTo(3)
     }
 
     @Test
-    fun trackingDisabled(){
+    fun trackingDisabled() {
         val url = server.url("/")
         val config = Config(Channel(URL(url.toString()), true), Channel(URL(url.toString()), true))
 
         val context = RuntimeEnvironment.application
-        Velocidi.instance =  Velocidi(config, context)
+        Velocidi.instance = Velocidi(config, context)
 
-        Velocidi.match("provider1", listOf(UserId("eml","mail@example.com")))
+        Velocidi.match("provider1", listOf(UserId("eml", "mail@example.com")))
         Velocidi.track(JSONObject())
         val response = server.takeRequest(2, TimeUnit.SECONDS)
         assertThat(response).isNull()
@@ -137,7 +133,6 @@ internal class VelocidiMock(config: Config, context: Context) : Velocidi(config,
     }
 
     override fun fetchAndSetAdvertisingId(context: Context) {
-        this.adInfo =  AdvertisingInfo("123", true)
+        this.adInfo = AdvertisingInfo("123", true)
     }
-
 }
