@@ -27,13 +27,13 @@ class ClientTest {
     fun emptyRequest() {
         server.enqueue(MockResponse())
 
-        client.sendRequest(HttpClient.Verb.GET, url.toString())
+        client.sendRequest(HttpClient.Verb.GET, url.url())
         val response1 = server.takeRequest()
         response1.containsRequestLine("GET / HTTP/1.1")
         response1.containsHeader("Content-Type", "application/json")
         assertThat(String(response1.body.readByteArray())).isEmpty()
 
-        client.sendRequest(HttpClient.Verb.POST, url.toString())
+        client.sendRequest(HttpClient.Verb.POST, url.url())
         val response2 = server.takeRequest()
         response2.containsRequestLine("POST / HTTP/1.1")
         response2.containsHeader("Content-Type", "application/json")
@@ -44,8 +44,7 @@ class ClientTest {
     fun customHeaderRequest() {
         server.enqueue(MockResponse())
 
-        client.headers["User-Agent"] = "CustomUA"
-        client.sendRequest(HttpClient.Verb.GET, url.toString())
+        client.sendRequest(HttpClient.Verb.GET, url.url(), headers = mapOf("User-Agent" to "CustomUA"))
 
         val response = server.takeRequest()
         response.containsHeader("Content-Type", "application/json")
@@ -58,7 +57,7 @@ class ClientTest {
 
         val payload = """{"Hello":"World"}"""
 
-        client.sendRequest(HttpClient.Verb.POST, url.toString(), JSONObject(payload))
+        client.sendRequest(HttpClient.Verb.POST, url.url(), JSONObject(payload))
         val response = server.takeRequest()
         response.containsHeader("Content-Type", "application/json")
         response.containsBody(payload)
@@ -68,9 +67,9 @@ class ClientTest {
     fun queueRequests() {
         server.enqueue(MockResponse())
 
-        client.sendRequest(HttpClient.Verb.GET, url.toString())
-        client.sendRequest(HttpClient.Verb.GET, url.toString())
-        client.sendRequest(HttpClient.Verb.GET, url.toString())
+        client.sendRequest(HttpClient.Verb.GET, url.url())
+        client.sendRequest(HttpClient.Verb.GET, url.url())
+        client.sendRequest(HttpClient.Verb.GET, url.url())
 
         assertThat(server.requestCount).isEqualTo(0)
 
@@ -83,12 +82,10 @@ class ClientTest {
     }
 
     @Test
-    fun defaultParams() {
+    fun queryParams() {
         server.enqueue(MockResponse())
-        client.defaultParams["x"] = "foo"
-        client.defaultParams["y"] = "bar"
 
-        client.sendRequest(HttpClient.Verb.POST, url.toString())
+        client.sendRequest(HttpClient.Verb.POST, url.url(), parameters = mapOf("x" to "foo", "y" to "bar"))
 
         val response = server.takeRequest()
 

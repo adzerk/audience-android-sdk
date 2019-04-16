@@ -7,6 +7,7 @@ import com.android.volley.toolbox.*
 import java.io.File
 import com.android.volley.toolbox.StringRequest
 import org.json.JSONObject
+import java.lang.Exception
 import java.net.URL
 import java.nio.charset.Charset
 
@@ -19,13 +20,12 @@ class HttpClient {
         start()
     }
 
-    val headers = mutableMapOf(Pair("Content-Type", "application/json"))
-    val defaultParams = mutableMapOf<String, String>()
-
     fun sendRequest(
         verb: Verb,
         url: URL,
         payload: JSONObject? = null,
+        parameters: Map<String, String> = emptyMap(),
+        headers: Map<String, String> = emptyMap(),
         listener: ResponseListener? = null
     ) {
         val successListener = Response.Listener<String> {
@@ -35,23 +35,21 @@ class HttpClient {
 
         val errorListener = Response.ErrorListener {
             error ->
-                listener?.onError(error.toString()) ?: Log.i(Constants.LOG_TAG, error.toString())
+                listener?.onError(error) ?: Log.i(Constants.LOG_TAG, error.toString())
             }
 
-        val urlWithParams = Util.appendToUrl(url, defaultParams)
+        val urlWithParams = Util.appendToUrl(url, parameters)
 
         val stringRequest = object : StringRequest(
             verb.i, urlWithParams.toString(),
             successListener, errorListener
         ) {
 
-            override fun getHeaders(): MutableMap<String, String> {
-                return this@HttpClient.headers
-            }
+            override fun getHeaders() =
+                headers.toMutableMap()
 
-            override fun getBodyContentType(): String {
-                return "application/json; charset=utf-8"
-            }
+            override fun getBodyContentType(): String =
+                "application/json; charset=utf-8"
 
             override fun getBody(): ByteArray? =
                 payload?.toString()?.toByteArray(Charset.defaultCharset())
@@ -67,7 +65,7 @@ class HttpClient {
 }
 
 interface ResponseListener {
-    fun onError(message: String)
+    fun onError(message: Exception)
 
     fun onResponse(response: String)
 }

@@ -17,6 +17,6 @@ class SampleApplication : Application() {
         // OR
         // val config = Config(URL("http://test.com"))
 
-        Velocidi.start(config, this)
+        Velocidi.init(config, this)
     }
 }

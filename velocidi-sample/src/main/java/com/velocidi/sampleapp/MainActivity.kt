@@ -23,7 +23,7 @@ class MainActivity : AppCompatActivity() {
                   "siteId": "1",
                   "clientId": "client1"
                 }
-            """.trimIndent()
+                """.trimIndent()
             Velocidi.getInstance().track(JSONObject(event))
         }
 
