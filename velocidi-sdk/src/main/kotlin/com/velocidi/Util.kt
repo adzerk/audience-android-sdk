@@ -7,8 +7,8 @@ import java.net.URISyntaxException
 import java.net.URL
 
 data class ApplicationInfo(
-    val appName: String = "",
-    val appVersion: String = "",
+    val appName: String,
+    val appVersion: String,
     val androidSDK: String,
     val device: String
 )
@@ -29,12 +29,12 @@ object Util {
             val applicationInfo = packageManager.getApplicationInfo(packageName, 0)
             val packageInfo = packageManager.getPackageInfo(packageName, 0)
 
-            val appName = packageManager.getApplicationLabel(applicationInfo) ?: packageName ?: ""
+            val appName = packageManager.getApplicationLabel(applicationInfo) ?: packageName
             val appVersion = packageInfo.versionName ?: packageInfo.longVersionCode
 
             ApplicationInfo(appName.toString(), appVersion.toString(), sdkVersion, device)
         } catch (e: PackageManager.NameNotFoundException) {
-            ApplicationInfo(androidSDK = sdkVersion, device = device)
+            ApplicationInfo("Unknown app", "Unknown version", sdkVersion, device)
         }
     }
 
