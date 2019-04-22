@@ -10,6 +10,7 @@ import org.json.JSONObject
 import java.lang.Exception
 import java.net.URL
 import java.nio.charset.Charset
+import com.velocidi.Util.appendToUrl
 
 class HttpClient {
     private val cache = DiskBasedCache(File(Constants.CACHE_DIR), 1024 * 1024) // 1MB cap
@@ -31,7 +32,7 @@ class HttpClient {
         val successListener = Response.Listener<String> { response -> listener.onResponse(response) }
         val errorListener = Response.ErrorListener { error -> listener.onError(error) }
 
-        val urlWithParams = Util.appendToUrl(url, parameters)
+        val urlWithParams = url.appendToUrl(parameters)
 
         val stringRequest = object : StringRequest(
             verb.i, urlWithParams.toString(),

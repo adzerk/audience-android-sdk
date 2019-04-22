@@ -2,7 +2,6 @@ package com.velocidi
 
 import android.Manifest
 import android.content.Context
-import android.util.Log
 import com.velocidi.Util.appendToUrl
 import org.json.JSONObject
 import java.util.*
@@ -50,7 +49,7 @@ open class Velocidi constructor(val config: Config, context: Context) {
                 else return
             is Request.MatchRequest ->
                 if (config.match.enabled) {
-                    val urlWithParams = appendToUrl(config.match.host, task.toQueryParams())
+                    val urlWithParams = config.match.host.appendToUrl(task.toQueryParams())
                     client.sendRequest(HttpClient.Verb.GET, urlWithParams, parameters = params, headers = headers)
                 } else return
         }
@@ -71,7 +70,7 @@ open class Velocidi constructor(val config: Config, context: Context) {
 
         fun init(config: Config, context: Context): Velocidi {
             if (!Util.checkPermission(context, Manifest.permission.INTERNET))
-                Log.e(Constants.LOG_TAG, "Velocidi SDK requires Internet permission")
+                throw SecurityException("Velocidi SDK requires Internet permission")
 
             instance = Velocidi(config, context)
 

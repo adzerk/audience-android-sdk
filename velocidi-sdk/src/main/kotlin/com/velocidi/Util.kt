@@ -44,11 +44,11 @@ object Util {
     }
 
     @Throws(URISyntaxException::class)
-    fun appendToUrl(url: URL, parameters: Map<String, String>): URL {
+    fun URL.appendToUrl(parameters: Map<String, String>): URL {
         if (parameters.isEmpty())
-            return url
+            return this
 
-        val uri = url.toURI()
+        val uri = this.toURI()
         val query = uri.query
 
         val params: List<String> = parameters.map { (k, v) -> "$k=$v" }

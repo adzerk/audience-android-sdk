@@ -3,6 +3,7 @@ package com.velocidi
 import android.content.Context
 import android.os.AsyncTask
 import android.util.Log
+import com.google.android.gms.ads.identifier.AdvertisingIdClient
 
 data class AdvertisingInfo(val id: String, val shouldTrack: Boolean)
 
@@ -10,36 +11,26 @@ internal class GetAdvertisingIdTask(val listener: (AdvertisingInfo) -> Unit) : A
 
     @Throws(Exception::class)
     fun getAdvertisingId(context: Context): AdvertisingInfo {
-        val advertisingInfo =
-            Class.forName("com.google.android.gms.ads.identifier.AdvertisingIdClient")
-                .getMethod("getAdvertisingIdInfo", Context::class.java)
-                .invoke(null, context)
-        val isLimitAdTrackingEnabled =
-            advertisingInfo.javaClass
-                .getMethod("isLimitAdTrackingEnabled")
-                .invoke(advertisingInfo) as Boolean
 
-        val advertisingId = advertisingInfo.javaClass.getMethod("getId").invoke(advertisingInfo) as String
+        val adInfo = AdvertisingIdClient.getAdvertisingIdInfo(context.applicationContext)
 
-        if (isLimitAdTrackingEnabled) {
+        if (adInfo.isLimitAdTrackingEnabled) {
             Log.w(
                 Constants.LOG_TAG,
                 "Not collecting advertising ID because isLimitAdTrackingEnabled (Google Play Services) is true."
             )
-            return AdvertisingInfo(advertisingId, false)
+            return AdvertisingInfo(adInfo.id, false)
         }
-
-        return AdvertisingInfo(advertisingId, true)
+        return AdvertisingInfo(adInfo.id, true)
     }
 
-    override fun doInBackground(vararg contexts: Context): AdvertisingInfo? {
+    override fun doInBackground(vararg contexts: Context): AdvertisingInfo {
         val context = contexts[0]
 
         return try {
             getAdvertisingId(context)
         } catch (e: Exception) {
-            Log.e(Constants.LOG_TAG, "Unable to collect advertising ID from Google Play Services.")
-            null
+            throw Exception("Unable to collect advertising ID from Google Play Services.")
         }
     }
 
