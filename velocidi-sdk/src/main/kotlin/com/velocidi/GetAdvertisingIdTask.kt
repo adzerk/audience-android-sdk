@@ -6,11 +6,7 @@ import android.util.Log
 
 data class AdvertisingInfo(val id: String, val shouldTrack: Boolean)
 
-interface AdvertisingIdListener {
-    fun fetchAdvertisingIdCompleted(advertisingInfo: AdvertisingInfo)
-}
-
-internal class GetAdvertisingIdTask(val listener: AdvertisingIdListener) : AsyncTask<Context, Void, AdvertisingInfo>() {
+internal class GetAdvertisingIdTask(val listener: (AdvertisingInfo) -> Unit) : AsyncTask<Context, Void, AdvertisingInfo>() {
 
     @Throws(Exception::class)
     fun getAdvertisingId(context: Context): AdvertisingInfo {
@@ -38,18 +34,18 @@ internal class GetAdvertisingIdTask(val listener: AdvertisingIdListener) : Async
 
     override fun doInBackground(vararg contexts: Context): AdvertisingInfo? {
         val context = contexts[0]
-        try {
-            return getAdvertisingId(context)
+
+        return try {
+            getAdvertisingId(context)
         } catch (e: Exception) {
             Log.e(Constants.LOG_TAG, "Unable to collect advertising ID from Google Play Services.")
+            null
         }
-
-        return null
     }
 
     override fun onPostExecute(info: AdvertisingInfo) {
         super.onPostExecute(info)
 
-        listener.fetchAdvertisingIdCompleted(info)
+        listener(info)
     }
 }

@@ -5,21 +5,41 @@ import android.content.Context
 import android.util.Log
 import com.velocidi.Util.appendToUrl
 import org.json.JSONObject
+import java.util.*
 
-open class Velocidi constructor(val config: Config, context: Context) : FetchAdvertisingId<Request>(context) {
+open class Velocidi constructor(val config: Config, context: Context) {
 
     val client = HttpClient()
 
     val appInfo = Util.getApplicationInfo(context)
 
-    override fun onFetchCompleted() {
-        // client.defaultParams["aaid"] = adInfo.id
+    val queue: Queue<Request> = FixedSizeQueue(300)
+
+    lateinit var adInfo: AdvertisingInfo
+
+    init {
+        fetchAndSetAdvertisingId(context)
     }
 
-    override fun handleTask(task: Request) {
+    open fun fetchAndSetAdvertisingId(context: Context) {
+        GetAdvertisingIdTask { advertisingInfo ->
+            this@Velocidi.adInfo = advertisingInfo
+
+            while (queue.size != 0) {
+                handleTask(queue.remove())
+            }
+        }.execute(context)
+    }
+
+    fun runTask(task: Request) {
+        if (::adInfo.isInitialized) handleTask(task) else queue.add(task)
+    }
+
+    fun handleTask(task: Request) {
         if (!adInfo.shouldTrack) return
 
-        val headers = mapOf("User-Agent" to "${appInfo.appName}/${appInfo.appVersion} ${appInfo.androidSDK} ${appInfo.device}")
+        val headers =
+            mapOf("User-Agent" to "${appInfo.appName}/${appInfo.appVersion} ${appInfo.androidSDK} ${appInfo.device}")
 
         val params = mapOf("cookies" to "false", "id_aaid" to adInfo.id)
 
