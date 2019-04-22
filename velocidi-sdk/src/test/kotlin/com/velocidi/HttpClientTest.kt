@@ -14,7 +14,7 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
-class ClientTest {
+class HttpClientTest {
 
     var server = MockWebServer()
     val url = server.url("/")
