@@ -53,8 +53,7 @@ dependencies {
 
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.robolectric:robolectric:4.2'
-    testImplementation 'org.robolectric:shadows-support-v4:3.3.2'
-    testImplementation 'org.robolectric:shadows-httpclient:4.0-beta-1'
+    testImplementation 'androidx.test:core:1.1.0'
     testImplementation 'org.assertj:assertj-core:3.11.1'
     testImplementation 'com.squareup.okhttp:mockwebserver:2.7.4'
 

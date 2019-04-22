@@ -20,8 +20,9 @@ class HttpClientTest {
     val url = server.url("/")
     var client = HttpClient()
 
-    @Rule @JvmField
-    var globalTimeout = Timeout.seconds(10) // 10 seconds max per method tested
+    @Rule
+    @JvmField
+    val globalTimeout = Timeout.seconds(10) // 10 seconds max per method tested
 
     @Test
     fun emptyRequest() {

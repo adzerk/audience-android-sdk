@@ -1,19 +1,17 @@
 package com.velocidi
 
-// @Rule
-// @JvmField
-
 import android.content.Context
+import androidx.test.core.app.ApplicationProvider
 import com.squareup.okhttp.mockwebserver.MockResponse
 import com.squareup.okhttp.mockwebserver.MockWebServer
 import com.velocidi.util.containsRequestLine
 import org.assertj.core.api.Assertions.assertThat
 import org.json.JSONObject
-import org.junit.Ignore
+import org.junit.Rule
 import org.junit.Test
+import org.junit.rules.Timeout
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.RuntimeEnvironment
 import java.net.URL
 import java.util.concurrent.TimeUnit
 
@@ -37,7 +35,9 @@ class VelocidiTest {
 
     var server = MockWebServer()
 
-    // var globalTimeout = Timeout.seconds(10) // 10 seconds max per method tested
+    @Rule
+    @JvmField
+    val globalTimeout = Timeout.seconds(10) // 10 seconds max per method tested
 
     @Test
     fun configSDK() {
@@ -62,7 +62,7 @@ class VelocidiTest {
             }
             """
 
-        val context = RuntimeEnvironment.application
+        val context: Context = ApplicationProvider.getApplicationContext()
 
         Velocidi.instance = VelocidiMock(config, context)
 
@@ -88,7 +88,7 @@ class VelocidiTest {
             }
             """
 
-        val context = RuntimeEnvironment.application
+        val context: Context = ApplicationProvider.getApplicationContext()
 
         Velocidi.instance = VelocidiMock(config, context)
 
@@ -102,7 +102,7 @@ class VelocidiTest {
         val url = server.url("/match")
         val config = Config(Channel(URL(url.toString()), false), Channel(URL(url.toString()), true))
 
-        val context = RuntimeEnvironment.application
+        val context: Context = ApplicationProvider.getApplicationContext()
 
         Velocidi.instance = VelocidiMock(config, context)
 
@@ -119,7 +119,7 @@ class VelocidiTest {
             Channel(URL(url.toString()), false)
         )
 
-        val context = RuntimeEnvironment.application
+        val context: Context = ApplicationProvider.getApplicationContext()
         Velocidi.instance = VelocidiMock(config, context)
 
         Velocidi.getInstance().match("provider1", listOf(UserId("eml", "mail@example.com")))
@@ -128,31 +128,11 @@ class VelocidiTest {
     }
 
     @Test
-    @Ignore
-    fun accumulateRequestWhileAaidUndefined() {
-
-        val url = server.url("/")
-
-        val config = Config(
-            Channel(URL(url.toString()), false),
-            Channel(URL(url.toString()), false)
-        )
-
-        val context = RuntimeEnvironment.application
-        val instance = VelocidiMock(config, context)
-
-        instance.match("provider1", listOf(UserId("eml", "mail@example.com")))
-        instance.match("provider1", listOf(UserId("eml", "mail@example.com")))
-        instance.match("provider1", listOf(UserId("eml", "mail@example.com")))
-
-        assertThat(instance.queue.size).isEqualTo(3)
-    }
-    @Test
-    fun trackingDisabled() {
+    fun shouldNotTrackUser() {
         val url = server.url("/")
         val config = Config(Channel(URL(url.toString()), true), Channel(URL(url.toString()), true))
 
-        val context = RuntimeEnvironment.application
+        val context: Context = ApplicationProvider.getApplicationContext()
 
         Velocidi.instance = VelocidiMock(config, context, AdvertisingInfo("123", false))
 
