@@ -7,6 +7,11 @@ import com.google.android.gms.ads.identifier.AdvertisingIdClient
 
 data class AdvertisingInfo(val id: String, val shouldTrack: Boolean)
 
+/**
+ * Class responsible for obtaining the Google Advertising Id
+ *
+ * @property listener callback executed once the task concludes
+ */
 internal open class GetAdvertisingIdTask(val listener: (AdvertisingInfo) -> Unit) : AsyncTask<Context, Void, AdvertisingInfo>() {
 
     @Throws(Exception::class)

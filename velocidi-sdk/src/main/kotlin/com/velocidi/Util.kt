@@ -14,6 +14,12 @@ data class ApplicationInfo(
 )
 
 object Util {
+    /**
+     * Obtains the necessary information to build the User-Agent(UA)
+     *
+     * @param context Android application context
+     * @return ApplicationInfo with all the relevant information to build the UA
+     */
     fun getApplicationInfo(context: Context): ApplicationInfo {
         val sdkVersion = android.os.Build.VERSION.SDK_INT.toString()
         val device = if (android.os.Build.MANUFACTURER != null && android.os.Build.MODEL != null) {
@@ -38,11 +44,24 @@ object Util {
         }
     }
 
+    /**
+     * Verifies if the Android application has a specific permission
+     *
+     * @param context Android application context
+     * @param permission Permission string
+     * @return true - has permission; otherwise - false
+     */
     fun checkPermission(context: Context, permission: String): Boolean {
         val res = context.checkCallingOrSelfPermission(permission)
         return res == PackageManager.PERMISSION_GRANTED
     }
 
+    /**
+     * Adds parameters to an existing URL
+     *
+     * @param parameters Map (Key/Value) of parameters to be added
+     * @return URL with the new parameters
+     */
     @Throws(URISyntaxException::class)
     fun URL.appendToUrl(parameters: Map<String, String>): URL {
         if (parameters.isEmpty())

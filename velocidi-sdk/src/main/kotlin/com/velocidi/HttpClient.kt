@@ -12,6 +12,10 @@ import java.net.URL
 import java.nio.charset.Charset
 import com.velocidi.Util.appendToUrl
 
+/**
+ * Http Client based on Android Volley
+ *
+ */
 class HttpClient {
     private val cache = DiskBasedCache(File(Constants.CACHE_DIR), 1024 * 1024) // 1MB cap
 
@@ -21,6 +25,16 @@ class HttpClient {
         start()
     }
 
+    /**
+     * Sends an http request
+     *
+     * @param verb Http method - GET / POST
+     * @param url request URL
+     * @param payload request payload
+     * @param parameters additional parameters to append to url
+     * @param headers request headers
+     * @param listener listener to receive the request response
+     */
     fun sendRequest(
         verb: Verb,
         url: URL,
