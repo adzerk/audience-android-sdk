@@ -19,8 +19,8 @@ class MainActivity : AppCompatActivity() {
             val event =
                 """
                 {
-                  "eventType": "productClick",
-                  "siteId": "1",
+                  "type": "pageView",
+                  "siteId": "MobileApp",
                   "clientId": "client1"
                 }
                 """.trimIndent()

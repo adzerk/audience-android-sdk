@@ -31,9 +31,9 @@ class VelocidiTest {
     fun configSDK() {
         val config = Config(URL("http://example.com"))
 
-        assertThat(config.track.host.toString()).isEqualTo("http://tr.example.com")
+        assertThat(config.track.host.toString()).isEqualTo("http://tr.example.com/events")
         assertThat(config.track.enabled).isTrue()
-        assertThat(config.match.host.toString()).isEqualTo("http://match.example.com")
+        assertThat(config.match.host.toString()).isEqualTo("http://match.example.com/match")
         assertThat(config.match.enabled).isTrue()
     }
 

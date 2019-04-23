@@ -10,12 +10,12 @@ import java.net.URL
  */
 class Config(val track: Channel, val match: Channel) {
 
-    constructor(url: URL) : this(Channel(parseUrl(url, "tr"), true), Channel(parseUrl(url, "match"), true))
+    constructor(url: URL) : this(Channel(parseUrl(url, "tr", "events"), true), Channel(parseUrl(url, "match", "match"), true))
 
     companion object {
 
-        private fun parseUrl(url: URL, prefix: String): URL =
-            URL(url.protocol, "$prefix.${url.host}", url.port, url.file)
+        private fun parseUrl(url: URL, prefix: String, endpoint: String): URL =
+            URL(url.protocol, "$prefix.${url.host}", url.port, "/$endpoint")
     }
 }
 

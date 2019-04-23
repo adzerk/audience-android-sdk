@@ -66,7 +66,7 @@ open class Velocidi constructor(val config: Config, context: Context) {
         val headers =
             mapOf("User-Agent" to "${appInfo.appName}/${appInfo.appVersion} ${appInfo.androidSDK} ${appInfo.device}")
 
-        val params = mapOf("cookies" to "false", "id_aaid" to adInfo.id)
+        val params = mapOf("cookies" to "false", "id_gaid" to adInfo.id)
 
         return when (req) {
             is Request.TrackRequest ->
