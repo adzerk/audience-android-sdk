@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import com.squareup.okhttp.mockwebserver.MockResponse
 import com.squareup.okhttp.mockwebserver.MockWebServer
+import com.velocidi.util.VelocidiMockAsync
+import com.velocidi.util.VelocidiMockSync
 import com.velocidi.util.containsRequestLine
 import org.assertj.core.api.Assertions.assertThat
 import org.json.JSONObject
@@ -11,24 +13,10 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.Timeout
 import org.junit.runner.RunWith
+import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
 import java.net.URL
 import java.util.concurrent.TimeUnit
-
-internal class VelocidiMock(
-    config: Config,
-    context: Context,
-    advertisingInfo: AdvertisingInfo = AdvertisingInfo("123", true)
-) : Velocidi(config, context) {
-
-    init {
-        this.adInfo = advertisingInfo
-    }
-
-    override fun fetchAndSetAdvertisingId(context: Context) {
-        return
-    }
-}
 
 @RunWith(RobolectricTestRunner::class)
 class VelocidiTest {
@@ -64,10 +52,11 @@ class VelocidiTest {
 
         val context: Context = ApplicationProvider.getApplicationContext()
 
-        Velocidi.instance = VelocidiMock(config, context)
+        Velocidi.instance = VelocidiMockSync(config, context)
 
         server.enqueue(MockResponse())
         Velocidi.getInstance().track(JSONObject(event))
+
         val response = server.takeRequest()
         response.containsRequestLine("POST /tr?cookies=false&id_aaid=123 HTTP/1.1")
     }
@@ -90,9 +79,11 @@ class VelocidiTest {
 
         val context: Context = ApplicationProvider.getApplicationContext()
 
-        Velocidi.instance = VelocidiMock(config, context)
+        Velocidi.instance = VelocidiMockSync(config, context)
 
         Velocidi.getInstance().track(JSONObject(event))
+        Robolectric.flushForegroundThreadScheduler()
+
         val response = server.takeRequest(2, TimeUnit.SECONDS)
         assertThat(response).isNull()
     }
@@ -104,9 +95,11 @@ class VelocidiTest {
 
         val context: Context = ApplicationProvider.getApplicationContext()
 
-        Velocidi.instance = VelocidiMock(config, context)
+        Velocidi.instance = VelocidiMockSync(config, context)
 
         Velocidi.getInstance().match("provider1", listOf(UserId("eml", "mail@example.com")))
+        Robolectric.flushForegroundThreadScheduler()
+
         val response = server.takeRequest()
         response.containsRequestLine("GET /match?providerId=provider1&id_eml=mail@example.com&cookies=false&id_aaid=123 HTTP/1.1")
     }
@@ -120,9 +113,11 @@ class VelocidiTest {
         )
 
         val context: Context = ApplicationProvider.getApplicationContext()
-        Velocidi.instance = VelocidiMock(config, context)
+        Velocidi.instance = VelocidiMockSync(config, context)
 
         Velocidi.getInstance().match("provider1", listOf(UserId("eml", "mail@example.com")))
+        Robolectric.flushForegroundThreadScheduler()
+
         val response = server.takeRequest(2, TimeUnit.SECONDS)
         assertThat(response).isNull()
     }
@@ -134,11 +129,33 @@ class VelocidiTest {
 
         val context: Context = ApplicationProvider.getApplicationContext()
 
-        Velocidi.instance = VelocidiMock(config, context, AdvertisingInfo("123", false))
+        Velocidi.instance = VelocidiMockSync(config, context, AdvertisingInfo("123", false))
 
         Velocidi.getInstance().match("provider1", listOf(UserId("eml", "mail@example.com")))
         Velocidi.getInstance().track(JSONObject())
+        Robolectric.flushForegroundThreadScheduler()
+
         val response = server.takeRequest(2, TimeUnit.SECONDS)
         assertThat(response).isNull()
+    }
+
+    @Test
+    fun accumulateRequestWhileAaidUndefined() {
+
+        val url = server.url("/")
+
+        val config = Config(Channel(URL(url.toString()), false), Channel(URL(url.toString()), false))
+
+        val context: Context = ApplicationProvider.getApplicationContext()
+        val instance = VelocidiMockAsync(config, context)
+
+        instance.match("provider1", listOf(UserId("eml", "mail@example.com")))
+        instance.match("provider1", listOf(UserId("eml", "mail@example.com")))
+        instance.match("provider1", listOf(UserId("eml", "mail@example.com")))
+
+        assertThat(instance.queue.size).isEqualTo(3)
+
+        // Force the onPostExecute method from the async task to be executed in the main thread
+        Robolectric.flushForegroundThreadScheduler()
     }
 }
