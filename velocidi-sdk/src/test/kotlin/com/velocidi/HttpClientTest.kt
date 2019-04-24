@@ -18,7 +18,7 @@ class HttpClientTest {
 
     var server = MockWebServer()
     val url = server.url("/")
-    var client = HttpClient()
+    private var client = HttpClient()
 
     @Rule
     @JvmField

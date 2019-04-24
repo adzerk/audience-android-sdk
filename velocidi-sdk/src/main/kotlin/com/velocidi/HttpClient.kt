@@ -19,7 +19,7 @@ import com.velocidi.Util.appendToUrl
  * Http Client based on Android Volley
  *
  */
-class HttpClient {
+internal class HttpClient {
     private val cache = DiskBasedCache(File(Constants.CACHE_DIR), 1024 * 1024) // 1MB cap
 
     private val network = BasicNetwork(HurlStack())
@@ -80,15 +80,15 @@ class HttpClient {
                 Log.i(Constants.LOG_TAG, response)
             }
 
-            override fun onError(message: Exception) {
-                Log.i(Constants.LOG_TAG, message.toString())
+            override fun onError(ex: Exception) {
+                Log.i(Constants.LOG_TAG, ex.toString())
             }
         }
     }
 }
 
 interface ResponseListener {
-    fun onError(message: Exception)
+    fun onError(ex: Exception)
 
     fun onResponse(response: String)
 }

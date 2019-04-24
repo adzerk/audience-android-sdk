@@ -82,7 +82,6 @@ class VelocidiTest {
         Velocidi.instance = VelocidiMockSync(config, context)
 
         Velocidi.getInstance().track(JSONObject(event))
-        Robolectric.flushForegroundThreadScheduler()
 
         val response = server.takeRequest(2, TimeUnit.SECONDS)
         assertThat(response).isNull()
@@ -98,7 +97,6 @@ class VelocidiTest {
         Velocidi.instance = VelocidiMockSync(config, context)
 
         Velocidi.getInstance().match("provider1", listOf(UserId("eml", "mail@example.com")))
-        Robolectric.flushForegroundThreadScheduler()
 
         val response = server.takeRequest()
         response.containsRequestLine("GET /match?providerId=provider1&id_eml=mail@example.com&cookies=false&id_gaid=123 HTTP/1.1")
@@ -116,7 +114,6 @@ class VelocidiTest {
         Velocidi.instance = VelocidiMockSync(config, context)
 
         Velocidi.getInstance().match("provider1", listOf(UserId("eml", "mail@example.com")))
-        Robolectric.flushForegroundThreadScheduler()
 
         val response = server.takeRequest(2, TimeUnit.SECONDS)
         assertThat(response).isNull()
@@ -133,7 +130,6 @@ class VelocidiTest {
 
         Velocidi.getInstance().match("provider1", listOf(UserId("eml", "mail@example.com")))
         Velocidi.getInstance().track(JSONObject())
-        Robolectric.flushForegroundThreadScheduler()
 
         val response = server.takeRequest(2, TimeUnit.SECONDS)
         assertThat(response).isNull()

@@ -7,7 +7,14 @@ import org.json.JSONObject
 import java.util.Queue
 
 /**
- * Class with the main Velocidi SDK logic
+ * Class with the main Velocidi SDK logic.
+ *
+ * An instance of `Velocidi` allows the client to call `match` and `track` methods to send events
+ * to the Adality CDP servers.
+ *
+ * Before using any instance of `Velocidi` one should call `init` in the companion object in order
+ * to configure the server endpoints. After this, one can call `getInstance` at any time to fetch
+ * the instance of `Velocidi` which is now ready to use.
  *
  * @property config Configuration object
  *
@@ -15,9 +22,9 @@ import java.util.Queue
  */
 open class Velocidi constructor(val config: Config, context: Context) {
 
-    val client = HttpClient()
+    private val client = HttpClient()
 
-    val appInfo = Util.getApplicationInfo(context)
+    private val appInfo = Util.getApplicationInfo(context)
 
     val queue: Queue<Request> = FixedSizeQueue(300)
 
@@ -34,14 +41,17 @@ open class Velocidi constructor(val config: Config, context: Context) {
      *
      * @param context Android application context
      */
-    open fun fetchAndSetAdvertisingId(context: Context) {
+    protected open fun fetchAndSetAdvertisingId(context: Context) {
         GetAdvertisingIdTask { advertisingInfo ->
             this@Velocidi.adInfo = advertisingInfo
-
-            while (queue.size != 0) {
-                handleTask(queue.remove())
-            }
+            emptyTaskQueue()
         }.execute(context)
+    }
+
+    protected fun emptyTaskQueue() {
+        while (queue.size != 0) {
+            handleTask(queue.remove())
+        }
     }
 
     /**
@@ -50,7 +60,7 @@ open class Velocidi constructor(val config: Config, context: Context) {
      *
      * @param req Task to be executed when the Advertising Id is set
      */
-    fun runTask(req: Request) {
+    private fun runTask(req: Request) {
         if (::adInfo.isInitialized) handleTask(req) else queue.add(req)
     }
 
@@ -60,7 +70,7 @@ open class Velocidi constructor(val config: Config, context: Context) {
      *
      * @param req Request to be process
      */
-    fun handleTask(req: Request) {
+    private fun handleTask(req: Request) {
         if (!adInfo.shouldTrack) return
 
         val headers =

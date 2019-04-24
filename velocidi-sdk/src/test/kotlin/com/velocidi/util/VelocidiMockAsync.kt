@@ -15,9 +15,7 @@ internal class VelocidiMockAsync(
     override fun fetchAndSetAdvertisingId(context: Context) {
         DelayedAsyncTask {
             this.adInfo = advertisingInfo
-            while (queue.size != 0) {
-                handleTask(queue.remove())
-            }
+            emptyTaskQueue()
         }.execute()
 
         // We need to explicit force start the background thread
