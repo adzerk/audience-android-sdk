@@ -3,7 +3,10 @@ package com.velocidi
 import android.util.Log
 import com.android.volley.RequestQueue
 import com.android.volley.Response
-import com.android.volley.toolbox.*
+import com.android.volley.Response.Listener
+import com.android.volley.toolbox.BasicNetwork
+import com.android.volley.toolbox.DiskBasedCache
+import com.android.volley.toolbox.HurlStack
 import java.io.File
 import com.android.volley.toolbox.StringRequest
 import org.json.JSONObject
@@ -43,7 +46,7 @@ class HttpClient {
         headers: Map<String, String> = emptyMap(),
         listener: ResponseListener = defaultListener
     ) {
-        val successListener = Response.Listener<String> { response -> listener.onResponse(response) }
+        val successListener = Listener<String> { response -> listener.onResponse(response) }
         val errorListener = Response.ErrorListener { error -> listener.onError(error) }
 
         val urlWithParams = url.appendToUrl(parameters)

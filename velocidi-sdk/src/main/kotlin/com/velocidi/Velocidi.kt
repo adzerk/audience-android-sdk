@@ -4,7 +4,7 @@ import android.Manifest
 import android.content.Context
 import com.velocidi.Util.appendToUrl
 import org.json.JSONObject
-import java.util.*
+import java.util.Queue
 
 /**
  * Class with the main Velocidi SDK logic
@@ -64,19 +64,34 @@ open class Velocidi constructor(val config: Config, context: Context) {
         if (!adInfo.shouldTrack) return
 
         val headers =
-            mapOf("User-Agent" to "${appInfo.appName}/${appInfo.appVersion} ${appInfo.androidSDK} ${appInfo.device}")
+            mapOf(
+                "User-Agent" to Util.buildUserAgent(appInfo)
+            )
 
         val params = mapOf("cookies" to "false", "id_gaid" to adInfo.id)
 
         return when (req) {
             is Request.TrackRequest ->
                 if (config.track.enabled)
-                    client.sendRequest(HttpClient.Verb.POST, config.track.host, req.attributes, params, headers)
+
+                    client.sendRequest(
+                        HttpClient.Verb.POST,
+                        config.track.host,
+                        req.attributes,
+                        params,
+                        headers
+                    )
                 else return
             is Request.MatchRequest ->
                 if (config.match.enabled) {
                     val urlWithParams = config.match.host.appendToUrl(req.toQueryParams())
-                    client.sendRequest(HttpClient.Verb.GET, urlWithParams, parameters = params, headers = headers)
+
+                    client.sendRequest(
+                        HttpClient.Verb.GET,
+                        urlWithParams,
+                        parameters = params,
+                        headers = headers
+                    )
                 } else return
         }
     }

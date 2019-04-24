@@ -10,7 +10,10 @@ import java.net.URL
  */
 class Config(val track: Channel, val match: Channel) {
 
-    constructor(url: URL) : this(Channel(parseUrl(url, "tr", "events"), true), Channel(parseUrl(url, "match", "match"), true))
+    constructor(url: URL) : this(
+        Channel(parseUrl(url, "tr", "events"), true),
+        Channel(parseUrl(url, "match", "match"), true)
+    )
 
     companion object {
 

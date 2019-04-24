@@ -15,7 +15,7 @@ class SampleApplication : Application() {
         val config = Config(trackEndpoint, matchEndpoint)
 
         // OR
-        //val config = Config(URL("https://test.com"))
+        // val config = Config(URL("https://test.com"))
 
         Velocidi.init(config, this)
     }

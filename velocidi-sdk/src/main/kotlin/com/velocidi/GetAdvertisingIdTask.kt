@@ -12,7 +12,8 @@ data class AdvertisingInfo(val id: String, val shouldTrack: Boolean)
  *
  * @property listener callback executed once the task concludes
  */
-internal open class GetAdvertisingIdTask(val listener: (AdvertisingInfo) -> Unit) : AsyncTask<Context, Void, AdvertisingInfo>() {
+internal open class GetAdvertisingIdTask(val listener: (AdvertisingInfo) -> Unit) :
+    AsyncTask<Context, Void, AdvertisingInfo>() {
 
     @Throws(Exception::class)
     open fun getAdvertisingId(context: Context): AdvertisingInfo {
@@ -22,7 +23,8 @@ internal open class GetAdvertisingIdTask(val listener: (AdvertisingInfo) -> Unit
         if (adInfo.isLimitAdTrackingEnabled) {
             Log.w(
                 Constants.LOG_TAG,
-                "Not collecting advertising ID because isLimitAdTrackingEnabled (Google Play Services) is true."
+                "Not collecting advertising ID because " +
+                    "isLimitAdTrackingEnabled (Google Play Services) is true."
             )
             return AdvertisingInfo(adInfo.id, false)
         }

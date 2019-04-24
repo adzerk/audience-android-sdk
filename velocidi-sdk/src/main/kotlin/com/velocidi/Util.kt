@@ -2,6 +2,7 @@ package com.velocidi
 
 import android.content.Context
 import android.content.pm.PackageManager
+import android.os.Build
 import java.net.URI
 import java.net.URISyntaxException
 import java.net.URL
@@ -21,11 +22,11 @@ object Util {
      * @return ApplicationInfo with all the relevant information to build the UA
      */
     fun getApplicationInfo(context: Context): ApplicationInfo {
-        val sdkVersion = android.os.Build.VERSION.SDK_INT.toString()
-        val device = if (android.os.Build.MANUFACTURER != null && android.os.Build.MODEL != null) {
-            android.os.Build.MANUFACTURER + " " + android.os.Build.MODEL
+        val sdkVersion = Build.VERSION.SDK_INT.toString()
+        val device = if (Build.MANUFACTURER != null && Build.MODEL != null) {
+            Build.MANUFACTURER + " " + Build.MODEL
         } else {
-            android.os.Build.DEVICE ?: ""
+            Build.DEVICE ?: ""
         }
 
         return try {
@@ -36,13 +37,20 @@ object Util {
             val packageInfo = packageManager.getPackageInfo(packageName, 0)
 
             val appName = packageManager.getApplicationLabel(applicationInfo) ?: packageName
-            val appVersion = packageInfo.versionName ?: packageInfo.longVersionCode
+            val appVersion = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                packageInfo.longVersionCode.toString()
+            } else {
+                packageInfo.versionName
+            }
 
             ApplicationInfo(appName.toString(), appVersion.toString(), sdkVersion, device)
         } catch (e: PackageManager.NameNotFoundException) {
             ApplicationInfo("Unknown app", "Unknown version", sdkVersion, device)
         }
     }
+
+    fun buildUserAgent(appInfo: ApplicationInfo): String =
+        "${appInfo.appName}/${appInfo.appVersion} ${appInfo.androidSDK} ${appInfo.device}"
 
     /**
      * Verifies if the Android application has a specific permission

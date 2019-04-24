@@ -1,6 +1,6 @@
 package com.velocidi
 
-import java.util.*
+import java.util.LinkedList
 
 /**
  * Implementation of a max size queue based on LinkedList

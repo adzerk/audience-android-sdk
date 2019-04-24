@@ -58,7 +58,7 @@ class VelocidiTest {
         Velocidi.getInstance().track(JSONObject(event))
 
         val response = server.takeRequest()
-        response.containsRequestLine("POST /tr?cookies=false&id_aaid=123 HTTP/1.1")
+        response.containsRequestLine("POST /tr?cookies=false&id_gaid=123 HTTP/1.1")
     }
 
     @Test
@@ -101,7 +101,7 @@ class VelocidiTest {
         Robolectric.flushForegroundThreadScheduler()
 
         val response = server.takeRequest()
-        response.containsRequestLine("GET /match?providerId=provider1&id_eml=mail@example.com&cookies=false&id_aaid=123 HTTP/1.1")
+        response.containsRequestLine("GET /match?providerId=provider1&id_eml=mail@example.com&cookies=false&id_gaid=123 HTTP/1.1")
     }
 
     @Test
@@ -140,7 +140,7 @@ class VelocidiTest {
     }
 
     @Test
-    fun accumulateRequestWhileAaidUndefined() {
+    fun accumulateRequestWhileAdidUndefined() {
 
         val url = server.url("/")
 
