@@ -11,8 +11,8 @@ import java.util.LinkedList
  */
 class FixedSizeQueue<E>(private val limit: Int) : LinkedList<E>() {
 
-    override fun add(o: E): Boolean {
-        val added = super.add(o)
+    override fun add(element: E): Boolean {
+        val added = super.add(element)
         while (added && size > limit) {
             super.remove()
         }
