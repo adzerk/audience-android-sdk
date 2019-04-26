@@ -82,7 +82,6 @@ object Util {
 
         val queryParams = (listOfNotNull(query) + params).joinToString("&")
 
-        val newUrl = URI(uri.scheme, uri.authority, uri.path, queryParams, uri.fragment).toURL()
-        return newUrl
+        return URI(uri.scheme, uri.authority, uri.path, queryParams, uri.fragment).toURL()
     }
 }
