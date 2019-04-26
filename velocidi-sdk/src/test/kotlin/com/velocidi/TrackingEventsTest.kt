@@ -116,7 +116,7 @@ class TrackingEventsTest {
             category = "shopping"
         )
 
-        assertThat(event).isEqualTo(json.stringify(eventObj))
+        assertThat(event).isEqualTo(eventObj.serialize().prettyPrintJson())
     }
 
     @Test
@@ -142,7 +142,19 @@ class TrackingEventsTest {
 
     @Test
     fun productSerialization() {
+
+        val emptyProduct =
+            """
+            {
+                "id": "id1"
+            }
+            """.trimIndent()
+
+        val obj = Product("id1")
+
         assertThat(defaultProduct.prettyPrintJson()).isEqualTo(json.stringify(defaultProductObj))
+
+        assertThat(emptyProduct.prettyPrintJson()).isEqualTo(json.stringify(obj))
     }
 
     @Test
