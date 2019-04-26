@@ -15,9 +15,9 @@ import org.robolectric.RobolectricTestRunner
 @ImplicitReflectionSerializer
 class TrackingEventsTest {
 
-  private val json = Json(encodeDefaults = false, indented = true)
+    private val json = Json(encodeDefaults = false, indented = true)
 
-  private val defaultProduct = """
+    private val defaultProduct = """
         {
             "id": "p1",
             "name": "My product",
@@ -51,50 +51,51 @@ class TrackingEventsTest {
         unsafe = false
     )
 
-  @Test
-  fun customTrackingEventCreation() {
+    @Test
+    fun customTrackingEventCreation() {
 
-      val event = """
+        val event = """
         {
             "type": "custom",
             "siteId": "0"
         }"""
 
-
-      val eventObj = CustomTrackingEvent(JSONObject(event))
-      assertThat(eventObj.type).isEqualTo("custom")
-      assertThat(eventObj.siteId).isEqualTo("0")
-      assertThat(eventObj.clientId).isNull()
-  }
+        val eventObj = CustomTrackingEvent(JSONObject(event))
+        assertThat(eventObj.type).isEqualTo("custom")
+        assertThat(eventObj.siteId).isEqualTo("0")
+        assertThat(eventObj.clientId).isNull()
+    }
 
     @Test(expected = JSONException::class)
     fun invalidCustomTrackingEvent() {
-      val invalidEvent = """{"siteId": "0"}"""
+        val invalidEvent = """{"siteId": "0"}"""
         CustomTrackingEvent(JSONObject(invalidEvent))
     }
 
     @Test
     fun customTrackingEventSerialization() {
-        val event = """
-        {
-            "type": "custom",
-            "siteId": "0",
-            "test": {
-                "a": 1
+        val event =
+            """
+            {
+                "type": "custom",
+                "siteId": "0",
+                "test": {
+                    "a": 1
+                }
             }
-        }""".trimIndent()
+            """.trimIndent()
 
         val eventObj = CustomTrackingEvent(JSONObject(event))
 
-        val result = json.stringify(eventObj).trim('"').replace("\\","")
+        val result = json.stringify(eventObj).trim('"').replace("\\", "")
 
         assertThat(result.prettyPrintJson()).isEqualTo(event.prettyPrintJson())
     }
 
-
-  @Test
-  fun pageViewEventSerialization() {
-    val event = """
+    @Test
+    fun pageViewEventSerialization() {
+        val event =
+            """
             {
                 "type": "pageView",
                 "siteId": "0",
@@ -103,75 +104,80 @@ class TrackingEventsTest {
                 "title": "My page",
                 "pageType": "homepage",
                 "category": "shopping"
-            }""".trimIndent()
+            }
+            """.trimIndent()
 
-    val eventObj = PageView(
-      siteId = "0",
-      clientId = "0",
-      location = "mylocation",
-      title = "My page",
-      pageType = "homepage",
-      category = "shopping"
-    )
+        val eventObj = PageView(
+            siteId = "0",
+            clientId = "0",
+            location = "mylocation",
+            title = "My page",
+            pageType = "homepage",
+            category = "shopping"
+        )
 
-    assertThat(event).isEqualTo(json.stringify(eventObj))
-  }
+        assertThat(event).isEqualTo(json.stringify(eventObj))
+    }
 
-  @Test
-  fun searchEventSerialization() {
-    val event = """
+    @Test
+    fun searchEventSerialization() {
+        val event =
+            """
             {
                 "type": "search",
                 "siteId": "0",
                 "clientId": "0",
                 "query": "product"
-            }""".trimIndent()
-
-    val eventObj = Search(
-      siteId = "0",
-      clientId = "0",
-      query = "product"
-    )
-
-    assertThat(event).isEqualTo(json.stringify(eventObj))
-  }
-
-  @Test
-  fun productSerialization() {
-    assertThat(defaultProduct.prettyPrintJson()).isEqualTo(json.stringify(defaultProductObj))
-  }
-
-  @Test
-  fun productImpressionEventSerialization() {
-    val event = """
-    {
-        "type": "productImpression",
-        "siteId": "0",
-        "clientId": "0",
-        "products": [
-            $defaultProduct,
-            {
-                "id": "p2"
             }
-        ]
+            """.trimIndent()
+
+        val eventObj = Search(
+            siteId = "0",
+            clientId = "0",
+            query = "product"
+        )
+
+        assertThat(event).isEqualTo(json.stringify(eventObj))
     }
-    """.trimIndent()
 
-    val eventObj = ProductImpression("0", "0", listOf(defaultProductObj, Product("p2")))
+    @Test
+    fun productSerialization() {
+        assertThat(defaultProduct.prettyPrintJson()).isEqualTo(json.stringify(defaultProductObj))
+    }
 
-    assertThat(event.prettyPrintJson()).isEqualTo(json.stringify(eventObj))
-  }
+    @Test
+    fun productImpressionEventSerialization() {
+        val event =
+            """
+            {
+                "type": "productImpression",
+                "siteId": "0",
+                "clientId": "0",
+                "products": [
+                    $defaultProduct,
+                    {
+                        "id": "p2"
+                    }
+                ]
+            }
+            """.trimIndent()
+
+        val eventObj = ProductImpression("0", "0", listOf(defaultProductObj, Product("p2")))
+
+        assertThat(event.prettyPrintJson()).isEqualTo(json.stringify(eventObj))
+    }
 
     @Test
     fun productClickEventSerialization() {
-        val event = """
-    {
-        "type": "productClick",
-        "siteId": "0",
-        "clientId": "0",
-        "product": $defaultProduct
-    }
-    """.trimIndent()
+        val event =
+            """
+            {
+                "type": "productClick",
+                "siteId": "0",
+                "clientId": "0",
+                "product": $defaultProduct
+            }
+            """.trimIndent()
 
         val eventObj = ProductClick("0", "0", defaultProductObj)
 
@@ -180,14 +186,15 @@ class TrackingEventsTest {
 
     @Test
     fun productViewEventSerialization() {
-        val event = """
-    {
-        "type": "productView",
-        "siteId": "0",
-        "clientId": "0",
-        "product": $defaultProduct
-    }
-    """.trimIndent()
+        val event =
+            """
+            {
+                "type": "productView",
+                "siteId": "0",
+                "clientId": "0",
+                "product": $defaultProduct
+            }
+            """.trimIndent()
 
         val eventObj = ProductView("0", "0", defaultProductObj)
 
@@ -196,14 +203,15 @@ class TrackingEventsTest {
 
     @Test
     fun productViewDetailsEventSerialization() {
-        val event = """
-    {
-        "type": "productViewDetails",
-        "siteId": "0",
-        "clientId": "0",
-        "product": $defaultProduct
-    }
-    """.trimIndent()
+        val event =
+            """
+            {
+                "type": "productViewDetails",
+                "siteId": "0",
+                "clientId": "0",
+                "product": $defaultProduct
+            }
+            """.trimIndent()
 
         val eventObj = ProductViewDetails("0", "0", defaultProductObj)
 
@@ -212,39 +220,40 @@ class TrackingEventsTest {
 
     @Test
     fun productFeedbackEventSerialization() {
-        val event = """
-    {
-        "type": "productFeedback",
-        "siteId": "0",
-        "clientId": "0",
-        "product": $defaultProduct,
-        "rating": 4.5,
-        "feedback": "It's a very nice product!"
-    }
-    """.trimIndent()
+        val event =
+            """
+            {
+                "type": "productFeedback",
+                "siteId": "0",
+                "clientId": "0",
+                "product": $defaultProduct,
+                "rating": 4.5,
+                "feedback": "It's a very nice product!"
+            }
+            """.trimIndent()
 
         val eventObj = ProductFeedback("0", "0", defaultProductObj, 4.5, "It's a very nice product!")
 
         assertThat(event.prettyPrintJson()).isEqualTo(json.stringify(eventObj))
     }
 
-
     @Test
     fun productCustomizationEventSerialization() {
-        val event = """
-    {
-        "type": "productCustomization",
-        "siteId": "0",
-        "clientId": "0",
-        "product": $defaultProduct,
-        "productCustomization": {
-            "name": "collar",
-            "value": "italian",
-            "price": 5.0,
-            "currency": "EUR"
-        }
-    }
-    """.trimIndent()
+        val event =
+            """
+            {
+                "type": "productCustomization",
+                "siteId": "0",
+                "clientId": "0",
+                "product": $defaultProduct,
+                "productCustomization": {
+                    "name": "collar",
+                    "value": "italian",
+                    "price": 5.0,
+                    "currency": "EUR"
+                }
+            }
+            """.trimIndent()
 
         val customizationObj = ProductCustomization.Properties.Customization(
             name = "collar",
@@ -260,14 +269,15 @@ class TrackingEventsTest {
 
     @Test
     fun addToCartEventSerialization() {
-        val event = """
-    {
-        "type": "addToCart",
-        "siteId": "0",
-        "clientId": "0",
-        "product": $defaultProduct
-    }
-    """.trimIndent()
+        val event =
+            """
+            {
+                "type": "addToCart",
+                "siteId": "0",
+                "clientId": "0",
+                "product": $defaultProduct
+            }
+            """.trimIndent()
 
         val eventObj = AddToCart("0", "0", defaultProductObj)
 
@@ -276,14 +286,15 @@ class TrackingEventsTest {
 
     @Test
     fun removeFromCartEventSerialization() {
-        val event = """
-    {
-        "type": "removeFromCart",
-        "siteId": "0",
-        "clientId": "0",
-        "product": $defaultProduct
-    }
-    """.trimIndent()
+        val event =
+            """
+            {
+                "type": "removeFromCart",
+                "siteId": "0",
+                "clientId": "0",
+                "product": $defaultProduct
+            }
+            """.trimIndent()
 
         val eventObj = RemoveFromCart("0", "0", defaultProductObj)
 
@@ -292,29 +303,30 @@ class TrackingEventsTest {
 
     @Test
     fun purchaseEventSerialization() {
-        val event = """
-    {
-        "type": "purchase",
-        "siteId": "0",
-        "clientId": "0",
-        "product": $defaultProduct,
-        "transaction": {
-            "id": "tr1",
-            "price": 15.59,
-            "recurrence": "0 0 1 * *",
-            "currency": "EUR",
-            "tax": 2.99,
-            "shipping": 4.59,
-            "voucher": {
-                "id": "WINTERSALE",
-                "percentage": 10,
-                "value": 5.0
-            },
-            "paymentMethod": "credit",
-            "paymentDetails": "Visa"
-        }
-    }
-    """.trimIndent()
+        val event =
+            """
+            {
+                "type": "purchase",
+                "siteId": "0",
+                "clientId": "0",
+                "product": $defaultProduct,
+                "transaction": {
+                    "id": "tr1",
+                    "price": 15.59,
+                    "recurrence": "0 0 1 * *",
+                    "currency": "EUR",
+                    "tax": 2.99,
+                    "shipping": 4.59,
+                    "voucher": {
+                        "id": "WINTERSALE",
+                        "percentage": 10,
+                        "value": 5.0
+                    },
+                    "paymentMethod": "credit",
+                    "paymentDetails": "Visa"
+                }
+            }
+            """.trimIndent()
 
         val transactionObj = Transaction(
             id = "tr1",
@@ -335,29 +347,30 @@ class TrackingEventsTest {
 
     @Test
     fun subscriptionEventSerialization() {
-        val event = """
-    {
-        "type": "subscription",
-        "siteId": "0",
-        "clientId": "0",
-        "product": $defaultProduct,
-        "transaction": {
-            "id": "tr1",
-            "price": 15.59,
-            "recurrence": "0 0 1 * *",
-            "currency": "EUR",
-            "tax": 2.99,
-            "shipping": 4.59,
-            "voucher": {
-                "id": "WINTERSALE",
-                "percentage": 10,
-                "value": 5.0
-            },
-            "paymentMethod": "credit",
-            "paymentDetails": "Visa"
-        }
-    }
-    """.trimIndent()
+        val event =
+            """
+            {
+                "type": "subscription",
+                "siteId": "0",
+                "clientId": "0",
+                "product": $defaultProduct,
+                "transaction": {
+                    "id": "tr1",
+                    "price": 15.59,
+                    "recurrence": "0 0 1 * *",
+                    "currency": "EUR",
+                    "tax": 2.99,
+                    "shipping": 4.59,
+                    "voucher": {
+                        "id": "WINTERSALE",
+                        "percentage": 10,
+                        "value": 5.0
+                    },
+                    "paymentMethod": "credit",
+                    "paymentDetails": "Visa"
+                }
+            }
+            """.trimIndent()
 
         val transactionObj = Transaction(
             id = "tr1",
@@ -378,32 +391,33 @@ class TrackingEventsTest {
 
     @Test
     fun refundEventSerialization() {
-        val event = """
-    {
-        "type": "refund",
-        "siteId": "0",
-        "clientId": "0",
-        "refundType": "partial",
-        "products": [
-            $defaultProduct
-        ],
-        "transaction": {
-            "id": "tr1",
-            "price": 15.59,
-            "recurrence": "0 0 1 * *",
-            "currency": "EUR",
-            "tax": 2.99,
-            "shipping": 4.59,
-            "voucher": {
-                "id": "WINTERSALE",
-                "percentage": 10,
-                "value": 5.0
-            },
-            "paymentMethod": "credit",
-            "paymentDetails": "Visa"
-        }
-    }
-    """.trimIndent()
+        val event =
+            """
+            {
+                "type": "refund",
+                "siteId": "0",
+                "clientId": "0",
+                "refundType": "partial",
+                "products": [
+                    $defaultProduct
+                ],
+                "transaction": {
+                    "id": "tr1",
+                    "price": 15.59,
+                    "recurrence": "0 0 1 * *",
+                    "currency": "EUR",
+                    "tax": 2.99,
+                    "shipping": 4.59,
+                    "voucher": {
+                        "id": "WINTERSALE",
+                        "percentage": 10,
+                        "value": 5.0
+                    },
+                    "paymentMethod": "credit",
+                    "paymentDetails": "Visa"
+                }
+            }
+            """.trimIndent()
 
         val transactionObj = Transaction(
             id = "tr1",

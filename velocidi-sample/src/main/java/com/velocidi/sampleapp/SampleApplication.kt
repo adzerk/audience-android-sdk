@@ -10,13 +10,13 @@ class SampleApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        val trackEndpoint = Channel(URL("http://tr.test.com"), true)
-        val matchEndpoint = Channel(URL("http://match.test.com"), true)
+        val trackEndpoint = Channel(URL("https://tr.test.com/events"), true)
+        val matchEndpoint = Channel(URL("https://match.test.com/match"), true)
         val config = Config(trackEndpoint, matchEndpoint)
 
         // OR
-        // val config = Config(URL("http://test.com"))
+        // val config = Config(URL("https://test.com"))
 
-        Velocidi.start(config, this)
+        Velocidi.init(config, this)
     }
 }

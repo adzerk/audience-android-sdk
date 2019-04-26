@@ -1,38 +1,41 @@
 package com.velocidi.sampleapp
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity;
-import com.velocidi.Config
+import android.support.v7.app.AppCompatActivity
 import com.velocidi.UserId
 import com.velocidi.Velocidi
 import com.velocidi.events.PageView
 
-import kotlinx.android.synthetic.main.activity_main2.*
-import org.json.JSONObject
-import java.net.URL
-
+import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main2)
+        setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
         track_button.setOnClickListener {
-            val event = """
+            val event =
+                """
                 {
-                  "eventType": "productClick",
-                  "siteId": "1",
+                  "type": "pageView",
+                  "siteId": "MobileApp",
                   "clientId": "client1"
                 }
-            """.trimIndent()
-            Velocidi.track(PageView())
+                """.trimIndent()
+
+            Velocidi.getInstance().track(PageView("pageView", "MobileApp", "client1"))
+
+            // OR
+            // Velocidi.getInstance().track(CustomTrackingEvent(JSONObject(event)))
         }
 
         match_button.setOnClickListener {
-            Velocidi.match("someProvider", listOf(UserId("eml", "useremail@example.com")))
+            Velocidi.getInstance().match(
+                "someProvider",
+                listOf(UserId("eml", "useremail@example.com"))
+            )
         }
     }
-
 }

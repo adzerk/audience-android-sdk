@@ -16,6 +16,11 @@ data class ProductCustomization(
 
     companion object Properties {
         @Serializable
-        data class Customization(val name: String, val value: String, val price: Double, val currency: String)
+        data class Customization(
+            val name: String,
+            val value: String,
+            val price: Double,
+            val currency: String
+        )
     }
 }

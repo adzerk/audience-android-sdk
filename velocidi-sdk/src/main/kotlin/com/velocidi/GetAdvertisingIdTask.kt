@@ -3,53 +3,47 @@ package com.velocidi
 import android.content.Context
 import android.os.AsyncTask
 import android.util.Log
+import com.google.android.gms.ads.identifier.AdvertisingIdClient
 
+data class AdvertisingInfo(val id: String, val shouldTrack: Boolean)
 
-data class AdvertisingInfo(val id: String, val shouldTrack:Boolean)
-
-interface AdvertisingIdListener {
-    fun fetchAdvertisingIdCompleted(advertisingInfo: AdvertisingInfo)
-}
-
-internal class GetAdvertisingIdTask(val listener: AdvertisingIdListener) : AsyncTask<Context, Void, AdvertisingInfo>() {
+/**
+ * Class responsible for obtaining the Google Advertising Id
+ *
+ * @property listener callback executed once the task concludes
+ */
+internal open class GetAdvertisingIdTask(val listener: (AdvertisingInfo) -> Unit) :
+    AsyncTask<Context, Void, AdvertisingInfo>() {
 
     @Throws(Exception::class)
-     fun getAdvertisingId(context: Context): AdvertisingInfo {
-        val advertisingInfo = Class.forName("com.google.android.gms.ads.identifier.AdvertisingIdClient")
-            .getMethod("getAdvertisingIdInfo", Context::class.java!!)
-            .invoke(null, context)
-        val isLimitAdTrackingEnabled = advertisingInfo.javaClass
-            .getMethod("isLimitAdTrackingEnabled")
-            .invoke(advertisingInfo) as Boolean
+    open fun getAdvertisingId(context: Context): AdvertisingInfo {
 
-        val advertisingId = advertisingInfo.javaClass.getMethod("getId").invoke(advertisingInfo) as String
+        val adInfo = AdvertisingIdClient.getAdvertisingIdInfo(context.applicationContext)
 
-        if (isLimitAdTrackingEnabled) {
-            Log.w(Constants.LOG_TAG,
-                "Not collecting advertising ID because isLimitAdTrackingEnabled (Google Play Services) is true."
+        if (adInfo.isLimitAdTrackingEnabled) {
+            Log.w(
+                Constants.LOG_TAG,
+                "Not collecting advertising ID because " +
+                    "isLimitAdTrackingEnabled (Google Play Services) is true."
             )
-            return AdvertisingInfo(advertisingId, false)
+            return AdvertisingInfo(adInfo.id, false)
         }
-
-        return AdvertisingInfo(advertisingId, true)
+        return AdvertisingInfo(adInfo.id, true)
     }
 
-
-
-    override fun doInBackground(vararg contexts: Context): AdvertisingInfo? {
+    override fun doInBackground(vararg contexts: Context): AdvertisingInfo {
         val context = contexts[0]
-        try {
-            return getAdvertisingId(context)
-        } catch (e: Exception) {
-            Log.e(Constants.LOG_TAG, "Unable to collect advertising ID from Google Play Services.")
-        }
 
-        return null
+        return try {
+            getAdvertisingId(context)
+        } catch (e: Exception) {
+            throw Exception("Unable to collect advertising ID from Google Play Services.")
+        }
     }
 
     override fun onPostExecute(info: AdvertisingInfo) {
         super.onPostExecute(info)
 
-        listener.fetchAdvertisingIdCompleted(info)
+        listener(info)
     }
 }

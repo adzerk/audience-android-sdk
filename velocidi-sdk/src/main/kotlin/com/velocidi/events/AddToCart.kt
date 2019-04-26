@@ -11,5 +11,5 @@ data class AddToCart(
     @Optional val product: Product? = null
 ) : TrackingEvent("addToCart", siteId, clientId) {
     override fun serialize(): String =
-         Json.plain.stringify(serializer(), this)
+        Json.plain.stringify(serializer(), this)
 }

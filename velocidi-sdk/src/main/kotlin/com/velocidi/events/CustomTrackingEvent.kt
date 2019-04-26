@@ -26,6 +26,5 @@ class CustomTrackingEvent(@Transient val json: JSONObject = JSONObject()) :
                 null
             }
         }
-
     }
 }

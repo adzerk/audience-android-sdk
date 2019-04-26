@@ -1,21 +1,22 @@
 package com.velocidi
 
+import android.content.Context
+import androidx.test.core.app.ApplicationProvider
 import com.squareup.okhttp.mockwebserver.MockResponse
 import com.squareup.okhttp.mockwebserver.MockWebServer
 import com.velocidi.events.PageView
+import com.velocidi.util.VelocidiMockAsync
+import com.velocidi.util.VelocidiMockSync
 import com.velocidi.util.containsRequestLine
-import kotlinx.serialization.ImplicitReflectionSerializer
 import org.assertj.core.api.Assertions.assertThat
-import org.json.JSONObject
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.Timeout
 import org.junit.runner.RunWith
+import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.RuntimeEnvironment
 import java.net.URL
 import java.util.concurrent.TimeUnit
-
 
 @RunWith(RobolectricTestRunner::class)
 class VelocidiTest {
@@ -24,94 +25,135 @@ class VelocidiTest {
 
     @Rule
     @JvmField
-    var globalTimeout = Timeout.seconds(10) // 10 seconds max per method tested
-
+    val globalTimeout = Timeout.seconds(10) // 10 seconds max per method tested
 
     @Test
-    fun configSDK(){
+    fun configSDK() {
         val config = Config(URL("http://example.com"))
 
-        assertThat(config.track.host.toString()).isEqualTo("http://tr.example.com")
+        assertThat(config.track.host.toString()).isEqualTo("http://tr.example.com/events")
         assertThat(config.track.enabled).isTrue()
-        assertThat(config.match.host.toString()).isEqualTo("http://match.example.com")
+        assertThat(config.match.host.toString()).isEqualTo("http://match.example.com/match")
         assertThat(config.match.enabled).isTrue()
     }
 
     @Test
-    fun trackingEvent(){
+    fun trackingEvent() {
         val url = server.url("/tr")
         val config = Config(Channel(URL(url.toString()), true), Channel(URL(url.toString()), false))
 
-        val context = RuntimeEnvironment.application
+        val event = """
+            {
+                "eventType":"pageView",
+                "clientId": "client1",
+                "siteId": "site1"
+            }
+            """
 
-        Velocidi.instance =  Velocidi(config, AdvertisingInfo("123", true), context)
+        val context: Context = ApplicationProvider.getApplicationContext()
+
+        Velocidi.instance = VelocidiMockSync(config, context)
 
         server.enqueue(MockResponse())
-        Velocidi.track(PageView("site1", "clientId1"))
+
+        Velocidi.getInstance().track(PageView("site1", "clientId1"))
+
         val response = server.takeRequest()
-        response.containsRequestLine("POST /tr?aaid=123&cookies=false HTTP/1.1")
+        response.containsRequestLine("POST /tr?cookies=false&id_gaid=123 HTTP/1.1")
     }
 
     @Test
-    fun trackingEventDisabled(){
+    fun trackingEventDisabled() {
         val url = server.url("/tr")
-        val config = Config(Channel(URL(url.toString()), false), Channel(URL(url.toString()), false))
+        val config = Config(
+            Channel(URL(url.toString()), false),
+            Channel(URL(url.toString()), false)
+        )
 
-        val context = RuntimeEnvironment.application
+        val event = """
+            {
+                "eventType":"pageView",
+                "clientId": "client1",
+                "siteId": "site1"
+            }
+            """
 
-        Velocidi.instance =  Velocidi(config, AdvertisingInfo("123", true), context)
+        val context: Context = ApplicationProvider.getApplicationContext()
 
-        Velocidi.track(PageView("site1", "clientId1"))
+        Velocidi.instance = VelocidiMockSync(config, context)
+
+        Velocidi.getInstance().track(PageView("site1", "clientId1"))
+
         val response = server.takeRequest(2, TimeUnit.SECONDS)
         assertThat(response).isNull()
     }
 
     @Test
-    fun matchEvent(){
+    fun matchEvent() {
         val url = server.url("/match")
         val config = Config(Channel(URL(url.toString()), false), Channel(URL(url.toString()), true))
 
-        val context = RuntimeEnvironment.application
-        Velocidi.instance =  Velocidi(config, AdvertisingInfo("123", true), context)
+        val context: Context = ApplicationProvider.getApplicationContext()
 
-        Velocidi.match("provider1", listOf(UserId("eml","mail@example.com")))
+        Velocidi.instance = VelocidiMockSync(config, context)
+
+        Velocidi.getInstance().match("provider1", listOf(UserId("eml", "mail@example.com")))
+
         val response = server.takeRequest()
-        response.containsRequestLine("GET /match?providerId=provider1&id_eml=mail@example.com&aaid=123&cookies=false HTTP/1.1")
+        response.containsRequestLine("GET /match?providerId=provider1&id_eml=mail@example.com&cookies=false&id_gaid=123 HTTP/1.1")
     }
 
     @Test
-    fun matchEventDisabled(){
+    fun matchEventDisabled() {
         val url = server.url("/match")
-        val config = Config(Channel(URL(url.toString()), false), Channel(URL(url.toString()), false))
+        val config = Config(
+            Channel(URL(url.toString()), false),
+            Channel(URL(url.toString()), false)
+        )
 
-        val context = RuntimeEnvironment.application
-        Velocidi.instance =  Velocidi(config, AdvertisingInfo("123", true), context)
+        val context: Context = ApplicationProvider.getApplicationContext()
+        Velocidi.instance = VelocidiMockSync(config, context)
 
-        Velocidi.match("provider1", listOf(UserId("eml","mail@example.com")))
+        Velocidi.getInstance().match("provider1", listOf(UserId("eml", "mail@example.com")))
+
         val response = server.takeRequest(2, TimeUnit.SECONDS)
         assertThat(response).isNull()
     }
 
     @Test
-    fun accumulateRequestWhileAaidUndefined(){
-        Velocidi.match("provider1", listOf(UserId("eml","mail@example.com")))
-        Velocidi.match("provider1", listOf(UserId("eml","mail@example.com")))
-        Velocidi.match("provider1", listOf(UserId("eml","mail@example.com")))
-
-        assertThat(Velocidi.queue.size).isEqualTo(3)
-    }
-
-    @Test
-    fun trackingDisabled(){
+    fun shouldNotTrackUser() {
         val url = server.url("/")
         val config = Config(Channel(URL(url.toString()), true), Channel(URL(url.toString()), true))
 
-        val context = RuntimeEnvironment.application
-        Velocidi.instance =  Velocidi(config, AdvertisingInfo("123", false), context)
+        val context: Context = ApplicationProvider.getApplicationContext()
 
-        Velocidi.match("provider1", listOf(UserId("eml","mail@example.com")))
-        Velocidi.track(PageView())
+        Velocidi.instance = VelocidiMockSync(config, context, AdvertisingInfo("123", false))
+
+        Velocidi.getInstance().match("provider1", listOf(UserId("eml", "mail@example.com")))
+        Velocidi.getInstance().track(PageView("site1", "clientId1"))
+
         val response = server.takeRequest(2, TimeUnit.SECONDS)
         assertThat(response).isNull()
+    }
+
+    @Test
+    fun accumulateRequestWhileAdidUndefined() {
+
+        val url = server.url("/")
+
+        val config =
+            Config(Channel(URL(url.toString()), false), Channel(URL(url.toString()), false))
+
+        val context: Context = ApplicationProvider.getApplicationContext()
+        val instance = VelocidiMockAsync(config, context)
+
+        instance.match("provider1", listOf(UserId("eml", "mail@example.com")))
+        instance.match("provider1", listOf(UserId("eml", "mail@example.com")))
+        instance.match("provider1", listOf(UserId("eml", "mail@example.com")))
+
+        assertThat(instance.queue.size).isEqualTo(3)
+
+        // Force the onPostExecute method from the async task to be executed in the main thread
+        Robolectric.flushForegroundThreadScheduler()
     }
 }
