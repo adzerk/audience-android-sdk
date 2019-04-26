@@ -140,7 +140,8 @@ class VelocidiTest {
 
         val url = server.url("/")
 
-        val config = Config(Channel(URL(url.toString()), false), Channel(URL(url.toString()), false))
+        val config =
+            Config(Channel(URL(url.toString()), false), Channel(URL(url.toString()), false))
 
         val context: Context = ApplicationProvider.getApplicationContext()
         val instance = VelocidiMockAsync(config, context)

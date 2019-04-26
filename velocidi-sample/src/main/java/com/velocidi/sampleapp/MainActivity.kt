@@ -28,7 +28,10 @@ class MainActivity : AppCompatActivity() {
         }
 
         match_button.setOnClickListener {
-            Velocidi.getInstance().match("someProvider", listOf(UserId("eml", "useremail@example.com")))
+            Velocidi.getInstance().match(
+                "someProvider",
+                listOf(UserId("eml", "useremail@example.com"))
+            )
         }
     }
 }

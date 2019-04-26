@@ -49,8 +49,12 @@ object Util {
         }
     }
 
-    fun buildUserAgent(appInfo: ApplicationInfo): String =
-        "${appInfo.appName}/${appInfo.appVersion} ${appInfo.androidSDK} ${appInfo.device}"
+    fun buildUserAgent(appInfo: ApplicationInfo): String {
+        val extraInfo =
+            System.getProperty("http.agent") ?: "(Android ${appInfo.androidSDK}; ${appInfo.device})"
+
+        return "${appInfo.appName}/${appInfo.appVersion} ${Constants.SDK_NAME}/${Constants.SDK_VERSION} $extraInfo"
+    }
 
     /**
      * Verifies if the Android application has a specific permission

@@ -98,5 +98,6 @@ class HttpClientTest {
         val response = server.takeRequest()
 
         response.containsRequestLine("POST /?x=foo&y=bar HTTP/1.1")
+        println(System.getProperty("http.agent"))
     }
 }

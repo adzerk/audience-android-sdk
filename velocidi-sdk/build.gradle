@@ -20,10 +20,13 @@ android {
     }
 
     buildTypes {
+
         debug {
+            buildConfigField "String", "SDK_VERSION", "\"${project.property('version')}\""
             testCoverageEnabled true
         }
         release {
+            buildConfigField "String", "SDK_VERSION", "\"${project.property('version') - "-SNAPSHOT"}\""
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
