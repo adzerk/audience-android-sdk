@@ -2,7 +2,6 @@ package com.velocidi.events
 
 import kotlinx.serialization.Optional
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
 
 @Serializable
 data class Refund(
@@ -13,5 +12,5 @@ data class Refund(
     @Optional val transaction: Transaction? = null
 ) : TrackingEvent("refund", siteId, clientId) {
     override fun serialize(): String =
-        Json.plain.stringify(serializer(), this)
+        jsonSerilizer().stringify(serializer(), this)
 }

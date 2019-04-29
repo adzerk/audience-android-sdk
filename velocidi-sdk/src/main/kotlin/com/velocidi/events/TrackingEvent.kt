@@ -2,6 +2,7 @@ package com.velocidi.events
 
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
+import kotlinx.serialization.json.Json
 
 @Serializable
 abstract class TrackingEvent(
@@ -17,4 +18,9 @@ abstract class TrackingEvent(
      * the serializer in an explicit way when serializing to json.
      */
     abstract fun serialize(): String
+
+    /**
+     * This must be a function to avoid serializing the field
+     */
+    protected fun jsonSerilizer() = Json(encodeDefaults = false)
 }

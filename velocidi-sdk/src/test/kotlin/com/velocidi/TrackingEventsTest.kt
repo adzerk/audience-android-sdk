@@ -87,9 +87,7 @@ class TrackingEventsTest {
 
         val eventObj = CustomTrackingEvent(JSONObject(event))
 
-        val result = json.stringify(eventObj).trim('"').replace("\\", "")
-
-        assertThat(result.prettyPrintJson()).isEqualTo(event.prettyPrintJson())
+        assertThat(eventObj.serialize().prettyPrintJson()).isEqualTo(event.prettyPrintJson())
     }
 
     @Test
@@ -137,7 +135,7 @@ class TrackingEventsTest {
             query = "product"
         )
 
-        assertThat(event).isEqualTo(json.stringify(eventObj))
+        assertThat(event).isEqualTo(eventObj.serialize().prettyPrintJson())
     }
 
     @Test
@@ -176,7 +174,7 @@ class TrackingEventsTest {
 
         val eventObj = ProductImpression("0", "0", listOf(defaultProductObj, Product("p2")))
 
-        assertThat(event.prettyPrintJson()).isEqualTo(json.stringify(eventObj))
+        assertThat(event.prettyPrintJson()).isEqualTo(eventObj.serialize().prettyPrintJson())
     }
 
     @Test
@@ -193,7 +191,7 @@ class TrackingEventsTest {
 
         val eventObj = ProductClick("0", "0", defaultProductObj)
 
-        assertThat(event.prettyPrintJson()).isEqualTo(json.stringify(eventObj))
+        assertThat(event.prettyPrintJson()).isEqualTo(eventObj.serialize().prettyPrintJson())
     }
 
     @Test
@@ -210,7 +208,7 @@ class TrackingEventsTest {
 
         val eventObj = ProductView("0", "0", defaultProductObj)
 
-        assertThat(event.prettyPrintJson()).isEqualTo(json.stringify(eventObj))
+        assertThat(event.prettyPrintJson()).isEqualTo(eventObj.serialize().prettyPrintJson())
     }
 
     @Test
@@ -227,7 +225,7 @@ class TrackingEventsTest {
 
         val eventObj = ProductViewDetails("0", "0", defaultProductObj)
 
-        assertThat(event.prettyPrintJson()).isEqualTo(json.stringify(eventObj))
+        assertThat(event.prettyPrintJson()).isEqualTo(eventObj.serialize().prettyPrintJson())
     }
 
     @Test
@@ -246,7 +244,7 @@ class TrackingEventsTest {
 
         val eventObj = ProductFeedback("0", "0", defaultProductObj, 4.5, "It's a very nice product!")
 
-        assertThat(event.prettyPrintJson()).isEqualTo(json.stringify(eventObj))
+        assertThat(event.prettyPrintJson()).isEqualTo(eventObj.serialize().prettyPrintJson())
     }
 
     @Test
@@ -276,7 +274,7 @@ class TrackingEventsTest {
 
         val eventObj = ProductCustomization("0", "0", defaultProductObj, customizationObj)
 
-        assertThat(event.prettyPrintJson()).isEqualTo(json.stringify(eventObj))
+        assertThat(event.prettyPrintJson()).isEqualTo(eventObj.serialize().prettyPrintJson())
     }
 
     @Test
@@ -293,7 +291,7 @@ class TrackingEventsTest {
 
         val eventObj = AddToCart("0", "0", defaultProductObj)
 
-        assertThat(event.prettyPrintJson()).isEqualTo(json.stringify(eventObj))
+        assertThat(event.prettyPrintJson()).isEqualTo(eventObj.serialize().prettyPrintJson())
     }
 
     @Test
@@ -310,7 +308,7 @@ class TrackingEventsTest {
 
         val eventObj = RemoveFromCart("0", "0", defaultProductObj)
 
-        assertThat(event.prettyPrintJson()).isEqualTo(json.stringify(eventObj))
+        assertThat(event.prettyPrintJson()).isEqualTo(eventObj.serialize().prettyPrintJson())
     }
 
     @Test
@@ -354,7 +352,7 @@ class TrackingEventsTest {
 
         val eventObj = Purchase("0", "0", defaultProductObj, transactionObj)
 
-        assertThat(event.prettyPrintJson()).isEqualTo(json.stringify(eventObj))
+        assertThat(event.prettyPrintJson()).isEqualTo(eventObj.serialize().prettyPrintJson())
     }
 
     @Test
@@ -398,7 +396,7 @@ class TrackingEventsTest {
 
         val eventObj = Subscription("0", "0", defaultProductObj, transactionObj)
 
-        assertThat(event.prettyPrintJson()).isEqualTo(json.stringify(eventObj))
+        assertThat(event.prettyPrintJson()).isEqualTo(eventObj.serialize().prettyPrintJson())
     }
 
     @Test
@@ -445,6 +443,6 @@ class TrackingEventsTest {
 
         val eventObj = Refund("0", "0", "partial", listOf(defaultProductObj), transactionObj)
 
-        assertThat(event.prettyPrintJson()).isEqualTo(json.stringify(eventObj))
+        assertThat(event.prettyPrintJson()).isEqualTo(eventObj.serialize().prettyPrintJson())
     }
 }

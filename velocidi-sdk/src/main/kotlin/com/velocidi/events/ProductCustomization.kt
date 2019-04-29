@@ -2,7 +2,6 @@ package com.velocidi.events
 
 import kotlinx.serialization.Optional
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
 
 @Serializable
 data class ProductCustomization(
@@ -12,7 +11,7 @@ data class ProductCustomization(
     @Optional val productCustomization: Customization? = null
 ) : TrackingEvent("productCustomization", siteId, clientId) {
     override fun serialize(): String =
-        Json.plain.stringify(serializer(), this)
+        jsonSerilizer().stringify(serializer(), this)
 
     companion object Properties {
         @Serializable

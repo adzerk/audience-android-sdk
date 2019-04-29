@@ -2,7 +2,6 @@ package com.velocidi.events
 
 import kotlinx.serialization.Optional
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
 
 @Serializable
 data class Search(
@@ -11,5 +10,5 @@ data class Search(
     @Optional val query: String? = null
 ) : TrackingEvent("search", siteId, clientId) {
     override fun serialize(): String =
-        Json.plain.stringify(serializer(), this)
+        jsonSerilizer().stringify(serializer(), this)
 }

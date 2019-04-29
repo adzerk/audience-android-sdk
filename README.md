@@ -70,18 +70,25 @@ class SampleApplication : Application() {
 ### Track
 
 The `track` method allows you to collect user activity performed in your application.
-This method is expecting a JSONObject with the event details. For more information check our [documentation](https://docs.velocidi.com/knowledgebase/web-and-e-commerce/)
+This method is expecting a tracking event with the event details. For more information check our [documentation](https://docs.velocidi.com/knowledgebase/web-and-e-commerce/)
 
 ```
-val event = """
-                {
-                  "eventType": "pageView",
-                  "siteId": "1",
-                  "clientId": "client1",
-                  "location": "MainActivity"
-                }
-            """.trimIndent()
-Velocidi.track(JSONObject(event))
+Velocidi.getInstance().track(PageView("pageView", "MobileApp", "client1"))
+```
+
+It also accepts custom tracking events in a json format:
+
+```
+val event =
+    """
+    {
+      "type": "pageView",
+      "siteId": "MobileApp",
+      "clientId": "client1"
+    }
+    """.trimIndent()
+
+Velocidi.getInstance().track(CustomTrackingEvent(JSONObject(event)))
 ```
 
 ### Match
