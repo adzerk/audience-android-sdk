@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 data class Subscription(
     @Optional override val siteId: String? = null,
     @Optional override val clientId: String? = null,
-    @Optional val product: Product? = null,
+    @Optional val products: List<Product> = emptyList(),
     @Optional val transaction: Transaction? = null
 ) : TrackingEvent("subscription", siteId, clientId) {
     override fun serialize(): String =

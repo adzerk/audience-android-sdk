@@ -82,7 +82,7 @@ It also accepts custom tracking events in a json format:
 val event =
     """
     {
-      "type": "pageView",
+      "type": "customEvent",
       "siteId": "MobileApp",
       "clientId": "client1"
     }

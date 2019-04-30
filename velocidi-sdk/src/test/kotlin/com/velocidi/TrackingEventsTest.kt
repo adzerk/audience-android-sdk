@@ -185,11 +185,13 @@ class TrackingEventsTest {
                 "type": "productClick",
                 "siteId": "0",
                 "clientId": "0",
-                "product": $defaultProduct
+                "products": [
+                    $defaultProduct
+                ],
             }
             """.trimIndent()
 
-        val eventObj = ProductClick("0", "0", defaultProductObj)
+        val eventObj = ProductClick("0", "0", listOf(defaultProductObj))
 
         assertThat(event.prettyPrintJson()).isEqualTo(eventObj.serialize().prettyPrintJson())
     }
@@ -202,11 +204,13 @@ class TrackingEventsTest {
                 "type": "productView",
                 "siteId": "0",
                 "clientId": "0",
-                "product": $defaultProduct
+                "products": [
+                    $defaultProduct
+                ],
             }
             """.trimIndent()
 
-        val eventObj = ProductView("0", "0", defaultProductObj)
+        val eventObj = ProductView("0", "0", listOf(defaultProductObj))
 
         assertThat(event.prettyPrintJson()).isEqualTo(eventObj.serialize().prettyPrintJson())
     }
@@ -219,11 +223,13 @@ class TrackingEventsTest {
                 "type": "productViewDetails",
                 "siteId": "0",
                 "clientId": "0",
-                "product": $defaultProduct
+                "products": [
+                    $defaultProduct
+                ],
             }
             """.trimIndent()
 
-        val eventObj = ProductViewDetails("0", "0", defaultProductObj)
+        val eventObj = ProductViewDetails("0", "0", listOf(defaultProductObj))
 
         assertThat(event.prettyPrintJson()).isEqualTo(eventObj.serialize().prettyPrintJson())
     }
@@ -236,13 +242,15 @@ class TrackingEventsTest {
                 "type": "productFeedback",
                 "siteId": "0",
                 "clientId": "0",
-                "product": $defaultProduct,
+                "products": [
+                    $defaultProduct
+                ],
                 "rating": 4.5,
                 "feedback": "It's a very nice product!"
             }
             """.trimIndent()
 
-        val eventObj = ProductFeedback("0", "0", defaultProductObj, 4.5, "It's a very nice product!")
+        val eventObj = ProductFeedback("0", "0", listOf(defaultProductObj), 4.5, "It's a very nice product!")
 
         assertThat(event.prettyPrintJson()).isEqualTo(eventObj.serialize().prettyPrintJson())
     }
@@ -255,7 +263,9 @@ class TrackingEventsTest {
                 "type": "productCustomization",
                 "siteId": "0",
                 "clientId": "0",
-                "product": $defaultProduct,
+                "product": [
+                    $defaultProduct
+                ],
                 "productCustomization": {
                     "name": "collar",
                     "value": "italian",
@@ -272,7 +282,7 @@ class TrackingEventsTest {
             currency = "EUR"
         )
 
-        val eventObj = ProductCustomization("0", "0", defaultProductObj, customizationObj)
+        val eventObj = ProductCustomization("0", "0", listOf(defaultProductObj), customizationObj)
 
         assertThat(event.prettyPrintJson()).isEqualTo(eventObj.serialize().prettyPrintJson())
     }
@@ -285,11 +295,13 @@ class TrackingEventsTest {
                 "type": "addToCart",
                 "siteId": "0",
                 "clientId": "0",
-                "product": $defaultProduct
+                "products": [
+                    $defaultProduct
+                ],
             }
             """.trimIndent()
 
-        val eventObj = AddToCart("0", "0", defaultProductObj)
+        val eventObj = AddToCart("0", "0", listOf(defaultProductObj))
 
         assertThat(event.prettyPrintJson()).isEqualTo(eventObj.serialize().prettyPrintJson())
     }
@@ -302,11 +314,13 @@ class TrackingEventsTest {
                 "type": "removeFromCart",
                 "siteId": "0",
                 "clientId": "0",
-                "product": $defaultProduct
+                "products": [
+                    $defaultProduct
+                ],
             }
             """.trimIndent()
 
-        val eventObj = RemoveFromCart("0", "0", defaultProductObj)
+        val eventObj = RemoveFromCart("0", "0", listOf(defaultProductObj))
 
         assertThat(event.prettyPrintJson()).isEqualTo(eventObj.serialize().prettyPrintJson())
     }
@@ -319,7 +333,9 @@ class TrackingEventsTest {
                 "type": "purchase",
                 "siteId": "0",
                 "clientId": "0",
-                "product": $defaultProduct,
+                "products": [
+                    $defaultProduct
+                ],
                 "transaction": {
                     "id": "tr1",
                     "price": 15.59,
@@ -350,7 +366,7 @@ class TrackingEventsTest {
             paymentDetails = "Visa"
         )
 
-        val eventObj = Purchase("0", "0", defaultProductObj, transactionObj)
+        val eventObj = Purchase("0", "0", listOf(defaultProductObj), transactionObj)
 
         assertThat(event.prettyPrintJson()).isEqualTo(eventObj.serialize().prettyPrintJson())
     }
@@ -363,7 +379,9 @@ class TrackingEventsTest {
                 "type": "subscription",
                 "siteId": "0",
                 "clientId": "0",
-                "product": $defaultProduct,
+                "products":[
+                    $defaultProduct
+                ],
                 "transaction": {
                     "id": "tr1",
                     "price": 15.59,
@@ -394,7 +412,7 @@ class TrackingEventsTest {
             paymentDetails = "Visa"
         )
 
-        val eventObj = Subscription("0", "0", defaultProductObj, transactionObj)
+        val eventObj = Subscription("0", "0", listOf(defaultProductObj), transactionObj)
 
         assertThat(event.prettyPrintJson()).isEqualTo(eventObj.serialize().prettyPrintJson())
     }

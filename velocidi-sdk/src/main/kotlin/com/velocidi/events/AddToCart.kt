@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 data class AddToCart(
     @Optional override val siteId: String? = null,
     @Optional override val clientId: String? = null,
-    @Optional val product: Product? = null
+    @Optional val products: List<Product> = emptyList()
 ) : TrackingEvent("addToCart", siteId, clientId) {
     override fun serialize(): String =
         jsonSerilizer().stringify(serializer(), this)

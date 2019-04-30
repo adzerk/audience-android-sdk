@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 data class ProductCustomization(
     @Optional override val siteId: String? = null,
     @Optional override val clientId: String? = null,
-    @Optional val product: Product? = null,
+    @Optional val product: List<Product> = emptyList(),
     @Optional val productCustomization: Customization? = null
 ) : TrackingEvent("productCustomization", siteId, clientId) {
     override fun serialize(): String =
