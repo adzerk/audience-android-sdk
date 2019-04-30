@@ -88,7 +88,7 @@ val event =
     }
     """.trimIndent()
 
-Velocidi.getInstance().track(CustomTrackingEvent(JSONObject(event)))
+Velocidi.getInstance().track(CustomTrackingEventFactory.buildFromJSON(event))
 ```
 
 ### Match

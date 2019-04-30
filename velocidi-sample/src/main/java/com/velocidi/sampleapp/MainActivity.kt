@@ -28,7 +28,7 @@ class MainActivity : AppCompatActivity() {
             Velocidi.getInstance().track(PageView("pageView", "MobileApp", "client1"))
 
             // OR
-            // Velocidi.getInstance().track(CustomTrackingEvent(JSONObject(event)))
+            // Velocidi.getInstance().track(CustomTrackingEventFactory.buildFromJSON(event))
         }
 
         match_button.setOnClickListener {

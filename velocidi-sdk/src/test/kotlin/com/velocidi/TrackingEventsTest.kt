@@ -52,25 +52,27 @@ class TrackingEventsTest {
     )
 
     @Test
-    fun customTrackingEventCreation() {
+    fun customTrackingEventFactory() {
 
         val event = """
         {
             "type": "custom",
             "siteId": "0",
-            "clientId": "id1"
+            "clientId": "id1",
+            "test": "testString"
         }"""
 
-        val eventObj = CustomTrackingEvent(JSONObject(event))
+        val eventObj = CustomTrackingEventFactory.buildFromJSON(event)
         assertThat(eventObj.type).isEqualTo("custom")
         assertThat(eventObj.siteId).isEqualTo("0")
         assertThat(eventObj.clientId).isEqualTo("id1")
+        assertThat(eventObj.extraAttributes.toString()).isEqualTo("""{"test":"testString"}""")
     }
 
     @Test(expected = JSONException::class)
     fun invalidCustomTrackingEvent() {
         val invalidEvent = """{"siteId": "0"}"""
-        CustomTrackingEvent(JSONObject(invalidEvent))
+        CustomTrackingEventFactory.buildFromJSON(invalidEvent)
     }
 
     @Test
@@ -78,16 +80,21 @@ class TrackingEventsTest {
         val event =
             """
             {
-                "type": "custom",
-                "siteId": "0",
-                "clientId": "id1",
                 "test": {
                     "a": 1
-                }
+                },
+                "type": "custom",
+                "siteId": "0",
+                "clientId": "id1"
             }
             """.trimIndent()
 
-        val eventObj = CustomTrackingEvent(JSONObject(event))
+        val eventObj = CustomTrackingEvent(
+            "custom",
+            "0",
+            "id1",
+            JSONObject(""" {"test": {"a": 1}} """)
+        )
 
         assertThat(eventObj.serialize().prettyPrintJson()).isEqualTo(event.prettyPrintJson())
     }
