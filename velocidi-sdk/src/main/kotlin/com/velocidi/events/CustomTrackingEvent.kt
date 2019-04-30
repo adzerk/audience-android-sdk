@@ -6,7 +6,7 @@ import org.json.JSONObject
 
 @Serializable
 class CustomTrackingEvent(
-    private val eventType: String, // Must be a declared as a propriety so kotlinx can properly serialize this class
+    val eventType: String, // Must be a declared as a propriety so kotlinx can properly serialize this class
     override val siteId: String,
     override val clientId: String,
     @Transient val extraAttributes: JSONObject = JSONObject()
@@ -16,7 +16,7 @@ class CustomTrackingEvent(
         jsonSerilizer().stringify(serializer(), this).trim('"').replace("\\", "")
 
     @Serializer(forClass = CustomTrackingEvent::class)
-    companion object : SerializationStrategy<CustomTrackingEvent> {
+    internal companion object : SerializationStrategy<CustomTrackingEvent> {
         override val descriptor: SerialDescriptor = StringDescriptor.withName("CustomTrackingEvent")
 
         override fun serialize(encoder: Encoder, obj: CustomTrackingEvent) {
@@ -24,12 +24,16 @@ class CustomTrackingEvent(
             val mergedJson = JSONObject(obj.extraAttributes.toString())
 
             mergedJson
-                .put("type", obj.type)
-                .put("siteId", obj.siteId)
-                .put("clientId", obj.clientId)
+                .put(typeField, obj.type)
+                .put(siteIdField, obj.siteId)
+                .put(clientIdField, obj.clientId)
 
             encoder.encodeString(mergedJson.toString())
         }
+
+        const val typeField = "type"
+        const val siteIdField = "siteId"
+        const val clientIdField = "clientId"
     }
 }
 
@@ -42,13 +46,14 @@ object CustomTrackingEventFactory {
      */
     fun buildFromJSON(json: String): CustomTrackingEvent {
         val jsonObj = JSONObject(json)
-        val type = jsonObj.getString("type")
-        val siteId = jsonObj.getString("siteId")
-        val clientId = jsonObj.getString("clientId")
 
-        jsonObj.remove("type")
-        jsonObj.remove("siteId")
-        jsonObj.remove("clientId")
+        val type = jsonObj.getString(CustomTrackingEvent.typeField)
+        val siteId = jsonObj.getString(CustomTrackingEvent.siteIdField)
+        val clientId = jsonObj.getString(CustomTrackingEvent.clientIdField)
+
+        jsonObj.remove(CustomTrackingEvent.typeField)
+        jsonObj.remove(CustomTrackingEvent.siteIdField)
+        jsonObj.remove(CustomTrackingEvent.clientIdField)
 
         return CustomTrackingEvent(type, siteId, clientId, jsonObj)
     }
