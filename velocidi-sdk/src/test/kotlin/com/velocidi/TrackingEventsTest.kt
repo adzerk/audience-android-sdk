@@ -5,6 +5,7 @@ import com.velocidi.util.prettyPrintJson
 import org.junit.Test
 import kotlinx.serialization.*
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonConfiguration
 import org.assertj.core.api.Assertions.*
 import org.json.JSONException
 import org.json.JSONObject
@@ -14,8 +15,7 @@ import org.robolectric.RobolectricTestRunner
 @RunWith(RobolectricTestRunner::class)
 @ImplicitReflectionSerializer
 class TrackingEventsTest {
-
-    private val json = Json(encodeDefaults = false, indented = true)
+    private val json = Json(JsonConfiguration.Stable.copy(encodeDefaults = false, prettyPrint = true))
 
     private val defaultProduct = """
         {
@@ -57,13 +57,14 @@ class TrackingEventsTest {
         val event = """
         {
             "type": "custom",
-            "siteId": "0"
+            "siteId": "0",
+            "clientId": "id1"
         }"""
 
         val eventObj = CustomTrackingEvent(JSONObject(event))
         assertThat(eventObj.type).isEqualTo("custom")
         assertThat(eventObj.siteId).isEqualTo("0")
-        assertThat(eventObj.clientId).isNull()
+        assertThat(eventObj.clientId).isEqualTo("id1")
     }
 
     @Test(expected = JSONException::class)
@@ -79,6 +80,7 @@ class TrackingEventsTest {
             {
                 "type": "custom",
                 "siteId": "0",
+                "clientId": "id1",
                 "test": {
                     "a": 1
                 }

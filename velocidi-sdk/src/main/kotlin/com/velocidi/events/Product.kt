@@ -1,21 +1,20 @@
 package com.velocidi.events
 
-import kotlinx.serialization.Optional
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class Product(
     val id: String,
-    @Optional val name: String? = null,
-    @Optional val brand: String? = null,
-    @Optional val category: String? = null,
-    @Optional val variant: String? = null,
-    @Optional val parts: List<Product> = emptyList(),
-    @Optional val price: Double? = null,
-    @Optional val currency: String? = null,
-    @Optional val location: String? = null,
-    @Optional val position: Int? = null,
-    @Optional val quantity: Int? = null,
-    @Optional val recommendation: Boolean? = null,
-    @Optional val unsafe: Boolean? = null
+    val name: String? = null,
+    val brand: String? = null,
+    val category: String? = null,
+    val variant: String? = null,
+    val parts: List<Product> = emptyList(),
+    val price: Double? = null,
+    val currency: String? = null,
+    val location: String? = null,
+    val position: Int? = null,
+    val quantity: Int? = null,
+    val recommendation: Boolean? = null,
+    val unsafe: Boolean? = null
 )

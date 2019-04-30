@@ -6,7 +6,7 @@ import org.json.JSONObject
 
 @Serializable
 class CustomTrackingEvent(@Transient val json: JSONObject = JSONObject()) :
-    TrackingEvent(json.getString("type"), extractAttribute(json, "siteId"), extractAttribute(json, "clientId")) {
+    TrackingEvent(json.getString("type"), json.getString("siteId"), json.getString("clientId")) {
     override fun serialize(): String =
         jsonSerilizer().stringify(serializer(), this).trim('"').replace("\\", "")
 

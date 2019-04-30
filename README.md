@@ -73,7 +73,7 @@ The `track` method allows you to collect user activity performed in your applica
 This method is expecting a tracking event with the event details. For more information check our [documentation](https://docs.velocidi.com/knowledgebase/web-and-e-commerce/)
 
 ```
-Velocidi.getInstance().track(PageView("pageView", "MobileApp", "client1"))
+Velocidi.getInstance().track(PageView("MobileApp", "client1"))
 ```
 
 It also accepts custom tracking events in a json format:
