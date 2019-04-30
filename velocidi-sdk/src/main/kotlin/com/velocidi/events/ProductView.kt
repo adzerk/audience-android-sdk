@@ -5,9 +5,9 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class ProductView(
     override val siteId: String,
-    override val clientId: String? = null,
+    override val clientId: String,
     val products: List<Product> = emptyList()
-) : TrackingEvent("productView", siteId, clientId) {
+) : TrackingEvent("productView") {
     override fun serialize(): String =
         jsonSerilizer().stringify(serializer(), this)
 }

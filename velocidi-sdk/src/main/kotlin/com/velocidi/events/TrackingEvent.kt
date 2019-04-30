@@ -1,16 +1,16 @@
 package com.velocidi.events
 
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.Transient
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
 
 @Serializable
 abstract class TrackingEvent(
-    val type: String,
-    @Transient open val siteId: String? = null,
-    @Transient open val clientId: String? = null
+    val type: String
 ) {
+    abstract val siteId: String
+    abstract val clientId: String
+
     /**
      * Implicit serialization through reflection is still experimental
      * Until this feature is stable, its better to explicit pass the serializer

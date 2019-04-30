@@ -3,11 +3,11 @@ package com.velocidi.events
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class AddToCart(
+class AddToCart(
     override val siteId: String,
-    override val clientId: String? = null,
+    override val clientId: String,
     val products: List<Product> = emptyList()
-) : TrackingEvent("addToCart", siteId, clientId) {
+) : TrackingEvent("addToCart") {
     override fun serialize(): String =
         jsonSerilizer().stringify(serializer(), this)
 }

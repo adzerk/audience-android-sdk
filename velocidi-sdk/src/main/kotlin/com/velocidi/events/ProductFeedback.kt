@@ -5,11 +5,11 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class ProductFeedback(
     override val siteId: String,
-    override val clientId: String? = null,
+    override val clientId: String,
     val products: List<Product> = emptyList(),
     val rating: Double? = null,
     val feedback: String? = null
-) : TrackingEvent("productFeedback", siteId, clientId) {
+) : TrackingEvent("productFeedback") {
     override fun serialize(): String =
         jsonSerilizer().stringify(serializer(), this)
 }
