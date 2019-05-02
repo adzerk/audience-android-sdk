@@ -42,14 +42,6 @@ class VelocidiTest {
         val url = server.url("/tr")
         val config = Config(Channel(URL(url.toString()), true), Channel(URL(url.toString()), false))
 
-        val event = """
-            {
-                "eventType":"pageView",
-                "clientId": "client1",
-                "siteId": "site1"
-            }
-            """
-
         val context: Context = ApplicationProvider.getApplicationContext()
 
         Velocidi.instance = VelocidiMockSync(config, context)
@@ -69,14 +61,6 @@ class VelocidiTest {
             Channel(URL(url.toString()), false),
             Channel(URL(url.toString()), false)
         )
-
-        val event = """
-            {
-                "eventType":"pageView",
-                "clientId": "client1",
-                "siteId": "site1"
-            }
-            """
 
         val context: Context = ApplicationProvider.getApplicationContext()
 

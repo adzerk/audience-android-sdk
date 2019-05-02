@@ -12,6 +12,7 @@ class CustomTrackingEvent(
     @Transient val extraAttributes: JSONObject = JSONObject()
 ) : TrackingEvent(eventType) {
 
+    // In this specific case we need to unescape the json string
     override fun serialize(): String =
         jsonSerilizer().stringify(serializer(), this).trim('"').replace("\\", "")
 
