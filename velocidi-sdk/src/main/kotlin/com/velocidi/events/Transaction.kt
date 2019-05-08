@@ -1,8 +1,5 @@
 package com.velocidi.events
 
-import kotlinx.serialization.Serializable
-
-@Serializable
 data class Transaction(
     val id: String,
     val price: Double? = null,
@@ -15,7 +12,6 @@ data class Transaction(
     val paymentDetails: String? = null
 ) {
     companion object Properties {
-        @Serializable
         data class Voucher(
             val id: String,
             val percentage: Int? = null,

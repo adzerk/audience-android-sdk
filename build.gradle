@@ -17,7 +17,6 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:3.4.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
-        classpath "org.jetbrains.kotlin:kotlin-serialization:$kotlinVersion"
         classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
         classpath "org.jacoco:org.jacoco.core:$jacocoVersion"
         classpath 'net.researchgate:gradle-release:2.8.0'

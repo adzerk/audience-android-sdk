@@ -1,8 +1,5 @@
 package com.velocidi.events
 
-import kotlinx.serialization.Serializable
-
-@Serializable
 data class Product(
     val id: String,
     val name: String? = null,

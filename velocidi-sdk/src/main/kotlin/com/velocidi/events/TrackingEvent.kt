@@ -1,10 +1,12 @@
 package com.velocidi.events
 
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonConfiguration
+import com.google.gson.JsonElement
+import com.google.gson.JsonArray
+import com.google.gson.JsonSerializationContext
+import com.google.gson.JsonSerializer
+import java.lang.reflect.Type
+import com.google.gson.GsonBuilder
 
-@Serializable
 abstract class TrackingEvent(
     val type: String
 ) {
@@ -23,5 +25,25 @@ abstract class TrackingEvent(
     /**
      * This must be a function to avoid serializing the field
      */
-    protected fun jsonSerilizer() = Json(JsonConfiguration.Stable.copy(encodeDefaults = false))
+    protected fun defaultGson() = GsonBuilder().registerTypeHierarchyAdapter(
+        Collection::class.java,
+        CollectionAdapter()
+    ).create()
+}
+
+internal class CollectionAdapter : JsonSerializer<List<*>> {
+    override fun serialize(src: List<*>?, typeOfSrc: Type, context: JsonSerializationContext): JsonElement? {
+        if (src == null || src.isEmpty())
+        // exclusion is made here
+            return null
+
+        val array = JsonArray()
+
+        for (child in src) {
+            val element = context.serialize(child)
+            array.add(element)
+        }
+
+        return array
+    }
 }

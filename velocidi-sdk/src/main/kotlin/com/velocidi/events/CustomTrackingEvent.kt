@@ -1,10 +1,9 @@
 package com.velocidi.events
 
-import kotlinx.serialization.*
-import kotlinx.serialization.internal.StringDescriptor
+import com.google.gson.*
 import org.json.JSONObject
+import java.lang.reflect.Type
 
-@Serializable
 class CustomTrackingEvent(
     val eventType: String, // Must be a declared as a propriety so kotlinx can properly serialize this class
     override val siteId: String,
@@ -12,26 +11,15 @@ class CustomTrackingEvent(
     @Transient val extraAttributes: JSONObject = JSONObject()
 ) : TrackingEvent(eventType) {
 
-    // In this specific case we need to unescape the json string
-    override fun serialize(): String =
-        jsonSerilizer().stringify(serializer(), this).trim('"').replace("\\", "")
+    override fun serialize(): String {
+        val gson =
+            GsonBuilder()
+                .registerTypeAdapter(CustomTrackingEvent::class.java, CustomTrackingEventSerializer)
+                .create()
+        return gson.toJson(this)
+    }
 
-    @Serializer(forClass = CustomTrackingEvent::class)
-    internal companion object : SerializationStrategy<CustomTrackingEvent> {
-        override val descriptor: SerialDescriptor = StringDescriptor.withName("CustomTrackingEvent")
-
-        override fun serialize(encoder: Encoder, obj: CustomTrackingEvent) {
-
-            val mergedJson = JSONObject(obj.extraAttributes.toString())
-
-            mergedJson
-                .put(typeField, obj.type)
-                .put(siteIdField, obj.siteId)
-                .put(clientIdField, obj.clientId)
-
-            encoder.encodeString(mergedJson.toString())
-        }
-
+    internal companion object {
         const val typeField = "type"
         const val siteIdField = "siteId"
         const val clientIdField = "clientId"
@@ -57,5 +45,22 @@ object CustomTrackingEventFactory {
         jsonObj.remove(CustomTrackingEvent.clientIdField)
 
         return CustomTrackingEvent(type, siteId, clientId, jsonObj)
+    }
+}
+
+object CustomTrackingEventSerializer : JsonSerializer<CustomTrackingEvent> {
+    override fun serialize(
+        src: CustomTrackingEvent?,
+        typeOfSrc: Type?,
+        context: JsonSerializationContext?
+    ): JsonElement {
+        val mergedJson = JSONObject(src?.extraAttributes.toString())
+
+        mergedJson
+            .put(CustomTrackingEvent.typeField, src?.type)
+            .put(CustomTrackingEvent.siteIdField, src?.siteId)
+            .put(CustomTrackingEvent.clientIdField, src?.clientId)
+
+        return JsonParser().parse(mergedJson.toString())
     }
 }

@@ -1,8 +1,5 @@
 package com.velocidi.events
 
-import kotlinx.serialization.Serializable
-
-@Serializable
 class PageView(
     override val siteId: String,
     override val clientId: String,
@@ -12,5 +9,5 @@ class PageView(
     val category: String? = null
 ) : TrackingEvent("pageView") {
     override fun serialize(): String =
-        jsonSerilizer().stringify(serializer(), this)
+        defaultGson().toJson(this)
 }

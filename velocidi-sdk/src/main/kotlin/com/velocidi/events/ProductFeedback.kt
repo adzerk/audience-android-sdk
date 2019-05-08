@@ -1,8 +1,5 @@
 package com.velocidi.events
 
-import kotlinx.serialization.Serializable
-
-@Serializable
 data class ProductFeedback(
     override val siteId: String,
     override val clientId: String,
@@ -11,5 +8,5 @@ data class ProductFeedback(
     val feedback: String? = null
 ) : TrackingEvent("productFeedback") {
     override fun serialize(): String =
-        jsonSerilizer().stringify(serializer(), this)
+        defaultGson().toJson(this)
 }

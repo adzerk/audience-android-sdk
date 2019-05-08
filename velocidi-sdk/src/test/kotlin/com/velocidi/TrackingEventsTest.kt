@@ -3,20 +3,16 @@ package com.velocidi
 import com.velocidi.events.*
 import com.velocidi.util.prettyPrintJson
 import org.junit.Test
-import kotlinx.serialization.*
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonConfiguration
 import org.assertj.core.api.Assertions.*
 import org.json.JSONException
 import org.json.JSONObject
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 
 @RunWith(RobolectricTestRunner::class)
-@ImplicitReflectionSerializer
 class TrackingEventsTest {
-    private val json = Json(JsonConfiguration.Stable.copy(encodeDefaults = false, prettyPrint = true))
-
     private val defaultProduct = """
         {
             "id": "p1",
@@ -56,10 +52,10 @@ class TrackingEventsTest {
 
         val event = """
         {
-            "type": "custom",
             "siteId": "0",
             "clientId": "id1",
-            "test": "testString"
+            "test": "testString",
+            "type": "custom"
         }"""
 
         val eventObj = CustomTrackingEventFactory.buildFromJSON(event)
@@ -96,21 +92,26 @@ class TrackingEventsTest {
             JSONObject(""" {"test": {"a": 1}} """)
         )
 
-        assertThat(eventObj.serialize().prettyPrintJson()).isEqualTo(event.prettyPrintJson())
+        val gson = GsonBuilder().registerTypeAdapter(CustomTrackingEvent::class.java, CustomTrackingEventSerializer).create()
+        println(gson.toJson(eventObj))
+
+        assertThat(gson.toJson(eventObj).prettyPrintJson()).isEqualTo(event.prettyPrintJson())
     }
 
     @Test
     fun pageViewEventSerialization() {
+        val gson = Gson()
+
         val event =
             """
             {
-                "type": "pageView",
                 "siteId": "0",
                 "clientId": "0",
                 "location": "mylocation",
                 "title": "My page",
                 "pageType": "homepage",
-                "category": "shopping"
+                "category": "shopping",
+                "type": "pageView"
             }
             """.trimIndent()
 
@@ -123,7 +124,7 @@ class TrackingEventsTest {
             category = "shopping"
         )
 
-        assertThat(event).isEqualTo(eventObj.serialize().prettyPrintJson())
+        assertThat(event.prettyPrintJson()).isEqualTo(gson.toJson(eventObj).prettyPrintJson())
     }
 
     @Test
@@ -131,10 +132,10 @@ class TrackingEventsTest {
         val event =
             """
             {
-                "type": "search",
                 "siteId": "0",
                 "clientId": "0",
-                "query": "product"
+                "query": "product",
+                "type": "search"
             }
             """.trimIndent()
 
@@ -144,7 +145,7 @@ class TrackingEventsTest {
             query = "product"
         )
 
-        assertThat(event).isEqualTo(eventObj.serialize().prettyPrintJson())
+        assertThat(event.prettyPrintJson()).isEqualTo(eventObj.serialize().prettyPrintJson())
     }
 
     @Test
@@ -159,9 +160,14 @@ class TrackingEventsTest {
 
         val obj = Product("id1")
 
-        assertThat(defaultProduct.prettyPrintJson()).isEqualTo(json.stringify(defaultProductObj))
+        val gson = GsonBuilder().registerTypeHierarchyAdapter(
+            Collection::class.java,
+            CollectionAdapter()
+        ).create()
 
-        assertThat(emptyProduct.prettyPrintJson()).isEqualTo(json.stringify(obj))
+        assertThat(defaultProduct.prettyPrintJson()).isEqualTo(gson.toJson(defaultProductObj).prettyPrintJson())
+
+        assertThat(emptyProduct.prettyPrintJson()).isEqualTo(gson.toJson(obj).prettyPrintJson())
     }
 
     @Test
@@ -169,7 +175,6 @@ class TrackingEventsTest {
         val event =
             """
             {
-                "type": "productImpression",
                 "siteId": "0",
                 "clientId": "0",
                 "products": [
@@ -177,7 +182,8 @@ class TrackingEventsTest {
                     {
                         "id": "p2"
                     }
-                ]
+                ],
+                "type": "productImpression"
             }
             """.trimIndent()
 
@@ -191,12 +197,12 @@ class TrackingEventsTest {
         val event =
             """
             {
-                "type": "productClick",
                 "siteId": "0",
                 "clientId": "0",
                 "products": [
                     $defaultProduct
                 ],
+                "type": "productClick"
             }
             """.trimIndent()
 
@@ -210,12 +216,12 @@ class TrackingEventsTest {
         val event =
             """
             {
-                "type": "productView",
                 "siteId": "0",
                 "clientId": "0",
                 "products": [
                     $defaultProduct
                 ],
+                "type": "productView"
             }
             """.trimIndent()
 
@@ -229,12 +235,12 @@ class TrackingEventsTest {
         val event =
             """
             {
-                "type": "productViewDetails",
                 "siteId": "0",
                 "clientId": "0",
                 "products": [
                     $defaultProduct
                 ],
+                "type": "productViewDetails"
             }
             """.trimIndent()
 
@@ -248,14 +254,14 @@ class TrackingEventsTest {
         val event =
             """
             {
-                "type": "productFeedback",
                 "siteId": "0",
                 "clientId": "0",
                 "products": [
                     $defaultProduct
                 ],
                 "rating": 4.5,
-                "feedback": "It's a very nice product!"
+                "feedback": "It's a very nice product!",
+                "type": "productFeedback"
             }
             """.trimIndent()
 
@@ -269,7 +275,6 @@ class TrackingEventsTest {
         val event =
             """
             {
-                "type": "productCustomization",
                 "siteId": "0",
                 "clientId": "0",
                 "product": [
@@ -280,7 +285,8 @@ class TrackingEventsTest {
                     "value": "italian",
                     "price": 5.0,
                     "currency": "EUR"
-                }
+                },
+                "type": "productCustomization"
             }
             """.trimIndent()
 
@@ -301,12 +307,12 @@ class TrackingEventsTest {
         val event =
             """
             {
-                "type": "addToCart",
                 "siteId": "0",
                 "clientId": "0",
                 "products": [
                     $defaultProduct
                 ],
+                "type": "addToCart"
             }
             """.trimIndent()
 
@@ -320,12 +326,12 @@ class TrackingEventsTest {
         val event =
             """
             {
-                "type": "removeFromCart",
                 "siteId": "0",
                 "clientId": "0",
                 "products": [
                     $defaultProduct
                 ],
+                "type": "removeFromCart"
             }
             """.trimIndent()
 
@@ -339,7 +345,6 @@ class TrackingEventsTest {
         val event =
             """
             {
-                "type": "purchase",
                 "siteId": "0",
                 "clientId": "0",
                 "products": [
@@ -359,7 +364,8 @@ class TrackingEventsTest {
                     },
                     "paymentMethod": "credit",
                     "paymentDetails": "Visa"
-                }
+                },
+                "type": "purchase"
             }
             """.trimIndent()
 
@@ -385,7 +391,6 @@ class TrackingEventsTest {
         val event =
             """
             {
-                "type": "subscription",
                 "siteId": "0",
                 "clientId": "0",
                 "products":[
@@ -405,7 +410,8 @@ class TrackingEventsTest {
                     },
                     "paymentMethod": "credit",
                     "paymentDetails": "Visa"
-                }
+                },
+                "type": "subscription"
             }
             """.trimIndent()
 
@@ -431,7 +437,6 @@ class TrackingEventsTest {
         val event =
             """
             {
-                "type": "refund",
                 "siteId": "0",
                 "clientId": "0",
                 "refundType": "partial",
@@ -452,7 +457,8 @@ class TrackingEventsTest {
                     },
                     "paymentMethod": "credit",
                     "paymentDetails": "Visa"
-                }
+                },
+                "type": "refund"
             }
             """.trimIndent()
 
