@@ -2,10 +2,8 @@ package com.velocidi.events
 
 data class Subscription(
     override val siteId: String,
-    override val clientId: String,
-    val products: List<Product> = emptyList(),
-    val transaction: Transaction? = null
+    override val clientId: String
 ) : TrackingEvent("subscription") {
-    override fun serialize(): String =
-        defaultGson().toJson(this)
+    var products: List<Product> = emptyList()
+    var transaction: Transaction? = null
 }

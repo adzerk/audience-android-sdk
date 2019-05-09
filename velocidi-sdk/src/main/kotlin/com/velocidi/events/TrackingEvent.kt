@@ -14,36 +14,40 @@ abstract class TrackingEvent(
     abstract val clientId: String
 
     /**
-     * Implicit serialization through reflection is still experimental
-     * Until this feature is stable, its better to explicit pass the serializer
-     *
-     * To do that, each domain object that extends TrackingEvent must pass
-     * the serializer in an explicit way when serializing to json.
+     * Serializes the current data model to JSON
      */
-    abstract fun serialize(): String
+    open fun serialize(): String {
+        return defaultGson.toJson(this)
+    }
+
+    companion object {
+        val defaultGson =
+            GsonBuilder()
+                .registerTypeHierarchyAdapter(Collection::class.java, CollectionAdapter())
+                .create()
+    }
 
     /**
-     * This must be a function to avoid serializing the field
+     * Gson doesn't have the concept of default values.
+     * This Adapter excluded our most common default values from serialization - empty collections and null
      */
-    protected fun defaultGson() = GsonBuilder().registerTypeHierarchyAdapter(
-        Collection::class.java,
-        CollectionAdapter()
-    ).create()
-}
+    internal class CollectionAdapter : JsonSerializer<List<*>> {
+        override fun serialize(
+            src: List<*>?,
+            typeOfSrc: Type,
+            context: JsonSerializationContext
+        ): JsonElement? {
+            if (src == null || src.isEmpty())
+                return null
 
-internal class CollectionAdapter : JsonSerializer<List<*>> {
-    override fun serialize(src: List<*>?, typeOfSrc: Type, context: JsonSerializationContext): JsonElement? {
-        if (src == null || src.isEmpty())
-        // exclusion is made here
-            return null
+            val array = JsonArray()
 
-        val array = JsonArray()
+            for (child in src) {
+                val element = context.serialize(child)
+                array.add(element)
+            }
 
-        for (child in src) {
-            val element = context.serialize(child)
-            array.add(element)
+            return array
         }
-
-        return array
     }
 }

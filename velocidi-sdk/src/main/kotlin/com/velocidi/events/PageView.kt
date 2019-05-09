@@ -2,12 +2,10 @@ package com.velocidi.events
 
 class PageView(
     override val siteId: String,
-    override val clientId: String,
-    val location: String? = null,
-    val title: String? = null,
-    val pageType: String? = null,
-    val category: String? = null
+    override val clientId: String
 ) : TrackingEvent("pageView") {
-    override fun serialize(): String =
-        defaultGson().toJson(this)
+    var location: String? = null
+    var title: String? = null
+    var pageType: String? = null
+    var category: String? = null
 }

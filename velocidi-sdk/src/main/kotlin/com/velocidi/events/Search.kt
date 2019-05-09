@@ -2,9 +2,7 @@ package com.velocidi.events
 
 data class Search(
     override val siteId: String,
-    override val clientId: String,
-    val query: String? = null
+    override val clientId: String
 ) : TrackingEvent("search") {
-    override fun serialize(): String =
-        defaultGson().toJson(this)
+    var query: String? = null
 }
