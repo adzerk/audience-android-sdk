@@ -1,17 +1,18 @@
 package com.velocidi.events
 
 data class Product(
-    val id: String,
-    val name: String? = null,
-    val brand: String? = null,
-    val category: String? = null,
-    val variant: String? = null,
-    val parts: List<Product> = emptyList(),
-    val price: Double? = null,
-    val currency: String? = null,
-    val location: String? = null,
-    val position: Int? = null,
-    val quantity: Int? = null,
-    val recommendation: Boolean? = null,
-    val unsafe: Boolean? = null
-)
+    val id: String
+) {
+    var name: String? = null
+    var brand: String? = null
+    var category: String? = null
+    var variant: String? = null
+    var parts: List<Product> = emptyList()
+    var price: Double? = null
+    var currency: String? = null
+    var location: String? = null
+    var position: Int? = null
+    var quantity: Int? = null
+    var recommendation: Boolean? = null
+    var unsafe: Boolean? = null
+}

@@ -14,7 +14,6 @@ import com.google.gson.Gson
 class TrackingEventsTest {
     private val defaultProduct = """
         {
-            "id": "p1",
             "name": "My product",
             "brand": "Velocidi",
             "category": "Clothes",
@@ -28,23 +27,25 @@ class TrackingEventsTest {
             "currency": "EUR",
             "quantity": 1,
             "recommendation": false,
-            "unsafe": false
+            "unsafe": false,
+            "id": "p1"
         }
   """
 
-    private val defaultProductObj = Product(
-        id = "p1",
-        name = "My product",
-        brand = "Velocidi",
-        category = "Clothes",
-        variant = "M",
-        parts = listOf(Product(id = "p2")),
-        price = 12.99,
-        currency = "EUR",
-        quantity = 1,
-        recommendation = false,
-        unsafe = false
-    )
+    private val defaultProductObj = Product(id = "p1")
+
+    init {
+        defaultProductObj.name = "My product"
+        defaultProductObj.brand = "Velocidi"
+        defaultProductObj.category = "Clothes"
+        defaultProductObj.variant = "M"
+        defaultProductObj.parts = listOf(Product(id = "p2"))
+        defaultProductObj.price = 12.99
+        defaultProductObj.currency = "EUR"
+        defaultProductObj.quantity = 1
+        defaultProductObj.recommendation = false
+        defaultProductObj.unsafe = false
+    }
 
     @Test
     fun customTrackingEventFactory() {
@@ -294,10 +295,10 @@ class TrackingEventsTest {
                     $defaultProduct
                 ],
                 "productCustomization": {
-                    "name": "collar",
                     "value": "italian",
                     "price": 5.0,
-                    "currency": "EUR"
+                    "currency": "EUR",
+                    "name": "collar"
                 },
                 "siteId": "0",
                 "clientId": "0",
@@ -306,11 +307,11 @@ class TrackingEventsTest {
             """.trimIndent()
 
         val customizationObj = ProductCustomization.Properties.Customization(
-            name = "collar",
-            value = "italian",
-            price = 5.0,
-            currency = "EUR"
+            name = "collar"
         )
+        customizationObj.value = "italian"
+        customizationObj.price = 5.0
+        customizationObj.currency = "EUR"
 
         val eventObj = ProductCustomization(
             siteId = "0",
@@ -377,19 +378,19 @@ class TrackingEventsTest {
                     $defaultProduct
                 ],
                 "transaction": {
-                    "id": "tr1",
                     "price": 15.59,
                     "recurrence": "0 0 1 * *",
                     "currency": "EUR",
                     "tax": 2.99,
                     "shipping": 4.59,
                     "voucher": {
-                        "id": "WINTERSALE",
                         "percentage": 10,
-                        "value": 5.0
+                        "value": 5.0,
+                        "id": "WINTERSALE"
                     },
                     "paymentMethod": "credit",
-                    "paymentDetails": "Visa"
+                    "paymentDetails": "Visa",
+                    "id": "tr1"
                 },
                 "siteId": "0",
                 "clientId": "0",
@@ -397,17 +398,21 @@ class TrackingEventsTest {
             }
             """.trimIndent()
 
+        val voucher = Transaction.Properties.Voucher("WINTERSALE")
+        voucher.percentage = 10
+        voucher.value = 5.0
+
         val transactionObj = Transaction(
-            id = "tr1",
-            price = 15.59,
-            recurrence = "0 0 1 * *",
-            currency = "EUR",
-            tax = 2.99,
-            shipping = 4.59,
-            voucher = Transaction.Properties.Voucher("WINTERSALE", 10, 5.0),
-            paymentMethod = "credit",
-            paymentDetails = "Visa"
+            id = "tr1"
         )
+        transactionObj.price = 15.59
+        transactionObj.recurrence = "0 0 1 * *"
+        transactionObj.currency = "EUR"
+        transactionObj.tax = 2.99
+        transactionObj.shipping = 4.59
+        transactionObj.voucher = voucher
+        transactionObj.paymentMethod = "credit"
+        transactionObj.paymentDetails = "Visa"
 
         val eventObj = Purchase(
             siteId = "0",
@@ -428,19 +433,19 @@ class TrackingEventsTest {
                     $defaultProduct
                 ],
                 "transaction": {
-                    "id": "tr1",
                     "price": 15.59,
                     "recurrence": "0 0 1 * *",
                     "currency": "EUR",
                     "tax": 2.99,
                     "shipping": 4.59,
                     "voucher": {
-                        "id": "WINTERSALE",
                         "percentage": 10,
-                        "value": 5.0
+                        "value": 5.0,
+                        "id": "WINTERSALE"
                     },
                     "paymentMethod": "credit",
-                    "paymentDetails": "Visa"
+                    "paymentDetails": "Visa",
+                    "id": "tr1"
                 },
                 "siteId": "0",
                 "clientId": "0",
@@ -448,17 +453,21 @@ class TrackingEventsTest {
             }
             """.trimIndent()
 
+        val voucher = Transaction.Properties.Voucher("WINTERSALE")
+        voucher.percentage = 10
+        voucher.value = 5.0
+
         val transactionObj = Transaction(
-            id = "tr1",
-            price = 15.59,
-            recurrence = "0 0 1 * *",
-            currency = "EUR",
-            tax = 2.99,
-            shipping = 4.59,
-            voucher = Transaction.Properties.Voucher("WINTERSALE", 10, 5.0),
-            paymentMethod = "credit",
-            paymentDetails = "Visa"
+            id = "tr1"
         )
+        transactionObj.price = 15.59
+        transactionObj.recurrence = "0 0 1 * *"
+        transactionObj.currency = "EUR"
+        transactionObj.tax = 2.99
+        transactionObj.shipping = 4.59
+        transactionObj.voucher = voucher
+        transactionObj.paymentMethod = "credit"
+        transactionObj.paymentDetails = "Visa"
 
         val eventObj = Subscription(
             siteId = "0",
@@ -479,19 +488,19 @@ class TrackingEventsTest {
                     $defaultProduct
                 ],
                 "transaction": {
-                    "id": "tr1",
                     "price": 15.59,
                     "recurrence": "0 0 1 * *",
                     "currency": "EUR",
                     "tax": 2.99,
                     "shipping": 4.59,
                     "voucher": {
-                        "id": "WINTERSALE",
                         "percentage": 10,
-                        "value": 5.0
+                        "value": 5.0,
+                        "id": "WINTERSALE"
                     },
                     "paymentMethod": "credit",
-                    "paymentDetails": "Visa"
+                    "paymentDetails": "Visa",
+                    "id": "tr1"
                 },
                 "siteId": "0",
                 "clientId": "0",
@@ -500,17 +509,21 @@ class TrackingEventsTest {
             }
             """.trimIndent()
 
+        val voucher = Transaction.Properties.Voucher("WINTERSALE")
+        voucher.percentage = 10
+        voucher.value = 5.0
+
         val transactionObj = Transaction(
-            id = "tr1",
-            price = 15.59,
-            recurrence = "0 0 1 * *",
-            currency = "EUR",
-            tax = 2.99,
-            shipping = 4.59,
-            voucher = Transaction.Properties.Voucher("WINTERSALE", 10, 5.0),
-            paymentMethod = "credit",
-            paymentDetails = "Visa"
+            id = "tr1"
         )
+        transactionObj.price = 15.59
+        transactionObj.recurrence = "0 0 1 * *"
+        transactionObj.currency = "EUR"
+        transactionObj.tax = 2.99
+        transactionObj.shipping = 4.59
+        transactionObj.voucher = voucher
+        transactionObj.paymentMethod = "credit"
+        transactionObj.paymentDetails = "Visa"
 
         val eventObj = Refund(
             siteId = "0",

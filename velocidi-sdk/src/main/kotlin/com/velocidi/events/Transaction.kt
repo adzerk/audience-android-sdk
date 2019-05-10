@@ -1,21 +1,23 @@
 package com.velocidi.events
 
 data class Transaction(
-    val id: String,
-    val price: Double? = null,
-    val recurrence: String? = null,
-    val currency: String? = null,
-    val tax: Double? = null,
-    val shipping: Double? = null,
-    val voucher: Voucher? = null,
-    val paymentMethod: String? = null,
-    val paymentDetails: String? = null
+    val id: String
 ) {
+    var price: Double? = null
+    var recurrence: String? = null
+    var currency: String? = null
+    var tax: Double? = null
+    var shipping: Double? = null
+    var voucher: Voucher? = null
+    var paymentMethod: String? = null
+    var paymentDetails: String? = null
+
     companion object Properties {
         data class Voucher(
-            val id: String,
-            val percentage: Int? = null,
-            val value: Double? = null
-        )
+            val id: String
+        ) {
+            var percentage: Int? = null
+            var value: Double? = null
+        }
     }
 }
