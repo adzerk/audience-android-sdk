@@ -2,6 +2,7 @@ package com.velocidi
 
 import android.Manifest
 import android.content.Context
+import com.velocidi.events.*
 import com.velocidi.Util.appendToUrl
 import org.json.JSONObject
 import java.util.Queue
@@ -111,8 +112,8 @@ open class Velocidi constructor(val config: Config, context: Context) {
      *
      * @param attributes json object with event information
      */
-    fun track(attributes: JSONObject) {
-        val request = Request.TrackRequest(attributes)
+    fun track(event: TrackingEvent) {
+        val request = Request.TrackRequest(JSONObject(event.serialize()))
         runTask(request)
     }
 

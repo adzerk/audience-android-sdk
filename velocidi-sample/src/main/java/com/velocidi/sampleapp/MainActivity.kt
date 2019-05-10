@@ -4,9 +4,9 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.velocidi.UserId
 import com.velocidi.Velocidi
+import com.velocidi.events.PageView
 
 import kotlinx.android.synthetic.main.activity_main.*
-import org.json.JSONObject
 
 class MainActivity : AppCompatActivity() {
 
@@ -24,7 +24,11 @@ class MainActivity : AppCompatActivity() {
                   "clientId": "client1"
                 }
                 """.trimIndent()
-            Velocidi.getInstance().track(JSONObject(event))
+
+            Velocidi.getInstance().track(PageView("MobileApp", "client1"))
+
+            // OR
+            // Velocidi.getInstance().track(CustomTrackingEventFactory.buildFromJSON(event))
         }
 
         match_button.setOnClickListener {

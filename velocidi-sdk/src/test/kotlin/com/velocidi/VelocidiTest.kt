@@ -4,11 +4,11 @@ import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import com.squareup.okhttp.mockwebserver.MockResponse
 import com.squareup.okhttp.mockwebserver.MockWebServer
+import com.velocidi.events.PageView
 import com.velocidi.util.VelocidiMockAsync
 import com.velocidi.util.VelocidiMockSync
 import com.velocidi.util.containsRequestLine
 import org.assertj.core.api.Assertions.assertThat
-import org.json.JSONObject
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.Timeout
@@ -42,20 +42,13 @@ class VelocidiTest {
         val url = server.url("/tr")
         val config = Config(Channel(URL(url.toString()), true), Channel(URL(url.toString()), false))
 
-        val event = """
-            {
-                "eventType":"pageView",
-                "clientId": "client1",
-                "siteId": "site1"
-            }
-            """
-
         val context: Context = ApplicationProvider.getApplicationContext()
 
         Velocidi.instance = VelocidiMockSync(config, context)
 
         server.enqueue(MockResponse())
-        Velocidi.getInstance().track(JSONObject(event))
+
+        Velocidi.getInstance().track(PageView("site1", "clientId1"))
 
         val response = server.takeRequest()
         response.containsRequestLine("POST /tr?cookies=false&id_gaid=123 HTTP/1.1")
@@ -69,19 +62,11 @@ class VelocidiTest {
             Channel(URL(url.toString()), false)
         )
 
-        val event = """
-            {
-                "eventType":"pageView",
-                "clientId": "client1",
-                "siteId": "site1"
-            }
-            """
-
         val context: Context = ApplicationProvider.getApplicationContext()
 
         Velocidi.instance = VelocidiMockSync(config, context)
 
-        Velocidi.getInstance().track(JSONObject(event))
+        Velocidi.getInstance().track(PageView("site1", "clientId1"))
 
         val response = server.takeRequest(2, TimeUnit.SECONDS)
         assertThat(response).isNull()
@@ -129,7 +114,7 @@ class VelocidiTest {
         Velocidi.instance = VelocidiMockSync(config, context, AdvertisingInfo("123", false))
 
         Velocidi.getInstance().match("provider1", listOf(UserId("eml", "mail@example.com")))
-        Velocidi.getInstance().track(JSONObject())
+        Velocidi.getInstance().track(PageView("site1", "clientId1"))
 
         val response = server.takeRequest(2, TimeUnit.SECONDS)
         assertThat(response).isNull()
