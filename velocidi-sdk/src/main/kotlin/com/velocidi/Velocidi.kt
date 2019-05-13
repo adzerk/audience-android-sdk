@@ -4,7 +4,6 @@ import android.Manifest
 import android.content.Context
 import com.velocidi.events.*
 import com.velocidi.Util.appendToUrl
-import org.json.JSONObject
 import java.util.Queue
 
 /**
@@ -83,16 +82,16 @@ open class Velocidi constructor(val config: Config, context: Context) {
 
         return when (req) {
             is Request.TrackRequest ->
-                if (config.track.enabled)
-
+                if (config.track.enabled) {
+                    val urlWithParams =
+                        config.track.host.appendToUrl(req.attributes.toQueryParams())
                     client.sendRequest(
-                        HttpClient.Verb.POST,
-                        config.track.host,
-                        req.attributes,
-                        params,
-                        headers
+                        HttpClient.Verb.GET,
+                        urlWithParams,
+                        parameters = params,
+                        headers = headers
                     )
-                else return
+                } else return
             is Request.MatchRequest ->
                 if (config.match.enabled) {
                     val urlWithParams = config.match.host.appendToUrl(req.toQueryParams())
@@ -113,7 +112,7 @@ open class Velocidi constructor(val config: Config, context: Context) {
      * @param attributes json object with event information
      */
     fun track(event: TrackingEvent) {
-        val request = Request.TrackRequest(JSONObject(event.serialize()))
+        val request = Request.TrackRequest(event)
         runTask(request)
     }
 
@@ -171,7 +170,7 @@ open class Velocidi constructor(val config: Config, context: Context) {
 
 // ADT with the supported requests
 sealed class Request {
-    data class TrackRequest(val attributes: JSONObject) : Request()
+    data class TrackRequest(val attributes: TrackingEvent) : Request()
     data class MatchRequest(val providerId: String, val userIds: List<UserId>) : Request() {
         fun toQueryParams(): Map<String, String> {
             val params = mutableMapOf<String, String>()

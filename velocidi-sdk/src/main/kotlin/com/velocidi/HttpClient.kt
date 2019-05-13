@@ -1,32 +1,24 @@
 package com.velocidi
 
+import android.net.Uri
 import android.util.Log
-import com.android.volley.RequestQueue
-import com.android.volley.Response
-import com.android.volley.Response.Listener
-import com.android.volley.toolbox.BasicNetwork
-import com.android.volley.toolbox.DiskBasedCache
-import com.android.volley.toolbox.HurlStack
-import java.io.File
-import com.android.volley.toolbox.StringRequest
 import org.json.JSONObject
 import java.lang.Exception
-import java.net.URL
-import java.nio.charset.Charset
 import com.velocidi.Util.appendToUrl
+import okhttp3.*
+import okhttp3.Request
+import java.io.IOException
 
 /**
  * Http Client based on Android Volley
  *
  */
 internal class HttpClient {
-    private val cache = DiskBasedCache(File(Constants.CACHE_DIR), 1024 * 1024) // 1MB cap
-
-    private val network = BasicNetwork(HurlStack())
-
-    val requestQueue = RequestQueue(cache, network).apply {
-        start()
-    }
+    var client =
+        OkHttpClient.Builder()
+            .followRedirects(true)
+            .followSslRedirects(true)
+            .build()
 
     /**
      * Sends an http request
@@ -40,48 +32,51 @@ internal class HttpClient {
      */
     fun sendRequest(
         verb: Verb,
-        url: URL,
+        url: Uri,
         payload: JSONObject? = null,
         parameters: Map<String, String> = emptyMap(),
         headers: Map<String, String> = emptyMap(),
         listener: ResponseListener = defaultListener
     ) {
-        val successListener = Listener<String> { response -> listener.onResponse(response) }
-        val errorListener = Response.ErrorListener { error -> listener.onError(error) }
-
         val urlWithParams = url.appendToUrl(parameters)
+        val body = if (verb == Verb.POST)
+            RequestBody.create(JSON_MEDIA_TYPE, payload?.toString() ?: "")
+        else null
 
-        val stringRequest = object : StringRequest(
-            verb.i, urlWithParams.toString(),
-            successListener, errorListener
-        ) {
+        val req =
+            Request.Builder()
+                .headers(Headers.of(headers.toMutableMap()))
+                .url(urlWithParams.toString())
+                .method(verb.name, body)
+                .build()
 
-            override fun getHeaders() =
-                headers.toMutableMap()
+        client.newCall(req).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                listener.onError(e)
+            }
 
-            override fun getBodyContentType(): String =
-                "application/json"
-
-            override fun getBody(): ByteArray? =
-                payload?.toString()?.toByteArray(Charset.defaultCharset())
-        }
-
-        requestQueue.add(stringRequest)
+            override fun onResponse(call: Call, response: Response) {
+                if (!response.isSuccessful)
+                    listener.onError(Exception("Unexpected code $response"))
+                else
+                    listener.onResponse("Success: ${response.message()}")
+            }
+        })
     }
 
-    enum class Verb(val i: Int) {
-        GET(0),
-        POST(1)
-    }
+    enum class Verb { GET, POST }
 
     companion object {
+
+        val JSON_MEDIA_TYPE = MediaType.get("application/json; charset=utf-8")
+
         val defaultListener = object : ResponseListener {
             override fun onResponse(response: String) {
-                Log.i(Constants.LOG_TAG, response)
+                Log.v(Constants.LOG_TAG, response)
             }
 
             override fun onError(ex: Exception) {
-                Log.i(Constants.LOG_TAG, ex.toString())
+                Log.v(Constants.LOG_TAG, ex.toString())
             }
         }
     }

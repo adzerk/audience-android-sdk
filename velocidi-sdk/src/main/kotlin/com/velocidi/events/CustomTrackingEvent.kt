@@ -11,7 +11,7 @@ class CustomTrackingEvent(
     val extraAttributes: JSONObject = JSONObject()
 ) : TrackingEvent(eventType) {
 
-    override fun serialize(): String = gson.toJson(this)
+    override fun toJson(): String = gson.toJson(this)
 
     internal companion object {
         val gson =

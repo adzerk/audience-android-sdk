@@ -92,7 +92,7 @@ class TrackingEventsTest {
             JSONObject(""" {"test": {"a": 1}} """)
         )
 
-        assertThat(eventObj.serialize().prettyPrintJson()).isEqualTo(event.prettyPrintJson())
+        assertThat(eventObj.toJson().prettyPrintJson()).isEqualTo(event.prettyPrintJson())
     }
 
     @Test
@@ -142,7 +142,7 @@ class TrackingEventsTest {
         )
         eventObj.query = "product"
 
-        assertThat(event.prettyPrintJson()).isEqualTo(eventObj.serialize().prettyPrintJson())
+        assertThat(event.prettyPrintJson()).isEqualTo(eventObj.toJson().prettyPrintJson())
     }
 
     @Test
@@ -187,7 +187,7 @@ class TrackingEventsTest {
         )
         eventObj.products = listOf(defaultProductObj, Product("p2"))
 
-        assertThat(event.prettyPrintJson()).isEqualTo(eventObj.serialize().prettyPrintJson())
+        assertThat(event.prettyPrintJson()).isEqualTo(eventObj.toJson().prettyPrintJson())
     }
 
     @Test
@@ -210,7 +210,7 @@ class TrackingEventsTest {
         )
         eventObj.products = listOf(defaultProductObj)
 
-        assertThat(event.prettyPrintJson()).isEqualTo(eventObj.serialize().prettyPrintJson())
+        assertThat(event.prettyPrintJson()).isEqualTo(eventObj.toJson().prettyPrintJson())
     }
 
     @Test
@@ -233,7 +233,7 @@ class TrackingEventsTest {
         )
         eventObj.products = listOf(defaultProductObj)
 
-        assertThat(event.prettyPrintJson()).isEqualTo(eventObj.serialize().prettyPrintJson())
+        assertThat(event.prettyPrintJson()).isEqualTo(eventObj.toJson().prettyPrintJson())
     }
 
     @Test
@@ -256,7 +256,7 @@ class TrackingEventsTest {
         )
         eventObj.products = listOf(defaultProductObj)
 
-        assertThat(event.prettyPrintJson()).isEqualTo(eventObj.serialize().prettyPrintJson())
+        assertThat(event.prettyPrintJson()).isEqualTo(eventObj.toJson().prettyPrintJson())
     }
 
     @Test
@@ -283,7 +283,7 @@ class TrackingEventsTest {
         eventObj.rating = 4.5
         eventObj.feedback = "It's a very nice product!"
 
-        assertThat(event.prettyPrintJson()).isEqualTo(eventObj.serialize().prettyPrintJson())
+        assertThat(event.prettyPrintJson()).isEqualTo(eventObj.toJson().prettyPrintJson())
     }
 
     @Test
@@ -320,7 +320,7 @@ class TrackingEventsTest {
         eventObj.product = listOf(defaultProductObj)
         eventObj.productCustomization = customizationObj
 
-        assertThat(event.prettyPrintJson()).isEqualTo(eventObj.serialize().prettyPrintJson())
+        assertThat(event.prettyPrintJson()).isEqualTo(eventObj.toJson().prettyPrintJson())
     }
 
     @Test
@@ -343,7 +343,7 @@ class TrackingEventsTest {
         )
         eventObj.products = listOf(defaultProductObj)
 
-        assertThat(event.prettyPrintJson()).isEqualTo(eventObj.serialize().prettyPrintJson())
+        assertThat(event.prettyPrintJson()).isEqualTo(eventObj.toJson().prettyPrintJson())
     }
 
     @Test
@@ -366,7 +366,7 @@ class TrackingEventsTest {
         )
         eventObj.products = listOf(defaultProductObj)
 
-        assertThat(event.prettyPrintJson()).isEqualTo(eventObj.serialize().prettyPrintJson())
+        assertThat(event.prettyPrintJson()).isEqualTo(eventObj.toJson().prettyPrintJson())
     }
 
     @Test
@@ -421,7 +421,7 @@ class TrackingEventsTest {
         eventObj.products = listOf(defaultProductObj)
         eventObj.transaction = transactionObj
 
-        assertThat(event.prettyPrintJson()).isEqualTo(eventObj.serialize().prettyPrintJson())
+        assertThat(event.prettyPrintJson()).isEqualTo(eventObj.toJson().prettyPrintJson())
     }
 
     @Test
@@ -476,7 +476,7 @@ class TrackingEventsTest {
         eventObj.products = listOf(defaultProductObj)
         eventObj.transaction = transactionObj
 
-        assertThat(event.prettyPrintJson()).isEqualTo(eventObj.serialize().prettyPrintJson())
+        assertThat(event.prettyPrintJson()).isEqualTo(eventObj.toJson().prettyPrintJson())
     }
 
     @Test
@@ -533,6 +533,6 @@ class TrackingEventsTest {
         eventObj.products = listOf(defaultProductObj)
         eventObj.transaction = transactionObj
 
-        assertThat(event.prettyPrintJson()).isEqualTo(eventObj.serialize().prettyPrintJson())
+        assertThat(event.prettyPrintJson()).isEqualTo(eventObj.toJson().prettyPrintJson())
     }
 }
