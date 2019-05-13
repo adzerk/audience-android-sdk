@@ -4,8 +4,6 @@ import android.net.Uri
 import com.google.gson.*
 import com.squareup.okhttp.mockwebserver.MockResponse
 import com.squareup.okhttp.mockwebserver.MockWebServer
-import com.velocidi.events.Product
-import com.velocidi.events.ProductImpression
 import com.velocidi.util.containsBody
 import com.velocidi.util.containsHeader
 import com.velocidi.util.containsRequestLine
@@ -37,7 +35,6 @@ class HttpClientTest {
 
         client.sendRequest(HttpClient.Verb.POST, url)
         val response2 = server.takeRequest()
-        println(response2.body)
         response2.containsRequestLine("POST / HTTP/1.1")
         assertThat(String(response2.body.readByteArray())).isEmpty()
     }
@@ -83,26 +80,5 @@ class HttpClientTest {
         val response = server.takeRequest()
 
         response.containsRequestLine("POST /?x=foo&y=bar HTTP/1.1")
-        println(System.getProperty("http.agent"))
-    }
-
-    @Test
-    fun testRedirect() {
-        // server.enqueue(MockResponse())
-        val payload = """{"Hello":"World"}"""
-        client.sendRequest(
-            HttpClient.Verb.GET,
-            Uri.parse("http://demo6139531.mockable.io/events"),
-            JSONObject(payload)
-        )
-    }
-
-    @Test
-    fun testThings() {
-
-        val x = ProductImpression("siteId1", "clientId1")
-        x.products = listOf(Product("id1"), Product("id2"))
-
-        x.toQueryParams()
     }
 }
