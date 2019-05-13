@@ -1,17 +1,17 @@
 package com.velocidi.sampleapp
 
 import android.app.Application
+import android.net.Uri
 import com.velocidi.Channel
 import com.velocidi.Config
 import com.velocidi.Velocidi
-import java.net.URL
 
 class SampleApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        val trackEndpoint = Channel(URL("https://tr.test.com/events"), true)
-        val matchEndpoint = Channel(URL("https://match.test.com/match"), true)
+        val trackEndpoint = Channel(Uri.parse("http://tr.cdp.velocidi.com/events"), true)
+        val matchEndpoint = Channel(Uri.parse("http://match.cdp.velocidi.com/match"), true)
         val config = Config(trackEndpoint, matchEndpoint)
 
         // OR
