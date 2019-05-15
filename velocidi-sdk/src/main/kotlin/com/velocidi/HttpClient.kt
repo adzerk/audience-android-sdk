@@ -68,7 +68,7 @@ internal class HttpClient {
 
     companion object {
 
-        val JSON_MEDIA_TYPE = MediaType.get("application/json; charset=utf-8")
+        private val JSON_MEDIA_TYPE = MediaType.get("application/json; charset=utf-8")
 
         val defaultListener = object : ResponseListener {
             override fun onResponse(response: String) {
