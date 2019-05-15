@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
-import java.net.URISyntaxException
 
 data class ApplicationInfo(
     val appName: String,
@@ -73,7 +72,6 @@ object Util {
      * @param parameters Map (Key/Value) of parameters to be added
      * @return URL with the new parameters
      */
-    @Throws(URISyntaxException::class)
     fun Uri.appendToUrl(parameters: Map<String, String>): Uri {
         if (parameters.isEmpty())
             return this
