@@ -14,7 +14,7 @@ import java.io.IOException
  *
  */
 internal class HttpClient {
-    var client =
+    private val client =
         OkHttpClient.Builder()
             .followRedirects(true)
             .followSslRedirects(true)

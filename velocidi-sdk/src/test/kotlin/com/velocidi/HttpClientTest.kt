@@ -1,7 +1,6 @@
 package com.velocidi
 
 import android.net.Uri
-import com.google.gson.*
 import com.squareup.okhttp.mockwebserver.MockResponse
 import com.squareup.okhttp.mockwebserver.MockWebServer
 import com.velocidi.util.containsBody
@@ -9,7 +8,9 @@ import com.velocidi.util.containsHeader
 import com.velocidi.util.containsRequestLine
 import org.assertj.core.api.Assertions.assertThat
 import org.json.JSONObject
+import org.junit.Rule
 import org.junit.Test
+import org.junit.rules.Timeout
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
@@ -17,12 +18,12 @@ import org.robolectric.RobolectricTestRunner
 class HttpClientTest {
 
     var server = MockWebServer()
-    val url = Uri.parse(server.url("/").toString())
+    private val url = Uri.parse(server.url("/").toString())
     private var client = HttpClient()
 
-    // @Rule
-    // @JvmField
-    // val globalTimeout = Timeout.seconds(10) // 10 seconds max per method tested
+    @Rule
+    @JvmField
+    val globalTimeout = Timeout.seconds(10) // 10 seconds max per method tested
 
     @Test
     fun emptyRequest() {
