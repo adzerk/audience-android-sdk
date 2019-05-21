@@ -4,7 +4,7 @@ data class ProductCustomization(
     override val siteId: String,
     override val clientId: String
 ) : TrackingEvent("productCustomization") {
-    var product: List<Product> = emptyList()
+    var products: List<Product> = emptyList()
     var productCustomization: Customization? = null
 
     companion object Properties {

@@ -1,50 +1,69 @@
 package com.velocidi
 
 import com.velocidi.events.*
-import com.velocidi.util.prettyPrintJson
 import org.junit.Test
 import org.assertj.core.api.Assertions.*
 import org.json.JSONException
 import org.json.JSONObject
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
-import com.google.gson.Gson
 
 @RunWith(RobolectricTestRunner::class)
 class TrackingEventsTest {
-    private val defaultProduct = """
-        {
-            "name": "My product",
-            "brand": "Velocidi",
-            "category": "Clothes",
-            "variant": "M",
-            "parts": [
-                {
-                    "id": "p2"
-                }
-            ],
-            "price": 12.99,
-            "currency": "EUR",
-            "quantity": 1,
-            "recommendation": false,
-            "unsafe": false,
-            "id": "p1"
-        }
-  """
+    private val defaultProduct = mapOf(
+        "[name]" to "My product",
+        "[brand]" to "Velocidi",
+        "[category]" to "Clothes",
+        "[variant]" to "M",
+        "[parts][0][id]" to "p2",
+        "[price]" to "12.99",
+        "[currency]" to "EUR",
+        "[quantity]" to "1",
+        "[recommendation]" to "false",
+        "[unsafe]" to "false",
+        "[id]" to "p1"
+    )
 
-    private val defaultProductObj = Product(id = "p1")
+    private val defaultProductObj = Product(id = "p1").also {
+        it.name = "My product"
+        it.brand = "Velocidi"
+        it.category = "Clothes"
+        it.variant = "M"
+        it.parts = listOf(Product(id = "p2"))
+        it.price = 12.99
+        it.currency = "EUR"
+        it.quantity = 1
+        it.recommendation = false
+        it.unsafe = false
+    }
 
-    init {
-        defaultProductObj.name = "My product"
-        defaultProductObj.brand = "Velocidi"
-        defaultProductObj.category = "Clothes"
-        defaultProductObj.variant = "M"
-        defaultProductObj.parts = listOf(Product(id = "p2"))
-        defaultProductObj.price = 12.99
-        defaultProductObj.currency = "EUR"
-        defaultProductObj.quantity = 1
-        defaultProductObj.recommendation = false
-        defaultProductObj.unsafe = false
+    private val defaultTransaction = mapOf(
+        "transaction[price]" to "15.59",
+        "transaction[recurrence]" to "0 0 1 * *",
+        "transaction[currency]" to "EUR",
+        "transaction[tax]" to "2.99",
+        "transaction[shipping]" to "4.59",
+        "transaction[paymentMethod]" to "credit",
+        "transaction[paymentDetails]" to "Visa",
+        "transaction[id]" to "tr1",
+        "transaction[voucher][percentage]" to "10",
+        "transaction[voucher][value]" to "5.0",
+        "transaction[voucher][id]" to "WINTERSALE"
+    )
+
+    private val defaultTransactionObj = Transaction(id = "tr1").also {
+        val voucher = Transaction.Properties.Voucher("WINTERSALE")
+        voucher.percentage = 10
+        voucher.value = 5.0
+
+        it.price = 15.59
+        it.recurrence = "0 0 1 * *"
+        it.currency = "EUR"
+        it.tax = 2.99
+        it.shipping = 4.59
+        it.voucher = voucher
+        it.paymentMethod = "credit"
+        it.paymentDetails = "Visa"
     }
 
     @Test
@@ -73,17 +92,12 @@ class TrackingEventsTest {
 
     @Test
     fun customTrackingEventSerialization() {
-        val event =
-            """
-            {
-                "test": {
-                    "a": 1
-                },
-                "type": "custom",
-                "siteId": "0",
-                "clientId": "id1"
-            }
-            """.trimIndent()
+        val event = mapOf(
+            "test[a]" to "1",
+            "type" to "custom",
+            "siteId" to "0",
+            "clientId" to "id1"
+        )
 
         val eventObj = CustomTrackingEvent(
             "custom",
@@ -92,25 +106,20 @@ class TrackingEventsTest {
             JSONObject(""" {"test": {"a": 1}} """)
         )
 
-        assertThat(eventObj.toJson().prettyPrintJson()).isEqualTo(event.prettyPrintJson())
+        assertThat(event).isEqualTo(eventObj.toQueryParams())
     }
 
     @Test
     fun pageViewEventSerialization() {
-        val gson = Gson()
-
-        val event =
-            """
-            {
-                "location": "mylocation",
-                "title": "My page",
-                "pageType": "homepage",
-                "category": "shopping",
-                "siteId": "0",
-                "clientId": "0",
-                "type": "pageView"
-            }
-            """.trimIndent()
+        val event = mapOf(
+            "type" to "pageView",
+            "siteId" to "0",
+            "clientId" to "0",
+            "location" to "mylocation",
+            "title" to "My page",
+            "pageType" to "homepage",
+            "category" to "shopping"
+        )
 
         val eventObj = PageView(
             siteId = "0",
@@ -121,20 +130,17 @@ class TrackingEventsTest {
         eventObj.pageType = "homepage"
         eventObj.category = "shopping"
 
-        assertThat(event.prettyPrintJson()).isEqualTo(gson.toJson(eventObj).prettyPrintJson())
+        assertThat(event).isEqualTo(eventObj.toQueryParams())
     }
 
     @Test
     fun searchEventSerialization() {
-        val event =
-            """
-            {
-                "query": "product",
-                "siteId": "0",
-                "clientId": "0",
-                "type": "search"
-            }
-            """.trimIndent()
+        val event = mapOf(
+            "type" to "search",
+            "siteId" to "0",
+            "clientId" to "0",
+            "query" to "product"
+        )
 
         val eventObj = Search(
             siteId = "0",
@@ -142,44 +148,18 @@ class TrackingEventsTest {
         )
         eventObj.query = "product"
 
-        assertThat(event.prettyPrintJson()).isEqualTo(eventObj.toJson().prettyPrintJson())
-    }
-
-    @Test
-    fun productSerialization() {
-
-        val emptyProduct =
-            """
-            {
-                "id": "id1"
-            }
-            """.trimIndent()
-
-        val obj = Product("id1")
-
-        val gson = TrackingEvent.defaultGson
-
-        assertThat(defaultProduct.prettyPrintJson()).isEqualTo(gson.toJson(defaultProductObj).prettyPrintJson())
-
-        assertThat(emptyProduct.prettyPrintJson()).isEqualTo(gson.toJson(obj).prettyPrintJson())
+        assertThat(event).isEqualTo(eventObj.toQueryParams())
     }
 
     @Test
     fun productImpressionEventSerialization() {
-        val event =
-            """
-            {
-                "products": [
-                    $defaultProduct,
-                    {
-                        "id": "p2"
-                    }
-                ],
-                "siteId": "0",
-                "clientId": "0",
-                "type": "productImpression"
-            }
-            """.trimIndent()
+        val event = mutableMapOf(
+            "siteId" to "0",
+            "clientId" to "0",
+            "type" to "productImpression"
+        )
+        event.putAll(defaultProduct.mapKeys { (k, _) -> "products[0]$k" })
+        event.put("products[1][id]", "p2")
 
         val eventObj = ProductImpression(
             siteId = "0",
@@ -187,22 +167,17 @@ class TrackingEventsTest {
         )
         eventObj.products = listOf(defaultProductObj, Product("p2"))
 
-        assertThat(event.prettyPrintJson()).isEqualTo(eventObj.toJson().prettyPrintJson())
+        assertThat(event).isEqualTo(eventObj.toQueryParams())
     }
 
     @Test
     fun productClickEventSerialization() {
-        val event =
-            """
-            {
-                "products": [
-                    $defaultProduct
-                ],
-                "siteId": "0",
-                "clientId": "0",
-                "type": "productClick"
-            }
-            """.trimIndent()
+        val event = mutableMapOf(
+            "siteId" to "0",
+            "clientId" to "0",
+            "type" to "productClick"
+        )
+        event.putAll(defaultProduct.mapKeys { (k, _) -> "products[0]$k" })
 
         val eventObj = ProductClick(
             siteId = "0",
@@ -210,22 +185,17 @@ class TrackingEventsTest {
         )
         eventObj.products = listOf(defaultProductObj)
 
-        assertThat(event.prettyPrintJson()).isEqualTo(eventObj.toJson().prettyPrintJson())
+        assertThat(event).isEqualTo(eventObj.toQueryParams())
     }
 
     @Test
     fun productViewEventSerialization() {
-        val event =
-            """
-            {
-                "products": [
-                    $defaultProduct
-                ],
-                "siteId": "0",
-                "clientId": "0",
-                "type": "productView"
-            }
-            """.trimIndent()
+        val event = mutableMapOf(
+            "siteId" to "0",
+            "clientId" to "0",
+            "type" to "productView"
+        )
+        event.putAll(defaultProduct.mapKeys { (k, _) -> "products[0]$k" })
 
         val eventObj = ProductView(
             siteId = "0",
@@ -233,22 +203,18 @@ class TrackingEventsTest {
         )
         eventObj.products = listOf(defaultProductObj)
 
-        assertThat(event.prettyPrintJson()).isEqualTo(eventObj.toJson().prettyPrintJson())
+        assertThat(event).isEqualTo(eventObj.toQueryParams())
     }
 
     @Test
     fun productViewDetailsEventSerialization() {
-        val event =
-            """
-            {
-                "products": [
-                    $defaultProduct
-                ],
-                "siteId": "0",
-                "clientId": "0",
-                "type": "productViewDetails"
-            }
-            """.trimIndent()
+
+        val event = mutableMapOf(
+            "siteId" to "0",
+            "clientId" to "0",
+            "type" to "productViewDetails"
+        )
+        event.putAll(defaultProduct.mapKeys { (k, _) -> "products[0]$k" })
 
         val eventObj = ProductViewDetails(
             siteId = "0",
@@ -256,24 +222,19 @@ class TrackingEventsTest {
         )
         eventObj.products = listOf(defaultProductObj)
 
-        assertThat(event.prettyPrintJson()).isEqualTo(eventObj.toJson().prettyPrintJson())
+        assertThat(event).isEqualTo(eventObj.toQueryParams())
     }
 
     @Test
     fun productFeedbackEventSerialization() {
-        val event =
-            """
-            {
-                "products": [
-                    $defaultProduct
-                ],
-                "rating": 4.5,
-                "feedback": "It's a very nice product!",
-                "siteId": "0",
-                "clientId": "0",
-                "type": "productFeedback"
-            }
-            """.trimIndent()
+        val event = mutableMapOf(
+            "rating" to "4.5",
+            "feedback" to "It's a very nice product!",
+            "siteId" to "0",
+            "clientId" to "0",
+            "type" to "productFeedback"
+        )
+        event.putAll(defaultProduct.mapKeys { (k, _) -> "products[0]$k" })
 
         val eventObj = ProductFeedback(
             siteId = "0",
@@ -283,28 +244,21 @@ class TrackingEventsTest {
         eventObj.rating = 4.5
         eventObj.feedback = "It's a very nice product!"
 
-        assertThat(event.prettyPrintJson()).isEqualTo(eventObj.toJson().prettyPrintJson())
+        assertThat(event).isEqualTo(eventObj.toQueryParams())
     }
 
     @Test
     fun productCustomizationEventSerialization() {
-        val event =
-            """
-            {
-                "product": [
-                    $defaultProduct
-                ],
-                "productCustomization": {
-                    "value": "italian",
-                    "price": 5.0,
-                    "currency": "EUR",
-                    "name": "collar"
-                },
-                "siteId": "0",
-                "clientId": "0",
-                "type": "productCustomization"
-            }
-            """.trimIndent()
+        val event = mutableMapOf(
+            "productCustomization[value]" to "italian",
+            "productCustomization[price]" to "5.0",
+            "productCustomization[currency]" to "EUR",
+            "productCustomization[name]" to "collar",
+            "siteId" to "0",
+            "clientId" to "0",
+            "type" to "productCustomization"
+        )
+        event.putAll(defaultProduct.mapKeys { (k, _) -> "products[0]$k" })
 
         val customizationObj = ProductCustomization.Properties.Customization(
             name = "collar"
@@ -317,25 +271,20 @@ class TrackingEventsTest {
             siteId = "0",
             clientId = "0"
         )
-        eventObj.product = listOf(defaultProductObj)
+        eventObj.products = listOf(defaultProductObj)
         eventObj.productCustomization = customizationObj
 
-        assertThat(event.prettyPrintJson()).isEqualTo(eventObj.toJson().prettyPrintJson())
+        assertThat(event).isEqualTo(eventObj.toQueryParams())
     }
 
     @Test
     fun addToCartEventSerialization() {
-        val event =
-            """
-            {
-                "products": [
-                    $defaultProduct
-                ],
-                "siteId": "0",
-                "clientId": "0",
-                "type": "addToCart"
-            }
-            """.trimIndent()
+        val event = mutableMapOf(
+            "siteId" to "0",
+            "clientId" to "0",
+            "type" to "addToCart"
+        )
+        event.putAll(defaultProduct.mapKeys { (k, _) -> "products[0]$k" })
 
         val eventObj = AddToCart(
             siteId = "0",
@@ -343,22 +292,17 @@ class TrackingEventsTest {
         )
         eventObj.products = listOf(defaultProductObj)
 
-        assertThat(event.prettyPrintJson()).isEqualTo(eventObj.toJson().prettyPrintJson())
+        assertThat(event).isEqualTo(eventObj.toQueryParams())
     }
 
     @Test
     fun removeFromCartEventSerialization() {
-        val event =
-            """
-            {
-                "products": [
-                    $defaultProduct
-                ],
-                "siteId": "0",
-                "clientId": "0",
-                "type": "removeFromCart"
-            }
-            """.trimIndent()
+        val event = mutableMapOf(
+            "siteId" to "0",
+            "clientId" to "0",
+            "type" to "removeFromCart"
+        )
+        event.putAll(defaultProduct.mapKeys { (k, _) -> "products[0]$k" })
 
         val eventObj = RemoveFromCart(
             siteId = "0",
@@ -366,164 +310,59 @@ class TrackingEventsTest {
         )
         eventObj.products = listOf(defaultProductObj)
 
-        assertThat(event.prettyPrintJson()).isEqualTo(eventObj.toJson().prettyPrintJson())
+        assertThat(event).isEqualTo(eventObj.toQueryParams())
     }
 
     @Test
     fun purchaseEventSerialization() {
-        val event =
-            """
-            {
-                "products": [
-                    $defaultProduct
-                ],
-                "transaction": {
-                    "price": 15.59,
-                    "recurrence": "0 0 1 * *",
-                    "currency": "EUR",
-                    "tax": 2.99,
-                    "shipping": 4.59,
-                    "voucher": {
-                        "percentage": 10,
-                        "value": 5.0,
-                        "id": "WINTERSALE"
-                    },
-                    "paymentMethod": "credit",
-                    "paymentDetails": "Visa",
-                    "id": "tr1"
-                },
-                "siteId": "0",
-                "clientId": "0",
-                "type": "purchase"
-            }
-            """.trimIndent()
-
-        val voucher = Transaction.Properties.Voucher("WINTERSALE")
-        voucher.percentage = 10
-        voucher.value = 5.0
-
-        val transactionObj = Transaction(
-            id = "tr1"
+        val event = mutableMapOf(
+            "siteId" to "0",
+            "clientId" to "0",
+            "type" to "purchase"
         )
-        transactionObj.price = 15.59
-        transactionObj.recurrence = "0 0 1 * *"
-        transactionObj.currency = "EUR"
-        transactionObj.tax = 2.99
-        transactionObj.shipping = 4.59
-        transactionObj.voucher = voucher
-        transactionObj.paymentMethod = "credit"
-        transactionObj.paymentDetails = "Visa"
+        event.putAll(defaultProduct.mapKeys { (k, _) -> "products[0]$k" })
+        event.putAll(defaultTransaction)
 
         val eventObj = Purchase(
             siteId = "0",
             clientId = "0"
         )
         eventObj.products = listOf(defaultProductObj)
-        eventObj.transaction = transactionObj
+        eventObj.transaction = defaultTransactionObj
 
-        assertThat(event.prettyPrintJson()).isEqualTo(eventObj.toJson().prettyPrintJson())
+        assertThat(event).isEqualTo(eventObj.toQueryParams())
     }
 
     @Test
     fun subscriptionEventSerialization() {
-        val event =
-            """
-            {
-                "products":[
-                    $defaultProduct
-                ],
-                "transaction": {
-                    "price": 15.59,
-                    "recurrence": "0 0 1 * *",
-                    "currency": "EUR",
-                    "tax": 2.99,
-                    "shipping": 4.59,
-                    "voucher": {
-                        "percentage": 10,
-                        "value": 5.0,
-                        "id": "WINTERSALE"
-                    },
-                    "paymentMethod": "credit",
-                    "paymentDetails": "Visa",
-                    "id": "tr1"
-                },
-                "siteId": "0",
-                "clientId": "0",
-                "type": "subscription"
-            }
-            """.trimIndent()
-
-        val voucher = Transaction.Properties.Voucher("WINTERSALE")
-        voucher.percentage = 10
-        voucher.value = 5.0
-
-        val transactionObj = Transaction(
-            id = "tr1"
+        val event = mutableMapOf(
+            "siteId" to "0",
+            "clientId" to "0",
+            "type" to "subscription"
         )
-        transactionObj.price = 15.59
-        transactionObj.recurrence = "0 0 1 * *"
-        transactionObj.currency = "EUR"
-        transactionObj.tax = 2.99
-        transactionObj.shipping = 4.59
-        transactionObj.voucher = voucher
-        transactionObj.paymentMethod = "credit"
-        transactionObj.paymentDetails = "Visa"
+        event.putAll(defaultProduct.mapKeys { (k, _) -> "products[0]$k" })
+        event.putAll(defaultTransaction)
 
         val eventObj = Subscription(
             siteId = "0",
             clientId = "0"
         )
         eventObj.products = listOf(defaultProductObj)
-        eventObj.transaction = transactionObj
+        eventObj.transaction = defaultTransactionObj
 
-        assertThat(event.prettyPrintJson()).isEqualTo(eventObj.toJson().prettyPrintJson())
+        assertThat(event).isEqualTo(eventObj.toQueryParams())
     }
 
     @Test
     fun refundEventSerialization() {
-        val event =
-            """
-            {
-                "products": [
-                    $defaultProduct
-                ],
-                "transaction": {
-                    "price": 15.59,
-                    "recurrence": "0 0 1 * *",
-                    "currency": "EUR",
-                    "tax": 2.99,
-                    "shipping": 4.59,
-                    "voucher": {
-                        "percentage": 10,
-                        "value": 5.0,
-                        "id": "WINTERSALE"
-                    },
-                    "paymentMethod": "credit",
-                    "paymentDetails": "Visa",
-                    "id": "tr1"
-                },
-                "siteId": "0",
-                "clientId": "0",
-                "refundType": "partial",
-                "type": "refund"
-            }
-            """.trimIndent()
-
-        val voucher = Transaction.Properties.Voucher("WINTERSALE")
-        voucher.percentage = 10
-        voucher.value = 5.0
-
-        val transactionObj = Transaction(
-            id = "tr1"
+        val event = mutableMapOf(
+            "siteId" to "0",
+            "clientId" to "0",
+            "refundType" to "partial",
+            "type" to "refund"
         )
-        transactionObj.price = 15.59
-        transactionObj.recurrence = "0 0 1 * *"
-        transactionObj.currency = "EUR"
-        transactionObj.tax = 2.99
-        transactionObj.shipping = 4.59
-        transactionObj.voucher = voucher
-        transactionObj.paymentMethod = "credit"
-        transactionObj.paymentDetails = "Visa"
+        event.putAll(defaultProduct.mapKeys { (k, _) -> "products[0]$k" })
+        event.putAll(defaultTransaction)
 
         val eventObj = Refund(
             siteId = "0",
@@ -531,8 +370,8 @@ class TrackingEventsTest {
             refundType = "partial"
         )
         eventObj.products = listOf(defaultProductObj)
-        eventObj.transaction = transactionObj
+        eventObj.transaction = defaultTransactionObj
 
-        assertThat(event.prettyPrintJson()).isEqualTo(eventObj.toJson().prettyPrintJson())
+        assertThat(event).isEqualTo(eventObj.toQueryParams())
     }
 }

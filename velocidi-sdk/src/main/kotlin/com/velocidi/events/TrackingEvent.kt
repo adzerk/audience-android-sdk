@@ -9,18 +9,14 @@ abstract class TrackingEvent(
     abstract val siteId: String
     abstract val clientId: String
 
-    /**
-     * Serializes the current data model to JSON
-     */
-    open fun toJson(): String {
-        return defaultGson.toJson(this)
-    }
+    @Transient
+    open val gson = defaultGson
 
     /**
      * Serializes the current data model to query parameters
      */
     open fun toQueryParams(): Map<String, String> {
-        val evt = defaultGson.toJsonTree(this)
+        val evt = gson.toJsonTree(this)
 
         fun toQueryParamsAux(elem: JsonElement, qs: MutableMap<String, String>, path: String) {
             when (elem) {
