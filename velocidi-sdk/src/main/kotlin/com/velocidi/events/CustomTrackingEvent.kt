@@ -14,6 +14,9 @@ class CustomTrackingEvent(
     @Transient
     override val gson = defaultGson
 
+    fun appendProperty(key: String, value: String) =
+        extraAttributes.accumulate(key, value)
+
     internal companion object {
         val defaultGson =
             TrackingEvent.defaultGson.newBuilder()

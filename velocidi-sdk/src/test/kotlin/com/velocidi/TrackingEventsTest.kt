@@ -110,6 +110,25 @@ class TrackingEventsTest {
     }
 
     @Test
+    fun customTrackingEventAppendPropriety() {
+        val event = mapOf(
+            "type" to "custom",
+            "siteId" to "0",
+            "clientId" to "id1",
+            "foo" to "bar"
+        )
+
+        val eventObj = CustomTrackingEvent(
+            "custom",
+            "0",
+            "id1"
+        )
+        eventObj.appendProperty("foo", "bar")
+
+        assertThat(event).isEqualTo(eventObj.toQueryParams())
+    }
+
+    @Test
     fun pageViewEventSerialization() {
         val event = mapOf(
             "type" to "pageView",
