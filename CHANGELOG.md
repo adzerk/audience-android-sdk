@@ -8,10 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-
+ - Basic Track and Match functionality ([#3](https://github.com/velocidi/velocidi-android-sdk/pull/3)).
+ - Domain models for tracking events ([#4](https://github.com/velocidi/velocidi-android-sdk/pull/4)).
+ 
 ### Changed
 
 ### Deprecated
+- Deprecated Volley in favor of OkHttp ([#6](https://github.com/velocidi/velocidi-android-sdk/pull/6)).
 
 ### Removed
 

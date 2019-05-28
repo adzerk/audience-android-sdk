@@ -11,10 +11,14 @@ class CustomTrackingEvent(
     val extraAttributes: JSONObject = JSONObject()
 ) : TrackingEvent(eventType) {
 
-    override fun serialize(): String = gson.toJson(this)
+    @Transient
+    override val gson = defaultGson
+
+    fun appendProperty(key: String, value: Any) =
+        extraAttributes.accumulate(key, value)
 
     internal companion object {
-        val gson =
+        val defaultGson =
             TrackingEvent.defaultGson.newBuilder()
                 .registerTypeAdapter(CustomTrackingEvent::class.java, CustomTrackingEventSerializer)
                 .create()

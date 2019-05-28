@@ -1,5 +1,6 @@
 package com.velocidi
 
+import android.net.Uri
 import com.squareup.okhttp.mockwebserver.MockResponse
 import com.squareup.okhttp.mockwebserver.MockWebServer
 import com.velocidi.util.containsBody
@@ -17,7 +18,7 @@ import org.robolectric.RobolectricTestRunner
 class HttpClientTest {
 
     var server = MockWebServer()
-    val url = server.url("/")
+    private val url = Uri.parse(server.url("/").toString())
     private var client = HttpClient()
 
     @Rule
@@ -28,12 +29,12 @@ class HttpClientTest {
     fun emptyRequest() {
         server.enqueue(MockResponse())
 
-        client.sendRequest(HttpClient.Verb.GET, url.url())
+        client.sendRequest(HttpClient.Verb.GET, url)
         val response1 = server.takeRequest()
         response1.containsRequestLine("GET / HTTP/1.1")
         assertThat(String(response1.body.readByteArray())).isEmpty()
 
-        client.sendRequest(HttpClient.Verb.POST, url.url())
+        client.sendRequest(HttpClient.Verb.POST, url)
         val response2 = server.takeRequest()
         response2.containsRequestLine("POST / HTTP/1.1")
         assertThat(String(response2.body.readByteArray())).isEmpty()
@@ -45,7 +46,7 @@ class HttpClientTest {
 
         client.sendRequest(
             HttpClient.Verb.GET,
-            url.url(),
+            url,
             headers = mapOf("User-Agent" to "CustomUA")
         )
 
@@ -59,28 +60,10 @@ class HttpClientTest {
 
         val payload = """{"Hello":"World"}"""
 
-        client.sendRequest(HttpClient.Verb.POST, url.url(), JSONObject(payload))
+        client.sendRequest(HttpClient.Verb.POST, url, JSONObject(payload))
         val response = server.takeRequest()
-        response.containsHeader("Content-Type", "application/json")
+        response.containsHeader("Content-Type", "application/json; charset=utf-8")
         response.containsBody(payload)
-    }
-
-    @Test
-    fun queueRequests() {
-        server.enqueue(MockResponse())
-
-        client.sendRequest(HttpClient.Verb.GET, url.url())
-        client.sendRequest(HttpClient.Verb.GET, url.url())
-        client.sendRequest(HttpClient.Verb.GET, url.url())
-
-        assertThat(server.requestCount).isEqualTo(0)
-
-        server.takeRequest()
-        server.takeRequest()
-        server.takeRequest()
-
-        assertThat(client.requestQueue.sequenceNumber).isEqualTo(4)
-        assertThat(server.requestCount).isEqualTo(3)
     }
 
     @Test
@@ -88,7 +71,7 @@ class HttpClientTest {
         server.enqueue(MockResponse())
 
         client.sendRequest(
-            HttpClient.Verb.POST, url.url(),
+            HttpClient.Verb.POST, url,
             parameters = mapOf(
                 "x" to "foo",
                 "y" to "bar"
@@ -98,6 +81,5 @@ class HttpClientTest {
         val response = server.takeRequest()
 
         response.containsRequestLine("POST /?x=foo&y=bar HTTP/1.1")
-        println(System.getProperty("http.agent"))
     }
 }

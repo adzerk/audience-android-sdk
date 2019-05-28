@@ -1,11 +1,7 @@
 package com.velocidi.events
 
-import com.google.gson.JsonElement
-import com.google.gson.JsonArray
-import com.google.gson.JsonSerializationContext
-import com.google.gson.JsonSerializer
+import com.google.gson.*
 import java.lang.reflect.Type
-import com.google.gson.GsonBuilder
 
 abstract class TrackingEvent(
     val type: String
@@ -13,11 +9,36 @@ abstract class TrackingEvent(
     abstract val siteId: String
     abstract val clientId: String
 
+    @Transient
+    open val gson = defaultGson
+
     /**
-     * Serializes the current data model to JSON
+     * Serializes the current data model to query parameters
      */
-    open fun serialize(): String {
-        return defaultGson.toJson(this)
+    open fun toQueryParams(): Map<String, String> {
+        val evt = gson.toJsonTree(this)
+
+        fun toQueryParamsAux(elem: JsonElement, qs: MutableMap<String, String>, path: String) {
+            when (elem) {
+                is JsonObject ->
+                    for (key in elem.keySet()) {
+                        val k = if (path.isEmpty()) key else "[$key]"
+                        toQueryParamsAux(elem[key], qs, path + k)
+                    }
+                is JsonArray ->
+                    for ((index, value) in elem.asIterable().withIndex()) {
+                        val k = if (path.isEmpty()) index.toString() else "[$index]"
+                        toQueryParamsAux(value, qs, path + k)
+                    }
+                is JsonPrimitive ->
+                    qs[path] = elem.asString
+            }
+        }
+
+        val qs = mutableMapOf<String, String>()
+        toQueryParamsAux(evt, qs, "")
+
+        return qs
     }
 
     companion object {

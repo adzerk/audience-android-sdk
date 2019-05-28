@@ -2,10 +2,8 @@ package com.velocidi
 
 import android.content.Context
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
-import java.net.URI
-import java.net.URISyntaxException
-import java.net.URL
 
 data class ApplicationInfo(
     val appName: String,
@@ -74,18 +72,12 @@ object Util {
      * @param parameters Map (Key/Value) of parameters to be added
      * @return URL with the new parameters
      */
-    @Throws(URISyntaxException::class)
-    fun URL.appendToUrl(parameters: Map<String, String>): URL {
+    fun Uri.appendToUrl(parameters: Map<String, String>): Uri {
         if (parameters.isEmpty())
             return this
 
-        val uri = this.toURI()
-        val query = uri.query
-
-        val params: List<String> = parameters.map { (k, v) -> "$k=$v" }
-
-        val queryParams = (listOfNotNull(query) + params).joinToString("&")
-
-        return URI(uri.scheme, uri.authority, uri.path, queryParams, uri.fragment).toURL()
+        val builder = this.buildUpon()
+        parameters.forEach { (k, v) -> builder.appendQueryParameter(k, v) }
+        return builder.build()
     }
 }

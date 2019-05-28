@@ -1,6 +1,6 @@
 package com.velocidi
 
-import java.net.URL
+import android.net.Uri
 
 /**
  * Class with all the necessary logic to correctly initialize and customize the SDK
@@ -10,15 +10,19 @@ import java.net.URL
  */
 class Config(val track: Channel, val match: Channel) {
 
-    constructor(url: URL) : this(
+    constructor(url: Uri) : this(
         Channel(parseUrl(url, "tr", "events"), true),
         Channel(parseUrl(url, "match", "match"), true)
     )
 
     companion object {
 
-        private fun parseUrl(url: URL, prefix: String, endpoint: String): URL =
-            URL(url.protocol, "$prefix.${url.host}", url.port, "/$endpoint")
+        private fun parseUrl(url: Uri, prefix: String, endpoint: String): Uri =
+            Uri.Builder()
+                .scheme(url.scheme)
+                .encodedAuthority("$prefix.${url.host}")
+                .appendEncodedPath(endpoint)
+                .build()
     }
 }
 
@@ -28,4 +32,4 @@ class Config(val track: Channel, val match: Channel) {
  * @property host endpoint URL
  * @property enabled
  */
-data class Channel(val host: URL, val enabled: Boolean)
+data class Channel(val host: Uri, val enabled: Boolean)
