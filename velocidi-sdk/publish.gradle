@@ -73,7 +73,7 @@ release {
 
     git {
         signTag = true
-        requireBranch = 'travis-ci'
+        requireBranch = 'master'
         pushToRemote = ''
     }
 }
