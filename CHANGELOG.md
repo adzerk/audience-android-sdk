@@ -29,7 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 ### Deprecated
-- Deprecated Volley in favor of OkHttp ([#6](https://github.com/velocidi/velocidi-android-sdk/pull/6)).
+- Deprecated Volley in favor of OkHttp ([#7](https://github.com/velocidi/velocidi-android-sdk/pull/7)).
 
 ### Removed
 
