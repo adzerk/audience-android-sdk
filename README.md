@@ -48,7 +48,7 @@ class SampleApplication : Application() {
 
         val config = Config(URL("https://cdp.test.com"))
 
-        Velocidi.start(config, this)
+        Velocidi.init(config, this)
     }
 }
 ```
@@ -62,7 +62,7 @@ class SampleApplication : Application() {
         val matchEndpoint = Channel(URL("https://match.cdp.test.com"), true)
         val config = Config(trackEndpoint, matchEndpoint)
 
-        Velocidi.start(config, this)
+        Velocidi.init(config, this)
     }
 }
 ```
