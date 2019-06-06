@@ -46,7 +46,7 @@ class SampleApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        val config = Config(URL("http://test.com"))
+        val config = Config(URL("https://cdp.test.com"))
 
         Velocidi.start(config, this)
     }
@@ -58,8 +58,8 @@ class SampleApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        val trackEndpoint = Channel(URL("http://tr.test.com"), true)
-        val matchEndpoint = Channel(URL("http://match.test.com"), true)
+        val trackEndpoint = Channel(URL("https://tr.cdp.test.com"), true)
+        val matchEndpoint = Channel(URL("https://match.cdp.test.com"), true)
         val config = Config(trackEndpoint, matchEndpoint)
 
         Velocidi.start(config, this)
