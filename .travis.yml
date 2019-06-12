@@ -29,7 +29,8 @@ install:
   - 'git diff --exit-code'
 
 script:
-  - "./gradlew test jacocoTestReport"
+  - ./gradlew test jacocoTestReport
+  - cat docs/README_HEADER.md docs/README_BODY.md | diff README.md -
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
