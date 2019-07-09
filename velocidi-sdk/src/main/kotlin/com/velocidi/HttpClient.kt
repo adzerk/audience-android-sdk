@@ -82,7 +82,7 @@ internal class HttpClient {
     }
 }
 
-interface ResponseListener {
+internal interface ResponseListener {
     fun onError(ex: Exception)
 
     fun onResponse(response: String)

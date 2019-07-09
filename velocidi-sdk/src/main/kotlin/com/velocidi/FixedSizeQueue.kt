@@ -9,7 +9,7 @@ import java.util.LinkedList
  * @param E type of elements held in the queue
  * @property limit queue max size
  */
-class FixedSizeQueue<E>(private val limit: Int) : LinkedList<E>() {
+internal class FixedSizeQueue<E>(private val limit: Int) : LinkedList<E>() {
 
     override fun add(element: E): Boolean {
         val added = super.add(element)

@@ -5,14 +5,14 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 
-data class ApplicationInfo(
+internal data class ApplicationInfo(
     val appName: String,
     val appVersion: String,
     val androidSDK: String,
     val device: String
 )
 
-object Util {
+internal object Util {
     /**
      * Obtains the necessary information to build the User-Agent(UA)
      *

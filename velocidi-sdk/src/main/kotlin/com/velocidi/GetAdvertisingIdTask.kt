@@ -5,7 +5,7 @@ import android.os.AsyncTask
 import android.util.Log
 import com.google.android.gms.ads.identifier.AdvertisingIdClient
 
-data class AdvertisingInfo(val id: String, val shouldTrack: Boolean)
+internal data class AdvertisingInfo(val id: String, val shouldTrack: Boolean)
 
 /**
  * Class responsible for obtaining the Google Advertising Id

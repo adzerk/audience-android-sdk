@@ -4,18 +4,18 @@ import com.google.gson.*
 import java.lang.reflect.Type
 
 abstract class TrackingEvent(
-    val type: String
+    internal val type: String
 ) {
     abstract val siteId: String
     abstract val clientId: String
 
     @Transient
-    open val gson = defaultGson
+    internal open val gson = defaultGson
 
     /**
      * Serializes the current data model to query parameters
      */
-    open fun toQueryParams(): Map<String, String> {
+    internal open fun toQueryParams(): Map<String, String> {
         val evt = gson.toJsonTree(this)
 
         fun toQueryParamsAux(elem: JsonElement, qs: MutableMap<String, String>, path: String) {
@@ -41,7 +41,7 @@ abstract class TrackingEvent(
         return qs
     }
 
-    companion object {
+    internal companion object {
         val defaultGson =
             GsonBuilder()
                 .registerTypeHierarchyAdapter(Collection::class.java, CollectionAdapter())
