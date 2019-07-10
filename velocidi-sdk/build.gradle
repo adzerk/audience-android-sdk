@@ -99,8 +99,10 @@ task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest', 'crea
 }
 
 dokka {
-    outputFormat = 'html'
+    outputFormat = 'kotlin-website-html'
     outputDirectory = "$buildDir/javadoc"
+    includes = ["$projectDir/Module.md"]
+    reportUndocumented = false
 }
 
 apply from: "./publish.gradle"
