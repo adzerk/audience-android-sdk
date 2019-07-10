@@ -15,7 +15,7 @@ class Config(val track: Channel, val match: Channel) {
         Channel(parseUrl(url, "match", "match"), true)
     )
 
-    companion object {
+    internal companion object {
 
         private fun parseUrl(url: Uri, prefix: String, endpoint: String): Uri =
             Uri.Builder()

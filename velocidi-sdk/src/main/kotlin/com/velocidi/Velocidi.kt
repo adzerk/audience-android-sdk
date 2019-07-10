@@ -20,15 +20,15 @@ import java.util.Queue
  *
  * @param context Android application context
  */
-open class Velocidi constructor(val config: Config, context: Context) {
+open class Velocidi internal constructor(val config: Config, context: Context) {
 
     private val client = HttpClient()
 
     private val appInfo = Util.getApplicationInfo(context)
 
-    val queue: Queue<Request> = FixedSizeQueue(300)
+    internal val queue: Queue<Request> = FixedSizeQueue(300)
 
-    lateinit var adInfo: AdvertisingInfo
+    internal lateinit var adInfo: AdvertisingInfo
 
     init {
         // Start fetching the Advertising Id when Velocidi is instantiated
@@ -41,14 +41,14 @@ open class Velocidi constructor(val config: Config, context: Context) {
      *
      * @param context Android application context
      */
-    protected open fun fetchAndSetAdvertisingId(context: Context) {
+    internal open fun fetchAndSetAdvertisingId(context: Context) {
         GetAdvertisingIdTask { advertisingInfo ->
             this@Velocidi.adInfo = advertisingInfo
             emptyTaskQueue()
         }.execute(context)
     }
 
-    protected fun emptyTaskQueue() {
+    internal fun emptyTaskQueue() {
         while (queue.size != 0) {
             handleTask(queue.remove())
         }
@@ -169,7 +169,7 @@ open class Velocidi constructor(val config: Config, context: Context) {
 }
 
 // ADT with the supported requests
-sealed class Request {
+internal sealed class Request {
     data class TrackRequest(val attributes: TrackingEvent) : Request()
     data class MatchRequest(val providerId: String, val userIds: List<UserId>) : Request() {
         fun toQueryParams(): Map<String, String> {
