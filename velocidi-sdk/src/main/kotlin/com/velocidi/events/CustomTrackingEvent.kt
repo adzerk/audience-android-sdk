@@ -4,6 +4,15 @@ import com.google.gson.*
 import org.json.JSONObject
 import java.lang.reflect.Type
 
+/**
+ * Custom event
+ *
+ * @property siteId Client's site identifier
+ * @property clientId Client identifier
+ * @property extraAttributes Event attributes
+ *
+ * @param eventType Event type
+ */
 class CustomTrackingEvent(
     eventType: String,
     override val siteId: String,
@@ -14,6 +23,12 @@ class CustomTrackingEvent(
     @Transient
     override val gson = defaultGson
 
+    /**
+     * Add atribute to event
+     *
+     * @param key Attribute key
+     * @param value Attribute value
+     */
     fun appendProperty(key: String, value: Any) =
         extraAttributes.accumulate(key, value)
 

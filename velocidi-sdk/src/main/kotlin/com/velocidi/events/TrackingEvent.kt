@@ -3,10 +3,22 @@ package com.velocidi.events
 import com.google.gson.*
 import java.lang.reflect.Type
 
+/**
+ * Base event
+ *
+ * @property type Event type
+ */
 abstract class TrackingEvent(
     internal val type: String
 ) {
+    /**
+     * Client's site identifier
+     */
     abstract val siteId: String
+
+    /**
+     * Client identifier
+     */
     abstract val clientId: String
 
     @Transient
