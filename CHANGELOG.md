@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
- 
+ - Add documentation website ([#11](https://github.com/velocidi/velocidi-android-sdk/pull/11)).
 ### Changed
 
 ### Deprecated
