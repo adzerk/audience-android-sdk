@@ -1,0 +1,15 @@
+{
+  "engineStrict": true,
+  "engines": {
+    "node": ">=10.6.0",
+    "npm": "NO LONGER USED - Please use yarn"
+  },
+  "devDependencies": {
+    "vuepress": "^1.0.2"
+  },
+  "scripts": {
+    "generate-docs": "cd .. && ./gradlew :velocidi-sdk:dokka",
+    "dev": "yarn run generate-docs && cp -R ../velocidi-sdk/build/docs/velocidi-sdk/ temp && cp -R .vuepress temp && vuepress dev temp",
+    "clean": "rm -R temp && rm -R ../velocidi-sdk/build/docs/" 
+  }
+}
