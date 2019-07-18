@@ -11,7 +11,7 @@
     "generate-docs": "cd .. && ./gradlew :velocidi-sdk:dokka",
     "import-docs": "cp -R ../velocidi-sdk/build/docs/velocidi-sdk/ temp && cp -R .vuepress temp",
     "dev": "yarn run generate-docs && yarn run import-docs && vuepress dev temp",
-    "clean": "rm -R temp && rm -R ../velocidi-sdk/build/docs/",
+    "clean": "rm -Rf temp && rm -Rf ../velocidi-sdk/build/docs/",
     "dist": "yarn run clean && yarn run generate-docs && yarn run import-docs && vuepress build temp"
   }
 }
