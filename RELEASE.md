@@ -11,3 +11,4 @@ This document describes the process for releasing and deploying a new sdk versio
 1. Enter the new version for the SDK. By default it increments the patch version.
 1. Execute `git push && git push --tags`.    `
 1. Visit [Sonatype Nexus](https://oss.sonatype.org/) and verify if everything is as expected.
+1. Deploy documentation website by running `sh docs/deploy/`.

@@ -61,3 +61,5 @@ fastlane/readme.md
 
 # Project related files
 velocidi-sdk/velocidi-sdk-cache
+node_modules/
+docs/temp/
