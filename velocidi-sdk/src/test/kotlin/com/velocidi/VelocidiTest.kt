@@ -51,7 +51,7 @@ class VelocidiTest {
         Velocidi.getInstance().track(PageView("site1", "clientId1"))
 
         val response = server.takeRequest()
-        response.containsRequestLine("GET /tr?&clientId=clientId1&type=pageView&cookies=false&id_gaid=123 HTTP/1.1")
+        response.containsRequestLine("GET /tr?siteId=site1&clientId=clientId1&type=pageView&cookies=false&id_gaid=123 HTTP/1.1")
     }
 
     @Test
