@@ -94,7 +94,7 @@ Velocidi.getInstance().track(CustomTrackingEventFactory.buildFromJSON(event))
 ### Match
 
 The `match` method allows you to identify a user across mutiple channels.
-Internally, the SDK is identifying a user based on its [Advertising ID](http://www.androiddocs.com/google/play-services/id.html).
+Internally, the SDK is identifying a user based on its [Advertising ID](https://support.google.com/googleplay/android-developer/answer/6048248).
 By performing a match between an Advertising Id and your custom Id (e.g. e-mail hashes or CRM IDs), 
 you are telling Velocidi CDP that these are the same user and all the information retrieved with either one of these IDs belongs to the same user.
 
