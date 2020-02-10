@@ -1,5 +1,5 @@
 # Velocidi SDK
-[![Build Status](https://travis-ci.com/velocidi/velocidi-android-sdk.svg?branch=master)](https://travis-ci.com/velocidi/velocidi-android-sdk)
+![Build Status](https://github.com/velocidi/velocidi-android-sdk/workflows/Android%20CI/badge.svg)
 [![codecov](https://codecov.io/gh/velocidi/velocidi-android-sdk/branch/master/graph/badge.svg)](https://codecov.io/gh/velocidi/velocidi-android-sdk)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.velocidi/velocidi-android-sdk/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.velocidi/velocidi-android-sdk)
 
