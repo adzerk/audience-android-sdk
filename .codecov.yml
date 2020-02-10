@@ -4,3 +4,6 @@ codecov:
 
 ignore:
   - "velocidi-sdk/src/main/kotlin/com/velocidi/events"
+
+coverage:
+  range: "50...75"
