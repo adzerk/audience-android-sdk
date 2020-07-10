@@ -76,13 +76,14 @@ This method is expecting a tracking event with the event details. For more infor
 Velocidi.getInstance().track(PageView("MobileApp", "client1"))
 ```
 
-It also accepts custom tracking events in a json format:
+It also accepts custom tracking events in a JSON format. Custom events should have type `"custom"` and a field `"customType"` with their custom event type:
 
 ```kotlin
 val event =
     """
     {
-      "type": "customEvent",
+      "type": "custom",
+      "customType": "customType",
       "siteId": "MobileApp",
       "clientId": "client1"
     }
