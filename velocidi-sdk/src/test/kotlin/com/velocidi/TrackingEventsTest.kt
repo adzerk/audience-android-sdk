@@ -381,14 +381,16 @@ class TrackingEventsTest {
         val event = mutableMapOf(
             "siteId" to "0",
             "clientId" to "0",
-            "type" to "subscription"
+            "type" to "subscription",
+            "duration" to "180"
         )
         event.putAll(defaultProduct.mapKeys { (k, _) -> "products[0]$k" })
         event.putAll(defaultTransaction)
 
         val eventObj = Subscription(
             siteId = "0",
-            clientId = "0"
+            clientId = "0",
+            duration = 180
         )
         eventObj.products = listOf(defaultProductObj)
         eventObj.transaction = defaultTransactionObj

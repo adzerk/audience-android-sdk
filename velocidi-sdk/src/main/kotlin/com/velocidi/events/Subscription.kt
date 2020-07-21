@@ -5,10 +5,12 @@ package com.velocidi.events
  *
  * @property siteId Client's site identifier
  * @property clientId Client identifier
+ * @property duration subscription duration in days
  */
 data class Subscription(
     override val siteId: String,
-    override val clientId: String
+    override val clientId: String,
+    val duration: Int
 ) : TrackingEvent("subscription") {
 
     /**
