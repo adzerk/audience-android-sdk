@@ -13,7 +13,7 @@ To install the SDk in your application you just need to add the following depend
 
 ```gradle
 dependencies {
-    implementation 'com.velocidi:velocidi-android-sdk:0.0.1'
+    implementation 'com.velocidi:velocidi-android-sdk:0.2.0'
 }
 ```
 
