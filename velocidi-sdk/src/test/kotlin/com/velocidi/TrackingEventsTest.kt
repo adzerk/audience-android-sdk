@@ -153,6 +153,30 @@ class TrackingEventsTest {
     }
 
     @Test
+    fun appViewEventSerialization() {
+        val event = mapOf(
+            "type" to "appView",
+            "siteId" to "0",
+            "clientId" to "0",
+            "location" to "mylocation",
+            "title" to "My page",
+            "pageType" to "homepage",
+            "category" to "shopping"
+        )
+
+        val eventObj = AppView(
+            siteId = "0",
+            clientId = "0",
+            location = "mylocation"
+        )
+        eventObj.title = "My page"
+        eventObj.pageType = "homepage"
+        eventObj.category = "shopping"
+
+        assertThat(event).isEqualTo(eventObj.toQueryParams())
+    }
+
+    @Test
     fun searchEventSerialization() {
         val event = mapOf(
             "type" to "search",
