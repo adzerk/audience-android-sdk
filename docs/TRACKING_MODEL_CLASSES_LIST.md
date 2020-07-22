@@ -1,5 +1,6 @@
 # Available tracking events model classes
 * `AddToCart`
+* `AppView`
 * `PageView`
 * `ProductClick`
 * `ProductCustomization`
