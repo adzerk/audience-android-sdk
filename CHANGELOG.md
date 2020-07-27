@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
+ - Add orderPlace event and remove subscription event([#25](https://github.com/velocidi/velocidi-android-sdk/pull/25)).
 
 ### Changed
 

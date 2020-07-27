@@ -1,6 +1,7 @@
 # Available tracking events model classes
 * `AddToCart`
 * `AppView`
+* `OrderPlace`
 * `PageView`
 * `ProductClick`
 * `ProductCustomization`
@@ -12,4 +13,3 @@
 * `Refund`
 * `RemoveFromCart`
 * `Search`
-* `Subscription`

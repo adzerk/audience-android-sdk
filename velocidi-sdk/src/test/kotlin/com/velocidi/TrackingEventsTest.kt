@@ -66,6 +66,75 @@ class TrackingEventsTest {
         it.paymentDetails = "Visa"
     }
 
+    private val defaultLineItem = mapOf(
+        "[name]" to "My product",
+        "[brand]" to "Velocidi",
+        "[productType]" to "Clothes",
+        "[currency]" to "EUR",
+        "[total]" to "12.99",
+        "[subtotal]" to "85.0",
+        "[tax]" to "14.17",
+        "[shipping]" to "11.0",
+        "[refund]" to "0.0",
+        "[quantity]" to "1",
+        "[itemGroupId]" to "liGroup1",
+        "[discount][percentage]" to "0.1",
+        "[adult]" to "false",
+        "[id]" to "p1",
+        "[subscriptionDuration]" to "30"
+    )
+
+    private val defaultLineItemObj =
+        LineItem(
+            id = "p1",
+            currency = "EUR",
+            total = 12.99,
+            subtotal = 85.0,
+            tax = 14.17,
+            shipping = 11.0
+        ).also {
+            it.refund = 0.0
+            it.name = "My product"
+            it.productType = "Clothes"
+            it.brand = "Velocidi"
+            it.discount = PercentageDiscount(0.1)
+            it.itemGroupId = "liGroup1"
+            it.subscriptionDuration = 30
+        }
+
+    private val defaultOrder = mapOf(
+        "order[id]" to "or123",
+        "order[currency]" to "USD",
+        "order[total]" to "24.99",
+        "order[subtotal]" to "16.94",
+        "order[tax]" to "5.06",
+        "order[shipping]" to "2.99",
+        "order[discount][value]" to "2.0",
+        "order[discount][currency]" to "USD",
+        "order[refund]" to "0.0",
+        "order[paymentMethod]" to "Visa",
+        "order[shippingMethod]" to "DHL",
+        "order[shippingCountry]" to "France",
+        "order[promotions][0]" to "WINTERSALE"
+    )
+
+    private val defaultOrderObj =
+        Order(
+            id = "or123",
+            currency = "USD",
+            total = 24.99,
+            tax = 5.06,
+            subtotal = 16.94,
+            shipping = 2.99,
+            discount = ValueDiscount(2.0, "USD"),
+            refund = 0.0
+        ).also {
+            it.paymentMethod = "Visa"
+            it.shippingMethod = "DHL"
+            it.shippingCountry = "France"
+            it.promotions = listOf("WINTERSALE")
+        }
+
     @Test
     fun customTrackingEventFactory() {
 
@@ -371,23 +440,21 @@ class TrackingEventsTest {
     }
 
     @Test
-    fun subscriptionEventSerialization() {
+    fun orderPlaceEventSerialization() {
         val event = mutableMapOf(
             "siteId" to "0",
             "clientId" to "0",
-            "type" to "subscription",
-            "duration" to "180"
+            "type" to "orderPlace"
         )
-        event.putAll(defaultProduct.mapKeys { (k, _) -> "products[0]$k" })
-        event.putAll(defaultTransaction)
+        event.putAll(defaultLineItem.mapKeys { (k, _) -> "lineItems[0]$k" })
+        event.putAll(defaultOrder)
 
-        val eventObj = Subscription(
+        val eventObj = OrderPlace(
             siteId = "0",
-            clientId = "0",
-            duration = 180
+            clientId = "0"
         )
-        eventObj.products = listOf(defaultProductObj)
-        eventObj.transaction = defaultTransactionObj
+        eventObj.lineItems = listOf(defaultLineItemObj)
+        eventObj.order = defaultOrderObj
 
         assertThat(event).isEqualTo(eventObj.toQueryParams())
     }
