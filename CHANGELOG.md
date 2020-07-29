@@ -22,41 +22,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Infrastructural
 
 
-## [Unreleased]
-### Added
-
-### Changed
-
-### Deprecated
-
-### Removed
-
-### Fixed
-
-### Security
-
-### Infrastructural
-
-
 ## [0.3.0] - 2020-07-27
 ### Added
  - Add orderPlace event and remove subscription event([#25](https://github.com/velocidi/velocidi-android-sdk/pull/25)).
-
-### Changed
-
-### Deprecated
-
-### Removed
-
-### Fixed
-
-### Security
-
-### Infrastructural
-
-
-## [Unreleased]
-### Added
 
 ### Changed
 
