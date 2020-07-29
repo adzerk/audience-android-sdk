@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Deprecated
 
 ### Removed
+- Remove `Purchase` and `Refund` events([#28](https://github.com/velocidi/velocidi-android-sdk/pull/28)).
 
 ### Fixed
 
