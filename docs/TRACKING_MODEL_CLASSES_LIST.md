@@ -9,7 +9,5 @@
 * `ProductImpression`
 * `ProductView`
 * `ProductViewDetails`
-* `Purchase`
-* `Refund`
 * `RemoveFromCart`
 * `Search`

@@ -37,35 +37,6 @@ class TrackingEventsTest {
         it.unsafe = false
     }
 
-    private val defaultTransaction = mapOf(
-        "transaction[price]" to "15.59",
-        "transaction[recurrence]" to "0 0 1 * *",
-        "transaction[currency]" to "EUR",
-        "transaction[tax]" to "2.99",
-        "transaction[shipping]" to "4.59",
-        "transaction[paymentMethod]" to "credit",
-        "transaction[paymentDetails]" to "Visa",
-        "transaction[id]" to "tr1",
-        "transaction[voucher][percentage]" to "10",
-        "transaction[voucher][value]" to "5.0",
-        "transaction[voucher][id]" to "WINTERSALE"
-    )
-
-    private val defaultTransactionObj = Transaction(id = "tr1").also {
-        val voucher = Transaction.Properties.Voucher("WINTERSALE")
-        voucher.percentage = 10
-        voucher.value = 5.0
-
-        it.price = 15.59
-        it.recurrence = "0 0 1 * *"
-        it.currency = "EUR"
-        it.tax = 2.99
-        it.shipping = 4.59
-        it.voucher = voucher
-        it.paymentMethod = "credit"
-        it.paymentDetails = "Visa"
-    }
-
     private val defaultLineItem = mapOf(
         "[name]" to "My product",
         "[brand]" to "Velocidi",
@@ -420,26 +391,6 @@ class TrackingEventsTest {
     }
 
     @Test
-    fun purchaseEventSerialization() {
-        val event = mutableMapOf(
-            "siteId" to "0",
-            "clientId" to "0",
-            "type" to "purchase"
-        )
-        event.putAll(defaultProduct.mapKeys { (k, _) -> "products[0]$k" })
-        event.putAll(defaultTransaction)
-
-        val eventObj = Purchase(
-            siteId = "0",
-            clientId = "0"
-        )
-        eventObj.products = listOf(defaultProductObj)
-        eventObj.transaction = defaultTransactionObj
-
-        assertThat(event).isEqualTo(eventObj.toQueryParams())
-    }
-
-    @Test
     fun orderPlaceEventSerialization() {
         val event = mutableMapOf(
             "siteId" to "0",
@@ -455,28 +406,6 @@ class TrackingEventsTest {
         )
         eventObj.lineItems = listOf(defaultLineItemObj)
         eventObj.order = defaultOrderObj
-
-        assertThat(event).isEqualTo(eventObj.toQueryParams())
-    }
-
-    @Test
-    fun refundEventSerialization() {
-        val event = mutableMapOf(
-            "siteId" to "0",
-            "clientId" to "0",
-            "refundType" to "partial",
-            "type" to "refund"
-        )
-        event.putAll(defaultProduct.mapKeys { (k, _) -> "products[0]$k" })
-        event.putAll(defaultTransaction)
-
-        val eventObj = Refund(
-            siteId = "0",
-            clientId = "0",
-            refundType = "partial"
-        )
-        eventObj.products = listOf(defaultProductObj)
-        eventObj.transaction = defaultTransactionObj
 
         assertThat(event).isEqualTo(eventObj.toQueryParams())
     }
