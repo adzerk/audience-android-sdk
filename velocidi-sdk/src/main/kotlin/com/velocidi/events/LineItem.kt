@@ -49,9 +49,9 @@ data class LineItem(
     var brand: String? = null
 
     /**
-     * Line item type (category)
+     * Line item category
      */
-    var productType: String? = null
+    var category: String? = null
 
     /**
      * Possible discount applied to the line item.

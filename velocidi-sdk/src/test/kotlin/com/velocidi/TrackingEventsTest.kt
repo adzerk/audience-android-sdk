@@ -69,7 +69,7 @@ class TrackingEventsTest {
     private val defaultLineItem = mapOf(
         "[name]" to "My product",
         "[brand]" to "Velocidi",
-        "[productType]" to "Clothes",
+        "[category]" to "Clothes",
         "[currency]" to "EUR",
         "[total]" to "12.99",
         "[subtotal]" to "85.0",
@@ -95,7 +95,7 @@ class TrackingEventsTest {
         ).also {
             it.refund = 0.0
             it.name = "My product"
-            it.productType = "Clothes"
+            it.category = "Clothes"
             it.brand = "Velocidi"
             it.discount = PercentageDiscount(0.1)
             it.itemGroupId = "liGroup1"
