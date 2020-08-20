@@ -52,20 +52,6 @@ class SampleApplication : Application() {
     }
 }
 ```
-You can also have a more granular control over the supported channels:
-```kotlin
-class SampleApplication : Application() {
-    override fun onCreate() {
-        super.onCreate()
-
-        val trackEndpoint = Channel(URL("https://tr.cdp.test.com"), true)
-        val matchEndpoint = Channel(URL("https://match.cdp.test.com"), true)
-        val config = Config(trackEndpoint, matchEndpoint)
-
-        Velocidi.init(config, this)
-    }
-}
-```
 
 ### Track
 
