@@ -37,7 +37,8 @@ internal open class GetAdvertisingIdTask(val listener: (AdvertisingInfo) -> Unit
         return try {
             getAdvertisingId(context)
         } catch (e: Exception) {
-            throw Exception("Unable to collect advertising ID from Google Play Services.")
+            Log.w(Constants.LOG_TAG, "Unable to collect advertising ID from Google Play Services.")
+            AdvertisingInfo("", false)
         }
     }
 
