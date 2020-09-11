@@ -21,6 +21,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Infrastructural
 
 
+## [0.4.1] - 2020-09-11
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+ - Don't throw exception when ad id is unavailable ([#33](https://github.com/velocidi/velocidi-android-sdk/pull/33).
+
+### Security
+
+### Infrastructural
+
+
 ## [0.4.0] - 2020-07-29
 ### Added
 
