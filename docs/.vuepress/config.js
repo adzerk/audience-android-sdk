@@ -12,7 +12,8 @@ module.exports = {
     nav: [
       { text: 'Developers Documentation', link: 'https://developers.velocidi.com' },
       { text: 'Product Documentation', link: 'https://docs.velocidi.com' },
-      { text: 'Velocidi', link: 'https://velocidi.com' }
+      { text: 'Velocidi', link: 'https://velocidi.com' },
+      { text: 'Github', link: 'https://github.com/velocidi/velocidi-android-sdk' }
     ]
   }
 };
