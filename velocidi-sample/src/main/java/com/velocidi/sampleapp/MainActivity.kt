@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity() {
 //                }
 //                """.trimIndent()
 
-            Velocidi.getInstance().track(PageView("MobileApp", "client1"))
+            Velocidi.getInstance().track(UserId("test"), PageView("MobileApp", "client1"))
 
             // OR
             // Velocidi.getInstance().track(CustomTrackingEventFactory.buildFromJSON(event))

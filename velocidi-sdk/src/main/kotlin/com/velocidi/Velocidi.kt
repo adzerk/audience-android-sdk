@@ -2,9 +2,7 @@ package com.velocidi
 
 import android.Manifest
 import android.content.Context
-import com.velocidi.Util.appendToUrl
 import com.velocidi.events.*
-import java.util.Queue
 
 /**
  * Class with the main Velocidi SDK logic.
@@ -26,44 +24,6 @@ open class Velocidi internal constructor(val config: Config, context: Context) {
 
     private val appInfo = Util.getApplicationInfo(context)
 
-    internal val queue: Queue<Request> = FixedSizeQueue(300)
-
-    internal lateinit var adInfo: AdvertisingInfo
-
-    init {
-        // Start fetching the Advertising Id when Velocidi is instantiated
-        fetchAndSetAdvertisingId(context)
-    }
-
-    /**
-     * Initialize the retrieval of the Advertising Id
-     * When it finished, flushes the queue of pending request
-     *
-     * @param context Android application context
-     */
-    internal open fun fetchAndSetAdvertisingId(context: Context) {
-        GetAdvertisingIdTask { advertisingInfo ->
-            this@Velocidi.adInfo = advertisingInfo
-            emptyTaskQueue()
-        }.execute(context)
-    }
-
-    internal fun emptyTaskQueue() {
-        while (queue.size != 0) {
-            handleTask(queue.remove())
-        }
-    }
-
-    /**
-     * Tries to execute a request. If the Advertising Id is still pending then the request is added to a queue
-     * of pending requests
-     *
-     * @param req Task to be executed when the Advertising Id is set
-     */
-    private fun runTask(req: Request) {
-        if (::adInfo.isInitialized) handleTask(req) else queue.add(req)
-    }
-
     /**
      * Executes a request
      * Currently, only supports Track and Match requests
@@ -71,35 +31,32 @@ open class Velocidi internal constructor(val config: Config, context: Context) {
      * @param req Request to be process
      */
     private fun handleTask(req: Request) {
-        if (!adInfo.shouldTrack) return
-
         val headers =
             mapOf(
                 "User-Agent" to Util.buildUserAgent(appInfo)
             )
 
-        val params = mapOf("cookies" to "false", "id_gaid" to adInfo.id)
+        val commonParams = mapOf("cookies" to "false")
 
         return when (req) {
             is Request.TrackRequest ->
                 if (config.track.enabled) {
-                    val urlWithParams =
-                        config.track.host.appendToUrl(req.attributes.toQueryParams())
+                    val entity = commonParams + req.event.toQueryParams() + req.userId.toPair()
                     client.sendRequest(
                         HttpClient.Verb.GET,
-                        urlWithParams,
-                        parameters = params,
+                        config.track.host,
+                        parameters = entity,
                         headers = headers
                     )
                 } else return
             is Request.MatchRequest ->
                 if (config.match.enabled) {
-                    val urlWithParams = config.match.host.appendToUrl(req.toQueryParams())
+                    val entity = commonParams + req.toQueryParams()
 
                     client.sendRequest(
                         HttpClient.Verb.GET,
-                        urlWithParams,
-                        parameters = params,
+                        config.match.host,
+                        parameters = entity,
                         headers = headers
                     )
                 } else return
@@ -109,22 +66,27 @@ open class Velocidi internal constructor(val config: Config, context: Context) {
     /**
      * Collects activity performed by the user in the Android application
      *
-     * @param attributes json object with event information
+     * For more information, see https://docs.velocidi.com/collect/methods
+     *
+     * @param userId User identifier
+     * @param event Event performed by the user
      */
-    fun track(event: TrackingEvent) {
-        val request = Request.TrackRequest(event)
-        runTask(request)
+    fun track(userId: UserId, event: TrackingEvent) {
+        val request = Request.TrackRequest(userId, event)
+        handleTask(request)
     }
 
     /**
-     * Match Google Advertising Id with the list of provided user ids
+     * Identify a user across multiple channels
+     *
+     * For more information, see https://docs.velocidi.com/collect/matches
      *
      * @param providerId Id of the match provider
-     * @param userIds List of user ids to be linked along with Advertising Id
+     * @param userIds List of user ids to be linked
      */
     fun match(providerId: String, userIds: List<UserId>) {
         val request = Request.MatchRequest(providerId, userIds)
-        runTask(request)
+        handleTask(request)
     }
 
     companion object {
@@ -171,13 +133,11 @@ open class Velocidi internal constructor(val config: Config, context: Context) {
 
 // ADT with the supported requests
 internal sealed class Request {
-    data class TrackRequest(val attributes: TrackingEvent) : Request()
+    data class TrackRequest(val userId: UserId, val event: TrackingEvent) : Request()
     data class MatchRequest(val providerId: String, val userIds: List<UserId>) : Request() {
         fun toQueryParams(): Map<String, String> {
-            val params = mutableMapOf<String, String>()
-            params["providerId"] = providerId
-            userIds.forEach { params["id_${it.type}"] = it.id }
-            return params
+            val userIdsMap = userIds.map { it.toPair() }.toMap()
+            return userIdsMap + Pair("providerId", providerId)
         }
     }
 }
