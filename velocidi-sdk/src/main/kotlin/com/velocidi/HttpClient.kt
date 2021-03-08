@@ -2,12 +2,12 @@ package com.velocidi
 
 import android.net.Uri
 import android.util.Log
-import org.json.JSONObject
-import java.lang.Exception
 import com.velocidi.Util.appendToUrl
+import java.io.IOException
+import java.lang.Exception
 import okhttp3.*
 import okhttp3.Request
-import java.io.IOException
+import org.json.JSONObject
 
 /**
  * Http Client based on Android Volley
@@ -39,9 +39,9 @@ internal class HttpClient {
         listener: ResponseListener = defaultListener
     ) {
         val urlWithParams = url.appendToUrl(parameters)
-        val body = if (verb == Verb.POST)
+        val body = if (verb == Verb.POST) {
             RequestBody.create(JSON_MEDIA_TYPE, payload?.toString() ?: "")
-        else null
+        } else null
 
         val req =
             Request.Builder()
@@ -50,18 +50,21 @@ internal class HttpClient {
                 .method(verb.name, body)
                 .build()
 
-        client.newCall(req).enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {
-                listener.onError(e)
-            }
+        client.newCall(req).enqueue(
+            object : Callback {
+                override fun onFailure(call: Call, e: IOException) {
+                    listener.onError(e)
+                }
 
-            override fun onResponse(call: Call, response: Response) {
-                if (!response.isSuccessful)
-                    listener.onError(Exception("Unexpected code $response"))
-                else
-                    listener.onResponse("Success: ${response.message()}")
+                override fun onResponse(call: Call, response: Response) {
+                    if (!response.isSuccessful) {
+                        listener.onError(Exception("Unexpected code $response"))
+                    } else {
+                        listener.onResponse("Success: ${response.message()}")
+                    }
+                }
             }
-        })
+        )
     }
 
     enum class Verb { GET, POST }

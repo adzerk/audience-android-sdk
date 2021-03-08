@@ -9,6 +9,7 @@ import com.velocidi.events.PageView
 import com.velocidi.util.VelocidiMockAsync
 import com.velocidi.util.VelocidiMockSync
 import com.velocidi.util.containsRequestLine
+import java.util.concurrent.TimeUnit
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Rule
 import org.junit.Test
@@ -16,7 +17,6 @@ import org.junit.rules.Timeout
 import org.junit.runner.RunWith
 import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
-import java.util.concurrent.TimeUnit
 
 @RunWith(RobolectricTestRunner::class)
 class VelocidiTest {
@@ -51,7 +51,9 @@ class VelocidiTest {
         Velocidi.getInstance().track(PageView("site1", "clientId1"))
 
         val response = server.takeRequest()
-        response.containsRequestLine("GET /tr?siteId=site1&clientId=clientId1&type=pageView&cookies=false&id_gaid=123 HTTP/1.1")
+        response.containsRequestLine(
+            "GET /tr?siteId=site1&clientId=clientId1&type=pageView&cookies=false&id_gaid=123 HTTP/1.1"
+        )
     }
 
     @Test
@@ -81,7 +83,9 @@ class VelocidiTest {
         Velocidi.getInstance().match("provider1", listOf(UserId("eml", "mail@example.com")))
 
         val response = server.takeRequest()
-        response.containsRequestLine("GET /match?providerId=provider1&id_eml=mail%40example.com&cookies=false&id_gaid=123 HTTP/1.1")
+        response.containsRequestLine(
+            "GET /match?providerId=provider1&id_eml=mail%40example.com&cookies=false&id_gaid=123 HTTP/1.1"
+        )
     }
 
     @Test
@@ -116,7 +120,6 @@ class VelocidiTest {
 
     @Test
     fun accumulateRequestWhileAdidUndefined() {
-
         val url = Uri.parse(server.url("/").toString())
 
         val config = Config(Channel(url, false), Channel(url, false))

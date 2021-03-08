@@ -1,10 +1,10 @@
 package com.velocidi
 
 import com.velocidi.events.*
-import org.junit.Test
 import org.assertj.core.api.Assertions.*
 import org.json.JSONException
 import org.json.JSONObject
+import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
@@ -108,8 +108,8 @@ class TrackingEventsTest {
 
     @Test
     fun customTrackingEventFactory() {
-
-        val event = """
+        val event =
+            """
         {
             "siteId": "0",
             "clientId": "id1",
@@ -126,7 +126,8 @@ class TrackingEventsTest {
 
     @Test(expected = JSONException::class)
     fun invalidCustomTrackingEvent() {
-        val invalidEvent = """{"siteId": "0"}"""
+        val invalidEvent =
+            """{"siteId": "0"}"""
         CustomTrackingEventFactory.buildFromJSON(invalidEvent)
     }
 
@@ -285,7 +286,6 @@ class TrackingEventsTest {
 
     @Test
     fun productViewDetailsEventSerialization() {
-
         val event = mutableMapOf(
             "siteId" to "0",
             "clientId" to "0",

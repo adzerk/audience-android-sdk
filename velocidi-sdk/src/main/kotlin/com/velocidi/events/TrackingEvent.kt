@@ -70,8 +70,9 @@ abstract class TrackingEvent(
             typeOfSrc: Type,
             context: JsonSerializationContext
         ): JsonElement? {
-            if (src == null || src.isEmpty())
+            if (src == null || src.isEmpty()) {
                 return null
+            }
 
             val array = JsonArray()
 

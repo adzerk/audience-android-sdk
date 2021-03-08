@@ -1,8 +1,8 @@
 package com.velocidi.events
 
 import com.google.gson.*
-import org.json.JSONObject
 import java.lang.reflect.Type
+import org.json.JSONObject
 
 /**
  * Custom event

@@ -58,7 +58,8 @@ class HttpClientTest {
     fun payloadRequest() {
         server.enqueue(MockResponse())
 
-        val payload = """{"Hello":"World"}"""
+        val payload =
+            """{"Hello":"World"}"""
 
         client.sendRequest(HttpClient.Verb.POST, url, JSONObject(payload))
         val response = server.takeRequest()
@@ -71,7 +72,8 @@ class HttpClientTest {
         server.enqueue(MockResponse())
 
         client.sendRequest(
-            HttpClient.Verb.POST, url,
+            HttpClient.Verb.POST,
+            url,
             parameters = mapOf(
                 "x" to "foo",
                 "y" to "bar"

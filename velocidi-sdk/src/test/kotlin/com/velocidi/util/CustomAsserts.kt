@@ -9,7 +9,9 @@ fun RecordedRequest.containsHeader(header: String, expectedHeader: String) {
         .isNotNull()
         .isNotEmpty()
         .overridingErrorMessage(
-            "Expected header to be <%s> but got <%s>.", expectedHeader, actualHeader
+            "Expected header to be <%s> but got <%s>.",
+            expectedHeader,
+            actualHeader
         )
         .isEqualTo(expectedHeader)
 }
@@ -19,7 +21,9 @@ fun RecordedRequest.containsRequestLine(expectedReqLine: String) {
         .isNotNull()
         .isNotEmpty()
         .overridingErrorMessage(
-            "Expected header to be <%s> but got <%s>.", expectedReqLine, this.requestLine
+            "Expected header to be <%s> but got <%s>.",
+            expectedReqLine,
+            this.requestLine
         )
         .isEqualTo(expectedReqLine)
 }
@@ -30,7 +34,9 @@ fun RecordedRequest.containsBody(expectedBody: String) {
         .isNotNull()
         .isNotEmpty()
         .overridingErrorMessage(
-            "Expected body to be <%s> but got <%s>.", expectedBody, body
+            "Expected body to be <%s> but got <%s>.",
+            expectedBody,
+            body
         )
         .isEqualTo(expectedBody)
 }
