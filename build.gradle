@@ -31,7 +31,7 @@ allprojects {
         mavenLocal()
         mavenCentral()
         google()
-        maven { url "https://kotlin.bintray.com/kotlinx" }
+        maven { url 'https://plugins.gradle.org/m2/' }
     }
     tasks.whenTaskAdded { theTask ->
         if (theTask.name.startsWith('compile')) {
