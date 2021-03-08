@@ -27,7 +27,10 @@ class MainActivity : AppCompatActivity() {
 //                }
 //                """.trimIndent()
 
-            Velocidi.getInstance().track(UserId("test"), PageView("MobileApp", "client1"))
+            Velocidi.getInstance().track(
+                UserId("user_email_hash", "email_sha256"),
+                PageView("MobileApp", "client1")
+            )
 
             // OR
             // Velocidi.getInstance().track(CustomTrackingEventFactory.buildFromJSON(event))
@@ -36,7 +39,10 @@ class MainActivity : AppCompatActivity() {
         matchButton.setOnClickListener {
             Velocidi.getInstance().match(
                 "someProvider",
-                listOf(UserId("eml", "useremail@example.com"))
+                listOf(
+                    UserId("user_email_hash", "email_sha256"),
+                    UserId("user_advertising_id", "gaid")
+                )
             )
         }
     }
