@@ -11,7 +11,6 @@ buildscript {
         mavenLocal()
         mavenCentral()
         google()
-        jcenter()
     }
 
     dependencies {
@@ -32,7 +31,6 @@ allprojects {
         mavenLocal()
         mavenCentral()
         google()
-        jcenter()
         maven { url "https://kotlin.bintray.com/kotlinx" }
     }
     tasks.whenTaskAdded { theTask ->
