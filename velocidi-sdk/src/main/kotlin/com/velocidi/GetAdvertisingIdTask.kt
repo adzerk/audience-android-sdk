@@ -17,7 +17,6 @@ internal open class GetAdvertisingIdTask(val listener: (AdvertisingInfo) -> Unit
 
     @Throws(Exception::class)
     open fun getAdvertisingId(context: Context): AdvertisingInfo {
-
         val adInfo = AdvertisingIdClient.getAdvertisingIdInfo(context.applicationContext)
 
         if (adInfo.isLimitAdTrackingEnabled) {

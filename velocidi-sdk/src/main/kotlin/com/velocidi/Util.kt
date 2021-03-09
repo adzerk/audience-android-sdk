@@ -73,8 +73,9 @@ internal object Util {
      * @return URL with the new parameters
      */
     fun Uri.appendToUrl(parameters: Map<String, String>): Uri {
-        if (parameters.isEmpty())
+        if (parameters.isEmpty()) {
             return this
+        }
 
         val builder = this.buildUpon()
         parameters.forEach { (k, v) -> builder.appendQueryParameter(k, v) }

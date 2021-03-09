@@ -2,8 +2,8 @@ package com.velocidi
 
 import android.Manifest
 import android.content.Context
-import com.velocidi.events.*
 import com.velocidi.Util.appendToUrl
+import com.velocidi.events.*
 import java.util.Queue
 
 /**
@@ -142,8 +142,9 @@ open class Velocidi internal constructor(val config: Config, context: Context) {
          * @return Velocidi instance
          */
         fun init(config: Config, context: Context): Velocidi {
-            if (!Util.checkPermission(context, Manifest.permission.INTERNET))
+            if (!Util.checkPermission(context, Manifest.permission.INTERNET)) {
                 throw SecurityException("Velocidi SDK requires Internet permission")
+            }
 
             instance = Velocidi(config, context)
 
