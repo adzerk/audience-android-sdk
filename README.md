@@ -85,7 +85,7 @@ ensuring the Google's privacy policy are respected. That should be the your app 
 ```kotlin
 // Match the device Advertising Id with the user's email hash
 
-Velocidi.match("someProvider", listOf(UserId("<Advertising ID>", "gaid"), UserId("<User Email Hash>@example.com", "email_sha256")))
+Velocidi.match("someProvider", listOf(UserId("<Advertising ID>", "gaid"), UserId("<User Email Hash>", "email_sha256")))
 ```
 
 For more information about Cross-Channel Matches go to https://docs.velocidi.com/collect/matches/ .

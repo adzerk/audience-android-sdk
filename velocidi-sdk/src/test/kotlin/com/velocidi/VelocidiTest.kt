@@ -79,12 +79,18 @@ class VelocidiTest {
 
         Velocidi.getInstance().match(
             "provider1",
-            listOf(UserId("123"), UserId("mail@example.com", "eml"))
+            listOf(
+                UserId("123"),
+                UserId(
+                    "81df589b1dceacc2fa7c8f536015fcdf854eee721fdf282a91ed9c4b0c54dc76",
+                    "email_sha256"
+                )
+            )
         )
 
         val response = server.takeRequest()
         response.containsRequestLine(
-            "GET /match?cookies=false&id_gaid=123&id_eml=mail%40example.com&providerId=provider1 HTTP/1.1"
+            "GET /match?cookies=false&id_gaid=123&id_email_sha256=81df589b1dceacc2fa7c8f536015fcdf854eee721fdf282a91ed9c4b0c54dc76&providerId=provider1 HTTP/1.1"
         )
     }
 
@@ -96,7 +102,16 @@ class VelocidiTest {
         val context: Context = ApplicationProvider.getApplicationContext()
         Velocidi.instance = Velocidi(config, context)
 
-        Velocidi.getInstance().match("provider1", listOf(UserId("eml", "mail@example.com")))
+        Velocidi.getInstance().match(
+            "provider1",
+            listOf(
+                UserId("123"),
+                UserId(
+                    "81df589b1dceacc2fa7c8f536015fcdf854eee721fdf282a91ed9c4b0c54dc76",
+                    "email_sha256"
+                )
+            )
+        )
 
         val response = server.takeRequest(2, TimeUnit.SECONDS)
         assertThat(response).isNull()
