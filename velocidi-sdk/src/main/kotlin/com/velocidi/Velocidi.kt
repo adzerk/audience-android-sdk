@@ -83,8 +83,12 @@ open class Velocidi internal constructor(val config: Config, context: Context) {
      *
      * @param providerId Id of the match provider
      * @param userIds List of user ids to be linked
+     * @throws IllegalArgumentException Throws when providerId is empty or userIds size is smaller than 2
      */
     fun match(providerId: String, userIds: List<UserId>) {
+        require(providerId.isNotEmpty()) { "providerId cannot be empty" }
+        require(userIds.size >= 2) { "must provide at least 2 userIds" }
+
         val request = Request.MatchRequest(providerId, userIds)
         handleTask(request)
     }

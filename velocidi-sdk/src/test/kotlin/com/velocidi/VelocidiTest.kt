@@ -8,7 +8,7 @@ import com.squareup.okhttp.mockwebserver.MockWebServer
 import com.velocidi.events.PageView
 import com.velocidi.util.containsRequestLine
 import java.util.concurrent.TimeUnit
-import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.*
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.Timeout
@@ -100,5 +100,45 @@ class VelocidiTest {
 
         val response = server.takeRequest(2, TimeUnit.SECONDS)
         assertThat(response).isNull()
+    }
+
+    @Test
+    fun throwWhenMatchDoesntMeetRequirements() {
+        val url = Uri.parse(server.url("/match").toString())
+        val config = Config(Channel(url, false), Channel(url, true))
+
+        val context: Context = ApplicationProvider.getApplicationContext()
+
+        Velocidi.instance = Velocidi(config, context)
+
+        // Empty providerId
+        assertThatThrownBy {
+            Velocidi.getInstance().match(
+                "",
+                listOf(
+                    UserId("123"),
+                    UserId(
+                        "81df589b1dceacc2fa7c8f536015fcdf854eee721fdf282a91ed9c4b0c54dc76",
+                        "email_sha256"
+                    )
+                )
+            )
+        }
+
+        val response1 = server.takeRequest(2, TimeUnit.SECONDS)
+        assertThat(response1).isNull()
+
+        // userId length < 2
+        assertThatThrownBy {
+            Velocidi.getInstance().match(
+                "provider1",
+                listOf(
+                    UserId("123")
+                )
+            )
+        }
+
+        val response2 = server.takeRequest(2, TimeUnit.SECONDS)
+        assertThat(response2).isNull()
     }
 }
