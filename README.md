@@ -13,7 +13,7 @@ To install the SDk in your application you just need to add the following depend
 
 ```gradle
 dependencies {
-    implementation 'com.velocidi:velocidi-android-sdk:0.2.0'
+    implementation 'com.velocidi:velocidi-android-sdk:0.4.1'
 }
 ```
 
@@ -24,14 +24,6 @@ In your application `AndroidManifest.xml`:
 ```xml
 <!-- Required for internet. -->
 <uses-permission android:name="android.permission.INTERNET"/>
-```
-
-In your `build.gradle` file:
-
-```gradle
-dependencies {
-  implementation 'com.google.android.gms:play-services-ads-identifier:16.0.0'
-}
 ```
 
 ## Usage
@@ -56,10 +48,10 @@ class SampleApplication : Application() {
 ### Track
 
 The `track` method allows you to collect user activity performed in your application.
-This method is expecting a tracking event with the event details. For more information check our [documentation](https://docs.velocidi.com/knowledgebase/web-and-e-commerce/)
+This method is expecting a tracking event with the event details. For more information check our [documentation](https://docs.velocidi.com/collect/events)
 
 ```kotlin
-Velocidi.getInstance().track(PageView("MobileApp", "client1"))
+Velocidi.getInstance().track(UserId("<Advertising ID>", "gaid"), PageView("MobileApp", "client1"))
 ```
 
 It also accepts custom tracking events in a JSON format. Custom events should have type `"custom"` and a field `"customType"` with their custom event type:
@@ -80,18 +72,23 @@ Velocidi.getInstance().track(CustomTrackingEventFactory.buildFromJSON(event))
 
 ### Match
 
-The `match` method allows you to identify a user across mutiple channels.
-Internally, the SDK is identifying a user based on its [Advertising ID](https://support.google.com/googleplay/android-developer/answer/6048248).
-By performing a match between an Advertising Id and your custom Id (e.g. e-mail hashes or CRM IDs), 
-you are telling Velocidi CDP that these are the same user and all the information retrieved with either one of these IDs belongs to the same user.
+The `match` method allows you to identify a user across multiple channels (Browser, Mobile App, CRM, ...).
+By performing a match between multiple ids you are telling Velocidi CDP that these are the same user 
+and all the information retrieved with either one of these IDs belongs to the same user.
+A typical use case for this is, during the login action, 
+to associate the user's email with Google's [Advertising ID](https://support.google.com/googleplay/android-developer/answer/6048248).
+
+**Please note** that Velocidi SDK is not responsible for managing opt-in/opt-out status or 
+ensuring the Google's privacy policy are respected. That should be the your app responsibility.
+
 
 ```kotlin
-// Match the device Advertising Id with the user email(useremail@example.com)
+// Match the device Advertising Id with the user's email hash
 
-Velocidi.match("someProvider", listOf(UserId("eml", "useremail@example.com")))
+Velocidi.match("someProvider", listOf(UserId("<Advertising ID>", "gaid"), UserId("<User Email Hash>", "email_sha256")))
 ```
 
-For more information our documention section on [Cross-Channel Matches](https://docs.velocidi.com/knowledgebase/cross-channel-matches/)
+For more information about Cross-Channel Matches go to https://docs.velocidi.com/collect/matches/ .
 
 ## Need Help?
 
