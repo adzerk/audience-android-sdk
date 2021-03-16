@@ -1,8 +1,8 @@
 package com.velocidi.sampleapp
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.widget.Button
+import androidx.appcompat.app.AppCompatActivity
 import com.velocidi.UserId
 import com.velocidi.Velocidi
 import com.velocidi.events.PageView
