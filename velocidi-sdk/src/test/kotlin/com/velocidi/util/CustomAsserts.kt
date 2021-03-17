@@ -1,6 +1,8 @@
 package com.velocidi.util
 
 import com.squareup.okhttp.mockwebserver.RecordedRequest
+import java.net.URLDecoder
+import java.nio.charset.StandardCharsets
 import org.assertj.core.api.Assertions
 
 fun RecordedRequest.containsHeader(header: String, expectedHeader: String) {
@@ -17,7 +19,9 @@ fun RecordedRequest.containsHeader(header: String, expectedHeader: String) {
 }
 
 fun RecordedRequest.containsRequestLine(expectedReqLine: String) {
-    Assertions.assertThat(this.requestLine)
+    Assertions.assertThat(
+        URLDecoder.decode(this.requestLine, StandardCharsets.UTF_8.toString())
+    )
         .isNotNull()
         .isNotEmpty()
         .overridingErrorMessage(

@@ -2,7 +2,8 @@ package com.velocidi
 
 import android.Manifest
 import android.content.Context
-import com.velocidi.events.*
+import com.velocidi.Util.toQueryParams
+import org.json.JSONObject
 
 /**
  * Class with the main Velocidi SDK logic.
@@ -66,12 +67,30 @@ open class Velocidi internal constructor(val config: Config, context: Context) {
     /**
      * Collects activity performed by the user in the Android application
      *
-     * For more information, see https://docs.velocidi.com/collect/methods
+     * For more information, about event collection and supported event,
+     * see https://docs.velocidi.com/collect/methods and https://docs.velocidi.com/collect/events
      *
      * @param userId User identifier
-     * @param event Event performed by the user
+     * @param event Json String with the event performed by the user
+     * @throws JSONException if the parsing the event fails
      */
-    fun track(userId: UserId, event: TrackingEvent) {
+    fun track(userId: UserId, event: String) {
+        val obj = JSONObject(event)
+
+        val request = Request.TrackRequest(userId, obj)
+        handleTask(request)
+    }
+
+    /**
+     * Collects activity performed by the user in the Android application
+     *
+     * For more information, about event collection and supported event,
+     * see https://docs.velocidi.com/collect/methods and https://docs.velocidi.com/collect/events
+     *
+     * @param userId User identifier
+     * @param event JSONObject with the event performed by the user
+     */
+    fun track(userId: UserId, event: JSONObject) {
         val request = Request.TrackRequest(userId, event)
         handleTask(request)
     }
@@ -137,7 +156,7 @@ open class Velocidi internal constructor(val config: Config, context: Context) {
 
 // ADT with the supported requests
 internal sealed class Request {
-    data class TrackRequest(val userId: UserId, val event: TrackingEvent) : Request()
+    data class TrackRequest(val userId: UserId, val event: JSONObject) : Request()
     data class MatchRequest(val providerId: String, val userIds: List<UserId>) : Request() {
         fun toQueryParams(): Map<String, String> {
             val userIdsMap = userIds.map { it.toPair() }.toMap()

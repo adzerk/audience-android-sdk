@@ -5,10 +5,10 @@ import android.net.Uri
 import androidx.test.core.app.ApplicationProvider
 import com.squareup.okhttp.mockwebserver.MockResponse
 import com.squareup.okhttp.mockwebserver.MockWebServer
-import com.velocidi.events.PageView
 import com.velocidi.util.containsRequestLine
 import java.util.concurrent.TimeUnit
 import org.assertj.core.api.Assertions.*
+import org.json.JSONObject
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.Timeout
@@ -41,15 +41,37 @@ class VelocidiTest {
 
         val context: Context = ApplicationProvider.getApplicationContext()
 
+        val appView = """
+        {
+          "clientId": "velocidi",
+          "siteId": "velocidi.com",
+          "type": "appView",
+          "customFields": {
+            "debug": "true",
+            "role": "superuser"
+          },
+          "title": "Welcome Screen"
+        }
+        """.trimIndent()
+
+        val appViewQueryParams = mapOf(
+            "clientId" to "velocidi",
+            "siteId" to "velocidi.com",
+            "type" to "appView",
+            "customFields[debug]" to "true",
+            "customFields[role]" to "superuser",
+            "title" to "Welcome Screen",
+        ).asIterable().joinToString("&")
+
         Velocidi.instance = Velocidi(config, context)
 
         server.enqueue(MockResponse())
 
-        Velocidi.getInstance().track(UserId("123"), PageView("site1", "clientId1"))
+        Velocidi.getInstance().track(UserId("123"), appView)
 
         val response = server.takeRequest()
         response.containsRequestLine(
-            "GET /tr?cookies=false&siteId=site1&clientId=clientId1&type=pageView&id_gaid=123 HTTP/1.1"
+            "GET /tr?cookies=false&$appViewQueryParams&id_gaid=123 HTTP/1.1"
         )
     }
 
@@ -62,7 +84,7 @@ class VelocidiTest {
 
         Velocidi.instance = Velocidi(config, context)
 
-        Velocidi.getInstance().track(UserId("123"), PageView("site1", "clientId1"))
+        Velocidi.getInstance().track(UserId("123"), JSONObject())
 
         val response = server.takeRequest(2, TimeUnit.SECONDS)
         assertThat(response).isNull()
