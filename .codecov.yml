@@ -2,8 +2,5 @@ codecov:
   notify:
     require_ci_to_pass: no
 
-ignore:
-  - "velocidi-sdk/src/main/kotlin/com/velocidi/events"
-
 coverage:
   range: "50...75"
