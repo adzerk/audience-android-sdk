@@ -1,412 +1,310 @@
 package com.velocidi
 
-import com.velocidi.events.*
+import com.velocidi.Util.toQueryParams
 import org.assertj.core.api.Assertions.*
-import org.json.JSONException
 import org.json.JSONObject
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
-class TrackingEventsTest {
+class TrackingEventsSerializationTest {
     private val defaultProduct = mapOf(
+        "[itemGroupId]" to "p125",
         "[name]" to "My product",
-        "[brand]" to "Velocidi",
-        "[category]" to "Clothes",
-        "[variant]" to "M",
-        "[parts][0][id]" to "p2",
-        "[price]" to "12.99",
+        "[brand]" to "Nike",
+        "[productType]" to "Shirts",
         "[currency]" to "EUR",
-        "[quantity]" to "1",
-        "[recommendation]" to "false",
-        "[unsafe]" to "false",
-        "[id]" to "p1"
+        "[promotions][0]" to "WINTERSALE",
+        "[adult]" to "false",
+        "[size]" to "S",
+        "[sizeSystem]" to "EU",
+        "[customFields][color]" to "blue",
+        "[id]" to "p125zc",
+        "[price]" to "102.5",
+        "[gender]" to "male"
     )
 
-    private val defaultProductObj = Product(id = "p1").also {
-        it.name = "My product"
-        it.brand = "Velocidi"
-        it.category = "Clothes"
-        it.variant = "M"
-        it.parts = listOf(Product(id = "p2"))
-        it.price = 12.99
-        it.currency = "EUR"
-        it.quantity = 1
-        it.recommendation = false
-        it.unsafe = false
+    private val defaultProductObj = JSONObject(
+        """
+    {
+      "itemGroupId": "p125",
+      "name": "My product",
+      "brand": "Nike",
+      "productType": "Shirts",
+      "currency": "EUR",
+      "promotions": [
+        "WINTERSALE"
+      ],
+      "adult": false,
+      "size": "S",
+      "sizeSystem": "EU",
+      "customFields": {
+        "color": "blue"
+      },
+      "id": "p125zc",
+      "price": 102.5,
+      "gender": "male"
     }
+        """.trimIndent()
+    )
 
     private val defaultLineItem = mapOf(
+        "[itemGroupId]" to "p125",
         "[name]" to "My product",
-        "[brand]" to "Velocidi",
-        "[category]" to "Clothes",
+        "[brand]" to "Nike",
+        "[productType]" to "Shirts",
         "[currency]" to "EUR",
-        "[total]" to "12.99",
-        "[subtotal]" to "85.0",
-        "[tax]" to "14.17",
-        "[shipping]" to "11.0",
-        "[refund]" to "0.0",
-        "[quantity]" to "1",
-        "[itemGroupId]" to "liGroup1",
-        "[discount][percentage]" to "0.1",
+        "[promotions][0]" to "WINTERSALE",
         "[adult]" to "false",
-        "[id]" to "p1",
-        "[subscriptionDuration]" to "30"
+        "[size]" to "S",
+        "[sizeSystem]" to "EU",
+        "[customFields][color]" to "blue",
+        "[lineItemId]" to "li125zc",
+        "[productId]" to "p125zc",
+        "[total]" to "102.5",
+        "[subtotal]" to "85",
+        "[tax]" to "11.5",
+        "[shipping]" to "6",
+        "[sku]" to "p125zc-5",
+        "[discount][value]" to "5",
+        "[discount][currency]" to "EUR",
+        "[refund]" to "0",
+        "[quantity]" to "1",
+        "[subscriptionDuration]" to "180",
+
     )
 
-    private val defaultLineItemObj =
-        LineItem(
-            id = "p1",
-            currency = "EUR",
-            total = 12.99,
-            subtotal = 85.0,
-            tax = 14.17,
-            shipping = 11.0
-        ).also {
-            it.refund = 0.0
-            it.name = "My product"
-            it.category = "Clothes"
-            it.brand = "Velocidi"
-            it.discount = PercentageDiscount(0.1)
-            it.itemGroupId = "liGroup1"
-            it.subscriptionDuration = 30
-        }
+    private val defaultLineItemObj = JSONObject(
+        """
+    {
+      "itemGroupId": "p125",
+      "name": "My product",
+      "brand": "Nike",
+      "productType": "Shirts",
+      "currency": "EUR",
+      "promotions": [
+        "WINTERSALE"
+      ],
+      "adult": false,
+      "size": "S",
+      "sizeSystem": "EU",
+      "customFields": {
+        "color": "blue"
+      },
+      "lineItemId": "li125zc",
+      "productId": "p125zc",
+      "total": 102.5,
+      "subtotal": 85,
+      "tax": 11.5,
+      "shipping": 6,
+      "sku": "p125zc-5",
+      "discount": {
+        "value": 5,
+        "currency": "EUR"
+      },
+      "refund": 0,
+      "quantity": 1,
+      "subscriptionDuration": 180
+    }
+        """.trimIndent()
+    )
 
     private val defaultOrder = mapOf(
         "order[id]" to "or123",
-        "order[currency]" to "USD",
-        "order[total]" to "24.99",
-        "order[subtotal]" to "16.94",
-        "order[tax]" to "5.06",
-        "order[shipping]" to "2.99",
-        "order[discount][value]" to "2.0",
-        "order[discount][currency]" to "USD",
-        "order[refund]" to "0.0",
+        "order[currency]" to "EUR",
+        "order[total]" to "102.5",
+        "order[subtotal]" to "85",
+        "order[tax]" to "11.5",
+        "order[shipping]" to "6",
+        "order[discount][value]" to "5",
+        "order[discount][currency]" to "EUR",
+        "order[refund]" to "0",
         "order[paymentMethod]" to "Visa",
-        "order[shippingMethod]" to "DHL",
+        "order[shippingMethod]" to "UPS",
         "order[shippingCountry]" to "France",
         "order[promotions][0]" to "WINTERSALE"
     )
 
-    private val defaultOrderObj =
-        Order(
-            id = "or123",
-            currency = "USD",
-            total = 24.99,
-            tax = 5.06,
-            subtotal = 16.94,
-            shipping = 2.99,
-            discount = ValueDiscount(2.0, "USD"),
-            refund = 0.0
-        ).also {
-            it.paymentMethod = "Visa"
-            it.shippingMethod = "DHL"
-            it.shippingCountry = "France"
-            it.promotions = listOf("WINTERSALE")
-        }
-
-    @Test
-    fun customTrackingEventFactory() {
-        val event =
-            """
-        {
-            "siteId": "0",
-            "clientId": "id1",
-            "test": "testString",
-            "type": "custom"
-        }"""
-
-        val eventObj = CustomTrackingEventFactory.buildFromJSON(event)
-        assertThat(eventObj.type).isEqualTo("custom")
-        assertThat(eventObj.siteId).isEqualTo("0")
-        assertThat(eventObj.clientId).isEqualTo("id1")
-        assertThat(eventObj.extraAttributes.toString()).isEqualTo("""{"test":"testString"}""")
-    }
-
-    @Test(expected = JSONException::class)
-    fun invalidCustomTrackingEvent() {
-        val invalidEvent =
-            """{"siteId": "0"}"""
-        CustomTrackingEventFactory.buildFromJSON(invalidEvent)
-    }
-
-    @Test
-    fun customTrackingEventSerialization() {
-        val event = mapOf(
-            "test[a]" to "1",
-            "type" to "custom",
-            "siteId" to "0",
-            "clientId" to "id1"
-        )
-
-        val eventObj = CustomTrackingEvent(
-            "custom",
-            "0",
-            "id1",
-            JSONObject(""" {"test": {"a": 1}} """)
-        )
-
-        assertThat(event).isEqualTo(eventObj.toQueryParams())
-    }
-
-    @Test
-    fun customTrackingEventAppendPropriety() {
-        val event = mapOf(
-            "type" to "custom",
-            "siteId" to "0",
-            "clientId" to "id1",
-            "foo" to "bar"
-        )
-
-        val eventObj = CustomTrackingEvent(
-            "custom",
-            "0",
-            "id1"
-        )
-        eventObj.appendProperty("foo", "bar")
-
-        assertThat(event).isEqualTo(eventObj.toQueryParams())
-    }
+    private val defaultOrderObj = JSONObject(
+        """
+      {
+        "id": "or123",
+        "currency": "EUR",
+        "total": 102.5,
+        "subtotal": 85,
+        "tax": 11.5,
+        "shipping": 6,
+        "discount": {
+          "value": 5,
+          "currency": "EUR"
+        },
+        "refund": 0,
+        "paymentMethod": "Visa",
+        "shippingMethod": "UPS",
+        "shippingCountry": "France",
+        "promotions": [
+          "WINTERSALE"
+        ]
+      }
+        """.trimIndent()
+    )
 
     @Test
     fun pageViewEventSerialization() {
         val event = mapOf(
+            "clientId" to "velocidi",
+            "siteId" to "velocidi.com",
             "type" to "pageView",
-            "siteId" to "0",
-            "clientId" to "0",
-            "location" to "mylocation",
-            "title" to "My page",
+            "customFields[debug]" to "true",
+            "customFields[role]" to "superuser",
+            "title" to "Welcome to your Shop",
             "pageType" to "homepage",
-            "category" to "shopping"
+            "category" to "Shopping"
         )
 
-        val eventObj = PageView(
-            siteId = "0",
-            clientId = "0"
+        val eventObj = JSONObject(
+            """
+            {
+              "clientId": "velocidi",
+              "siteId": "velocidi.com",
+              "type": "pageView",
+              "customFields": {
+                "debug": "true",
+                "role": "superuser"
+              },
+              "title": "Welcome to your Shop",
+              "pageType": "homepage",
+              "category": "Shopping"
+            }
+            """.trimIndent()
         )
-        eventObj.location = "mylocation"
-        eventObj.title = "My page"
-        eventObj.pageType = "homepage"
-        eventObj.category = "shopping"
 
-        assertThat(event).isEqualTo(eventObj.toQueryParams())
+        assertThat(event).containsAllEntriesOf(eventObj.toQueryParams())
     }
 
     @Test
     fun appViewEventSerialization() {
         val event = mapOf(
+            "clientId" to "velocidi",
+            "siteId" to "velocidi.com",
             "type" to "appView",
-            "siteId" to "0",
-            "clientId" to "0",
-            "title" to "landing"
+            "customFields[debug]" to "true",
+            "customFields[role]" to "superuser",
+            "title" to "Welcome Screen",
         )
 
-        val eventObj = AppView(
-            siteId = "0",
-            clientId = "0",
-            title = "landing"
+        val eventObj = JSONObject(
+            """
+            {
+              "clientId": "velocidi",
+              "siteId": "velocidi.com",
+              "type": "appView",
+              "customFields": {
+                "debug": "true",
+                "role": "superuser"
+              },
+              "title": "Welcome Screen"
+            }
+            """.trimIndent()
+
         )
 
-        assertThat(event).isEqualTo(eventObj.toQueryParams())
-    }
-
-    @Test
-    fun searchEventSerialization() {
-        val event = mapOf(
-            "type" to "search",
-            "siteId" to "0",
-            "clientId" to "0",
-            "query" to "product"
-        )
-
-        val eventObj = Search(
-            siteId = "0",
-            clientId = "0"
-        )
-        eventObj.query = "product"
-
-        assertThat(event).isEqualTo(eventObj.toQueryParams())
+        assertThat(event).containsAllEntriesOf(eventObj.toQueryParams())
     }
 
     @Test
     fun productImpressionEventSerialization() {
         val event = mutableMapOf(
-            "siteId" to "0",
-            "clientId" to "0",
-            "type" to "productImpression"
-        )
-        event.putAll(defaultProduct.mapKeys { (k, _) -> "products[0]$k" })
-        event.put("products[1][id]", "p2")
-
-        val eventObj = ProductImpression(
-            siteId = "0",
-            clientId = "0"
-        )
-        eventObj.products = listOf(defaultProductObj, Product("p2"))
-
-        assertThat(event).isEqualTo(eventObj.toQueryParams())
-    }
-
-    @Test
-    fun productClickEventSerialization() {
-        val event = mutableMapOf(
-            "siteId" to "0",
-            "clientId" to "0",
-            "type" to "productClick"
+            "clientId" to "velocidi",
+            "siteId" to "velocidi.com",
+            "type" to "productImpression",
+            "customFields[debug]" to "true",
+            "customFields[role]" to "superuser",
         )
         event.putAll(defaultProduct.mapKeys { (k, _) -> "products[0]$k" })
 
-        val eventObj = ProductClick(
-            siteId = "0",
-            clientId = "0"
+        val eventObj = JSONObject(
+            """
+            {
+              "clientId": "velocidi",
+              "siteId": "velocidi.com",
+              "type": "productImpression",
+              "customFields": {
+                "debug": "true",
+                "role": "superuser"
+              },
+              "products": [
+                $defaultProductObj
+              ]
+            }
+            """.trimIndent()
         )
-        eventObj.products = listOf(defaultProductObj)
 
-        assertThat(event).isEqualTo(eventObj.toQueryParams())
-    }
-
-    @Test
-    fun productViewEventSerialization() {
-        val event = mutableMapOf(
-            "siteId" to "0",
-            "clientId" to "0",
-            "type" to "productView"
-        )
-        event.putAll(defaultProduct.mapKeys { (k, _) -> "products[0]$k" })
-
-        val eventObj = ProductView(
-            siteId = "0",
-            clientId = "0"
-        )
-        eventObj.products = listOf(defaultProductObj)
-
-        assertThat(event).isEqualTo(eventObj.toQueryParams())
-    }
-
-    @Test
-    fun productViewDetailsEventSerialization() {
-        val event = mutableMapOf(
-            "siteId" to "0",
-            "clientId" to "0",
-            "type" to "productViewDetails"
-        )
-        event.putAll(defaultProduct.mapKeys { (k, _) -> "products[0]$k" })
-
-        val eventObj = ProductViewDetails(
-            siteId = "0",
-            clientId = "0"
-        )
-        eventObj.products = listOf(defaultProductObj)
-
-        assertThat(event).isEqualTo(eventObj.toQueryParams())
-    }
-
-    @Test
-    fun productFeedbackEventSerialization() {
-        val event = mutableMapOf(
-            "rating" to "4.5",
-            "feedback" to "It's a very nice product!",
-            "siteId" to "0",
-            "clientId" to "0",
-            "type" to "productFeedback"
-        )
-        event.putAll(defaultProduct.mapKeys { (k, _) -> "products[0]$k" })
-
-        val eventObj = ProductFeedback(
-            siteId = "0",
-            clientId = "0"
-        )
-        eventObj.products = listOf(defaultProductObj)
-        eventObj.rating = 4.5
-        eventObj.feedback = "It's a very nice product!"
-
-        assertThat(event).isEqualTo(eventObj.toQueryParams())
-    }
-
-    @Test
-    fun productCustomizationEventSerialization() {
-        val event = mutableMapOf(
-            "productCustomization[value]" to "italian",
-            "productCustomization[price]" to "5.0",
-            "productCustomization[currency]" to "EUR",
-            "productCustomization[name]" to "collar",
-            "siteId" to "0",
-            "clientId" to "0",
-            "type" to "productCustomization"
-        )
-        event.putAll(defaultProduct.mapKeys { (k, _) -> "products[0]$k" })
-
-        val customizationObj = ProductCustomization.Properties.Customization(
-            name = "collar"
-        )
-        customizationObj.value = "italian"
-        customizationObj.price = 5.0
-        customizationObj.currency = "EUR"
-
-        val eventObj = ProductCustomization(
-            siteId = "0",
-            clientId = "0"
-        )
-        eventObj.products = listOf(defaultProductObj)
-        eventObj.productCustomization = customizationObj
-
-        assertThat(event).isEqualTo(eventObj.toQueryParams())
+        assertThat(event).containsAllEntriesOf(eventObj.toQueryParams())
     }
 
     @Test
     fun addToCartEventSerialization() {
         val event = mutableMapOf(
-            "siteId" to "0",
-            "clientId" to "0",
-            "type" to "addToCart"
+            "clientId" to "velocidi",
+            "siteId" to "velocidi.com",
+            "type" to "addToCart",
+            "customFields[debug]" to "true",
+            "customFields[role]" to "superuser",
         )
         event.putAll(defaultProduct.mapKeys { (k, _) -> "products[0]$k" })
 
-        val eventObj = AddToCart(
-            siteId = "0",
-            clientId = "0"
+        val eventObj = JSONObject(
+            """
+            {
+              "clientId": "velocidi",
+              "siteId": "velocidi.com",
+              "type": "addToCart",
+              "customFields": {
+                "debug": "true",
+                "role": "superuser"
+              },
+              "products": [
+                $defaultProductObj
+              ]
+            }
+            """.trimIndent()
         )
-        eventObj.products = listOf(defaultProductObj)
 
-        assertThat(event).isEqualTo(eventObj.toQueryParams())
-    }
-
-    @Test
-    fun removeFromCartEventSerialization() {
-        val event = mutableMapOf(
-            "siteId" to "0",
-            "clientId" to "0",
-            "type" to "removeFromCart"
-        )
-        event.putAll(defaultProduct.mapKeys { (k, _) -> "products[0]$k" })
-
-        val eventObj = RemoveFromCart(
-            siteId = "0",
-            clientId = "0"
-        )
-        eventObj.products = listOf(defaultProductObj)
-
-        assertThat(event).isEqualTo(eventObj.toQueryParams())
+        assertThat(event).containsAllEntriesOf(eventObj.toQueryParams())
     }
 
     @Test
     fun orderPlaceEventSerialization() {
         val event = mutableMapOf(
-            "siteId" to "0",
-            "clientId" to "0",
-            "type" to "orderPlace"
+            "clientId" to "velocidi",
+            "siteId" to "velocidi.com",
+            "type" to "orderPlace",
+            "customFields[debug]" to "true",
+            "customFields[role]" to "superuser",
         )
         event.putAll(defaultLineItem.mapKeys { (k, _) -> "lineItems[0]$k" })
         event.putAll(defaultOrder)
 
-        val eventObj = OrderPlace(
-            siteId = "0",
-            clientId = "0"
+        val eventObj = JSONObject(
+            """
+            {
+              "clientId": "velocidi",
+              "siteId": "velocidi.com",
+              "type": "orderPlace",
+              "customFields": {
+                "debug": "true",
+                "role": "superuser"
+              },
+              "lineItems": [
+                $defaultLineItemObj
+              ],
+              "order": $defaultOrderObj
+            }
+            """.trimIndent()
         )
-        eventObj.lineItems = listOf(defaultLineItemObj)
-        eventObj.order = defaultOrderObj
 
-        assertThat(event).isEqualTo(eventObj.toQueryParams())
+        assertThat(event).containsAllEntriesOf(eventObj.toQueryParams())
     }
 }
