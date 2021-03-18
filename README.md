@@ -48,26 +48,23 @@ class SampleApplication : Application() {
 ### Track
 
 The `track` method allows you to collect user activity performed in your application.
-This method is expecting a tracking event with the event details. For more information check our [documentation](https://docs.velocidi.com/collect/events)
+This method is expecting a tracking event, in the format of a JSON string or a `org.json.JSONObject` with the event details. For more information check our [documentation](https://docs.velocidi.com/collect/events)
 
 ```kotlin
-Velocidi.getInstance().track(UserId("<Advertising ID>", "gaid"), PageView("MobileApp", "client1"))
-```
-
-It also accepts custom tracking events in a JSON format. Custom events should have type `"custom"` and a field `"customType"` with their custom event type:
-
-```kotlin
-val event =
+val eventJson =
     """
     {
-      "type": "custom",
-      "customType": "customType",
-      "siteId": "MobileApp",
-      "clientId": "client1"
+      "clientId": "velocidi",
+      "siteId": "velocidi.com",
+      "type": "appView",
+      "title": "Welcome Screen"
     }
-    """.trimIndent()
+    """
+// Using a JSON String
+Velocidi.getInstance().track(UserId("<Advertising ID>", "gaid"), eventJson)
 
-Velocidi.getInstance().track(CustomTrackingEventFactory.buildFromJSON(event))
+//Using a JSONObject
+Velocidi.getInstance().track(UserId("<Advertising ID>", "gaid"), JSONObject(eventJson))
 ```
 
 ### Match
