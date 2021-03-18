@@ -1,8 +1,8 @@
 package com.velocidi.util
 
-import com.squareup.okhttp.mockwebserver.RecordedRequest
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
+import okhttp3.mockwebserver.RecordedRequest
 import org.assertj.core.api.Assertions
 
 fun RecordedRequest.containsHeader(header: String, expectedHeader: String) {

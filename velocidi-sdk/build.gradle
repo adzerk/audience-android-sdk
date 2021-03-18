@@ -46,14 +46,17 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.squareup.okhttp3:okhttp:3.12.3'
+    // We must remain in the 3.12.x branch
+    // OkHttp requires Android 5.0+ (API level 21+) and Java 8+ in the latest versions
+    implementation 'com.squareup.okhttp3:okhttp:3.12.13'
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
 
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.robolectric:robolectric:4.5.1'
     testImplementation 'androidx.test:core:1.3.0'
     testImplementation 'org.assertj:assertj-core:3.12.2'
-    testImplementation 'com.squareup.okhttp:mockwebserver:2.7.4'
+    testImplementation 'com.squareup.okhttp3:mockwebserver:3.12.13'
+
 
 
 }

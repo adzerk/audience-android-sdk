@@ -3,11 +3,12 @@ package com.velocidi
 import android.content.Context
 import android.net.Uri
 import androidx.test.core.app.ApplicationProvider
-import com.squareup.okhttp.mockwebserver.MockResponse
-import com.squareup.okhttp.mockwebserver.MockWebServer
 import com.velocidi.util.containsRequestLine
 import java.util.concurrent.TimeUnit
-import org.assertj.core.api.Assertions.*
+import okhttp3.mockwebserver.MockResponse
+import okhttp3.mockwebserver.MockWebServer
+import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.json.JSONObject
 import org.junit.Rule
 import org.junit.Test
