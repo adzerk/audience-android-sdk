@@ -1,11 +1,11 @@
 package com.velocidi
 
 import android.net.Uri
-import com.squareup.okhttp.mockwebserver.MockResponse
-import com.squareup.okhttp.mockwebserver.MockWebServer
 import com.velocidi.util.containsBody
 import com.velocidi.util.containsHeader
 import com.velocidi.util.containsRequestLine
+import okhttp3.mockwebserver.MockResponse
+import okhttp3.mockwebserver.MockWebServer
 import org.assertj.core.api.Assertions.assertThat
 import org.json.JSONObject
 import org.junit.Rule

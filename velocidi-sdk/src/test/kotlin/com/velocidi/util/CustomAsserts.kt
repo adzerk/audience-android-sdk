@@ -1,6 +1,6 @@
 package com.velocidi.util
 
-import com.squareup.okhttp.mockwebserver.RecordedRequest
+import okhttp3.mockwebserver.RecordedRequest
 import org.assertj.core.api.Assertions
 
 fun RecordedRequest.containsHeader(header: String, expectedHeader: String) {
