@@ -1,7 +1,6 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
-    ext.jacocoVersion = '0.8.6'
     ext.kotlinVersion = '1.4.31'
 
     repositories {
@@ -17,7 +16,7 @@ buildscript {
         classpath 'com.android.tools.build:gradle:4.1.2'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
         classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
-        classpath "org.jacoco:org.jacoco.core:$jacocoVersion"
+        classpath 'com.vanniktech:gradle-android-junit-jacoco-plugin:0.16.0'
         classpath 'net.researchgate:gradle-release:2.8.0'
         classpath "org.jlleitschuh.gradle:ktlint-gradle:10.0.0"
 
@@ -40,8 +39,10 @@ allprojects {
     }
 }
 
-task clean(type: Delete) {
-    delete rootProject.buildDir
+apply plugin: 'com.vanniktech.android.junit.jacoco'
+
+junitJacoco {
+    includeNoLocationClasses = true // Used to generate coverage for robolectric tests
 }
 
 subprojects {
