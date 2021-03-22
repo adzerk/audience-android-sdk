@@ -42,7 +42,9 @@ allprojects {
 apply plugin: 'com.vanniktech.android.junit.jacoco'
 
 junitJacoco {
-    includeNoLocationClasses = true // Used to generate coverage for robolectric tests
+    jacocoVersion = '0.8.6'
+    includeNoLocationClasses = false // Used to generate coverage for robolectric tests
+    excludes = ['jdk.internal.*']
 }
 
 subprojects {
