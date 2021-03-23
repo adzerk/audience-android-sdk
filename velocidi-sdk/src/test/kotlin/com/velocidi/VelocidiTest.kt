@@ -49,7 +49,7 @@ class VelocidiTest {
           "type": "appView",
           "customFields": {
             "debug": "true",
-            "role": "superuser"
+            "roles": ["superuser", "sudoer", "default"]
           },
           "title": "Welcome Screen"
         }
@@ -60,7 +60,9 @@ class VelocidiTest {
             "siteId" to "velocidi.com",
             "type" to "appView",
             "customFields[debug]" to "true",
-            "customFields[role]" to "superuser",
+            "customFields[roles][0]" to "superuser",
+            "customFields[roles][1]" to "sudoer",
+            "customFields[roles][2]" to "default",
             "title" to "Welcome Screen",
         ).asIterable().joinToString("&")
 
