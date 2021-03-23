@@ -307,4 +307,31 @@ class TrackingEventsSerializationTest {
 
         assertThat(event).containsAllEntriesOf(eventObj.toQueryParams())
     }
+
+    @Test
+    fun nullSerialization() {
+        val event = mapOf(
+            "clientId" to "velocidi",
+            "siteId" to "velocidi.com",
+            "type" to "pageView",
+            "title" to "Welcome to your Shop",
+            "pageType" to "homepage",
+            "category" to "Shopping"
+        )
+
+        val eventObj = JSONObject(
+            """
+            {
+              "clientId": "velocidi",
+              "siteId": "velocidi.com",
+              "type": "pageView",
+              "title": "Welcome to your Shop",
+              "pageType": "homepage",
+              "category": null
+            }
+            """.trimIndent()
+        )
+
+        assertThat(event).containsAllEntriesOf(eventObj.toQueryParams())
+    }
 }

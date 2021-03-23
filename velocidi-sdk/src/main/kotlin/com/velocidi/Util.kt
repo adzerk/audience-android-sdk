@@ -98,6 +98,7 @@ internal object Util {
                     }
                 is Boolean, is Int, is Byte, is Char, is String, is Double, is Float, is Long, is Short ->
                     qs[path] = elem.toString()
+                else -> {}
             }
         }
 

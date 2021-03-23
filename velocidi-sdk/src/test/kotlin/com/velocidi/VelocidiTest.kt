@@ -3,7 +3,6 @@ package com.velocidi
 import android.content.Context
 import android.net.Uri
 import androidx.test.core.app.ApplicationProvider
-import com.velocidi.Util.toQueryParams
 import com.velocidi.util.containsRequestLine
 import java.util.concurrent.TimeUnit
 import okhttp3.mockwebserver.MockResponse
