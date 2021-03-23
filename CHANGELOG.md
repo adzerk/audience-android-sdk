@@ -5,14 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.5.0] - TBA
 ### Added
+- Add support for Android 11 ([#40](https://github.com/velocidi/velocidi-android-sdk/pull/40).
 
 ### Changed
+- Stop using Advertising Id in track and match requests ([#39](https://github.com/velocidi/velocidi-android-sdk/pull/39)).
 
 ### Deprecated
 
 ### Removed
+- Remove domain models. The `track` API supports sending event as JSONObject or JSON String ([#41](https://github.com/velocidi/velocidi-android-sdk/pull/41)).
 
 ### Fixed
 
