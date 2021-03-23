@@ -51,7 +51,8 @@ The `track` method allows you to collect user activity performed in your applica
 This method is expecting a tracking event, in the format of a JSON string or a `org.json.JSONObject` with the event details. For more information check our [documentation](https://docs.velocidi.com/collect/events)
 
 ```kotlin
-val eventJson =
+// Using a JSON String
+val eventJsonString =
     """
     {
       "clientId": "velocidi",
@@ -60,11 +61,17 @@ val eventJson =
       "title": "Welcome Screen"
     }
     """
-// Using a JSON String
-Velocidi.getInstance().track(UserId("<Advertising ID>", "gaid"), eventJson)
 
-//Using a JSONObject
-Velocidi.getInstance().track(UserId("<Advertising ID>", "gaid"), JSONObject(eventJson))
+Velocidi.getInstance().track(UserId("<Advertising ID>", "gaid"), eventJsonString)
+
+// Using a JSONObject
+val eventJsonObj = JSONObject()
+eventJsonObj.put("clientId", "velocidi")
+eventJsonObj.put("siteId", "velocidi.com")
+eventJsonObj.put("type", "appView")
+eventJsonObj.put("title", "Welcome Screen")
+
+Velocidi.getInstance().track(UserId("<Advertising ID>", "gaid"), eventJsonObj)
 ```
 
 ### Match
