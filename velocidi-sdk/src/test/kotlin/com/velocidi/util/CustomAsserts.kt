@@ -44,3 +44,8 @@ fun RecordedRequest.containsBody(expectedBody: String) {
         )
         .isEqualTo(expectedBody)
 }
+
+fun <K, V> containsExactlyInAnyOrder(actual: Map<K, V>, other: Map<K, V>) {
+    Assertions.assertThat(actual).containsAllEntriesOf(other)
+    Assertions.assertThat(other).containsAllEntriesOf(actual)
+}

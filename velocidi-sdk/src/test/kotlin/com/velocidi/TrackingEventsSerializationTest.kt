@@ -1,6 +1,7 @@
 package com.velocidi
 
 import com.velocidi.Util.toQueryParams
+import com.velocidi.util.containsExactlyInAnyOrder
 import org.assertj.core.api.Assertions.*
 import org.json.JSONObject
 import org.junit.Test
@@ -180,7 +181,7 @@ class TrackingEventsSerializationTest {
             """.trimIndent()
         )
 
-        assertThat(event).containsAllEntriesOf(eventObj.toQueryParams())
+        containsExactlyInAnyOrder(event, eventObj.toQueryParams())
     }
 
     @Test
@@ -210,7 +211,7 @@ class TrackingEventsSerializationTest {
 
         )
 
-        assertThat(event).containsAllEntriesOf(eventObj.toQueryParams())
+        containsExactlyInAnyOrder(event, eventObj.toQueryParams())
     }
 
     @Test
@@ -241,7 +242,7 @@ class TrackingEventsSerializationTest {
             """.trimIndent()
         )
 
-        assertThat(event).containsAllEntriesOf(eventObj.toQueryParams())
+        containsExactlyInAnyOrder(event, eventObj.toQueryParams())
     }
 
     @Test
@@ -272,7 +273,7 @@ class TrackingEventsSerializationTest {
             """.trimIndent()
         )
 
-        assertThat(event).containsAllEntriesOf(eventObj.toQueryParams())
+        containsExactlyInAnyOrder(event, eventObj.toQueryParams())
     }
 
     @Test
@@ -305,7 +306,7 @@ class TrackingEventsSerializationTest {
             """.trimIndent()
         )
 
-        assertThat(event).containsAllEntriesOf(eventObj.toQueryParams())
+        containsExactlyInAnyOrder(event, eventObj.toQueryParams())
     }
 
     @Test
@@ -315,8 +316,7 @@ class TrackingEventsSerializationTest {
             "siteId" to "velocidi.com",
             "type" to "pageView",
             "title" to "Welcome to your Shop",
-            "pageType" to "homepage",
-            "category" to "Shopping"
+            "pageType" to "homepage"
         )
 
         val eventObj = JSONObject(
@@ -332,6 +332,6 @@ class TrackingEventsSerializationTest {
             """.trimIndent()
         )
 
-        assertThat(event).containsAllEntriesOf(eventObj.toQueryParams())
+        containsExactlyInAnyOrder(event, eventObj.toQueryParams())
     }
 }
