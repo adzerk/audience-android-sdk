@@ -89,13 +89,12 @@ internal object Util {
             when (elem) {
                 is JSONObject ->
                     for (key in elem.keys()) {
-                        val k = if (path.isEmpty()) key else "[$key]"
-                        toQueryParamsAux(elem[key], qs, path + k)
+                        val pathKey = if (path.isEmpty()) key else "[$key]"
+                        toQueryParamsAux(elem[key], qs, path + pathKey)
                     }
                 is JSONArray ->
                     for (idx in 0..elem.length()) {
-                        val k = if (path.isEmpty()) idx else "[$idx]"
-                        toQueryParamsAux(elem.opt(idx), qs, path + k)
+                        toQueryParamsAux(elem.opt(idx), qs, "$path[$idx]")
                     }
                 is Boolean, is Int, is Byte, is Char, is String, is Double, is Float, is Long, is Short ->
                     qs[path] = elem.toString()
