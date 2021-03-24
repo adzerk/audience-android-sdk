@@ -25,7 +25,7 @@ class MainActivity : AppCompatActivity() {
                   "siteId": "velocidi.com",
                   "type": "appView",
                   "customFields": {
-                    "debug": true"
+                    "debug": true,
                     "role": "superuser"
                   },
                   "title": "Welcome Screen"
