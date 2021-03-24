@@ -334,4 +334,14 @@ class TrackingEventsSerializationTest {
 
         containsExactlyInAnyOrder(event, eventObj.toQueryParams())
     }
+
+    @Test
+    fun nonPrimitiveTypeSerialization() {
+        data class Foo(val bar: String)
+
+        val json = JSONObject()
+        json.put("foo", Foo("bar"))
+
+        containsExactlyInAnyOrder(emptyMap(), json.toQueryParams())
+    }
 }
