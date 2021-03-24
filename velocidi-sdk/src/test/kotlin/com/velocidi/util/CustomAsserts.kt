@@ -1,5 +1,7 @@
 package com.velocidi.util
 
+import java.net.URLDecoder
+import java.nio.charset.StandardCharsets
 import okhttp3.mockwebserver.RecordedRequest
 import org.assertj.core.api.Assertions
 
@@ -17,7 +19,9 @@ fun RecordedRequest.containsHeader(header: String, expectedHeader: String) {
 }
 
 fun RecordedRequest.containsRequestLine(expectedReqLine: String) {
-    Assertions.assertThat(this.requestLine)
+    Assertions.assertThat(
+        URLDecoder.decode(this.requestLine, StandardCharsets.UTF_8.toString())
+    )
         .isNotNull()
         .isNotEmpty()
         .overridingErrorMessage(
@@ -39,4 +43,9 @@ fun RecordedRequest.containsBody(expectedBody: String) {
             body
         )
         .isEqualTo(expectedBody)
+}
+
+fun <K, V> containsExactlyInAnyOrder(actual: Map<K, V>, other: Map<K, V>) {
+    Assertions.assertThat(actual).containsAllEntriesOf(other)
+    Assertions.assertThat(other).containsAllEntriesOf(actual)
 }

@@ -5,7 +5,7 @@ import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import com.velocidi.UserId
 import com.velocidi.Velocidi
-import com.velocidi.events.PageView
+import org.json.JSONObject
 
 class MainActivity : AppCompatActivity() {
 
@@ -18,22 +18,41 @@ class MainActivity : AppCompatActivity() {
         val matchButton = findViewById<Button>(R.id.match_button)
 
         trackButton.setOnClickListener {
-//            val event =
-//                """
-//                {
-//                  "type": "pageView",
-//                  "siteId": "MobileApp",
-//                  "clientId": "client1"
-//                }
-//                """.trimIndent()
+            val eventJsonString =
+                """
+                {
+                  "clientId": "velocidi",
+                  "siteId": "velocidi.com",
+                  "type": "appView",
+                  "customFields": {
+                    "debug": true,
+                    "role": "superuser"
+                  },
+                  "title": "Welcome Screen"
+                }
+                """.trimIndent()
 
             Velocidi.getInstance().track(
                 UserId("user_email_hash", "email_sha256"),
-                PageView("MobileApp", "client1")
+                eventJsonString
             )
 
-            // OR
-            // Velocidi.getInstance().track(CustomTrackingEventFactory.buildFromJSON(event))
+            // OR using a JSONObject
+            val customFields = JSONObject()
+            customFields.put("debug", true)
+            customFields.put("role", "superuser")
+
+            val eventJsonObj = JSONObject()
+            eventJsonObj.put("clientId", "velocidi")
+            eventJsonObj.put("siteId", "velocidi.com")
+            eventJsonObj.put("type", "appView")
+            eventJsonObj.put("customFields", customFields)
+            eventJsonObj.put("title", "Welcome Screen")
+
+            Velocidi.getInstance().track(
+                UserId("user_email_hash", "email_sha256"),
+                eventJsonObj
+            )
         }
 
         matchButton.setOnClickListener {

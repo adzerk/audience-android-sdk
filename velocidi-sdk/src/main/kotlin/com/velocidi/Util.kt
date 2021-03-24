@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
+import org.json.JSONArray
+import org.json.JSONObject
 
 internal data class ApplicationInfo(
     val appName: String,
@@ -80,5 +82,29 @@ internal object Util {
         val builder = this.buildUpon()
         parameters.forEach { (k, v) -> builder.appendQueryParameter(k, v) }
         return builder.build()
+    }
+
+    fun JSONObject.toQueryParams(): Map<String, String> {
+        fun toQueryParamsAux(elem: Any?, qs: MutableMap<String, String>, path: String) {
+            when (elem) {
+                is JSONObject ->
+                    for (key in elem.keys()) {
+                        val pathKey = if (path.isEmpty()) key else "[$key]"
+                        toQueryParamsAux(elem[key], qs, path + pathKey)
+                    }
+                is JSONArray ->
+                    for (idx in 0..elem.length()) {
+                        toQueryParamsAux(elem.opt(idx), qs, "$path[$idx]")
+                    }
+                is Boolean, is Int, is Byte, is Char, is String, is Double, is Float, is Long, is Short ->
+                    qs[path] = elem.toString()
+                else -> {}
+            }
+        }
+
+        val qs = mutableMapOf<String, String>()
+        toQueryParamsAux(this, qs, "")
+
+        return qs
     }
 }
