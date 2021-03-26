@@ -19,11 +19,7 @@ jobs:
         key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
         restore-keys: |
           ${{ runner.os }}-gradle-
-    - name: Build with Gradle
+    - name:  Build and Test with Gradle
       run: |
-        ./gradlew assemble
-        git diff --exit-code
-    - name: Test
-      run: ./gradlew test jacocoTestReport
-    - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v1
+        ./gradlew clean check
+         git diff --exit-code
