@@ -76,12 +76,12 @@ Velocidi.getInstance().track(UserId("<Advertising ID>", "gaid"), eventJsonObj)
 ### Match
 
 The `match` method allows you to identify a user across multiple channels (Browser, Mobile App, CRM, ...).
-By performing a match between multiple ids you are telling Velocidi CDP that these are the same user 
+By performing a match between multiple ids you are telling Velocidi CDP that these are the same user
 and all the information retrieved with either one of these IDs belongs to the same user.
-A typical use case for this is, during the login action, 
+A typical use case for this is, during the login action,
 to associate the user's email with Google's [Advertising ID](https://support.google.com/googleplay/android-developer/answer/6048248).
 
-**Please note** that Velocidi SDK is not responsible for managing opt-in/opt-out status or 
+**Please note** that Velocidi SDK is not responsible for managing opt-in/opt-out status or
 ensuring the Google's privacy policy are respected. That should be the your app responsibility.
 
 
@@ -92,6 +92,29 @@ Velocidi.match("someProvider", listOf(UserId("<Advertising ID>", "gaid"), UserId
 ```
 
 For more information about Cross-Channel Matches go to https://docs.velocidi.com/collect/matches/ .
+
+### Collecting IDs
+
+Velocidi's SDK does not collect any user ID by default. These IDs have to be explicitly provided when executing the requests.
+We recommend taking a look at Android's documentation about [Best practices for unique identifiers](https://developer.android.com/training/articles/user-data-ids).
+
+#### Using your own first-party IDs
+
+You can use any ID in our list of [supported IDs](https://docs.velocidi.com/collect/user-ids/#default-id-types) with
+[`com.velocidi.UserId`](https://github.com/velocidi/velocidi-android-sdk/blob/master/velocidi-sdk/src/main/kotlin/com/velocidi/UserId.kt).
+If you would like to use an ID not present in our list of supported IDs, please contact our support so that we can add it.
+
+#### Using the GAID
+
+Google Advertising ID (GAID) is a user-resettable identifier that uiquely identifies a particular user for advertising use cases.
+
+This ID can be fetched using Android's [Adversiting ID library](https://developer.android.com/jetpack/androidx/releases/ads).
+A comprehensive guide with examples on how to get the GAID can be found in Android's documentation in
+[Get a user-resettable advertising ID](https://developer.android.com/training/articles/ad-id#kotlin). Once we have the GAID, it can be used like any other ID.
+
+```kotlin
+val userId = UserId(gaid, "gaid")
+```
 
 ## Need Help?
 
