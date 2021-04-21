@@ -108,7 +108,7 @@ If you would like to use an ID not present in our list of supported IDs, please 
 
 Google Advertising ID (GAID) is a user-resettable identifier that uiquely identifies a particular user for advertising use cases.
 
-This ID can be fetched using Android's [Adversiting ID library](https://developer.android.com/jetpack/androidx/releases/ads).
+This ID can be fetched using Android's [Adversiting ID library](https://developer.android.com/reference/androidx/ads/identifier/package-summary).
 A comprehensive guide with examples on how to get the GAID can be found in Android's documentation in
 [Get a user-resettable advertising ID](https://developer.android.com/training/articles/ad-id#kotlin). Once we have the GAID, it can be used like any other ID.
 
