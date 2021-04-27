@@ -114,6 +114,7 @@ open class Velocidi internal constructor(val config: Config, context: Context) {
 
     companion object {
         // Singleton instance of the sdk
+        @JvmSynthetic
         internal lateinit var instance: Velocidi
 
         /**
@@ -126,6 +127,7 @@ open class Velocidi internal constructor(val config: Config, context: Context) {
          * @param context Android application context
          * @return Velocidi instance
          */
+        @JvmStatic
         fun init(config: Config, context: Context): Velocidi {
             if (!Util.checkPermission(context, Manifest.permission.INTERNET)) {
                 throw SecurityException("Velocidi SDK requires Internet permission")
@@ -143,6 +145,7 @@ open class Velocidi internal constructor(val config: Config, context: Context) {
          *
          * @return The Velocidi instance
          */
+        @JvmStatic
         fun getInstance(): Velocidi =
             when (::instance.isInitialized) {
                 true -> instance
