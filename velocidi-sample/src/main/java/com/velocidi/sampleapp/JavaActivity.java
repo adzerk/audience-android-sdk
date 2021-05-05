@@ -29,10 +29,10 @@ public class JavaActivity extends AppCompatActivity {
         Velocidi.init(config, this);
 
         try {
-            JSONObject eventJsonObj = new JSONObject();
-            eventJsonObj.put("clientId", "velocidi");
-            eventJsonObj.put("siteId", "velocidi.com");
-            eventJsonObj.put("type", "appView");
+            JSONObject eventJsonObj = new JSONObject()
+                .put("clientId", "velocidi")
+                .put("siteId", "velocidi.com")
+                .put("type", "appView");
 
             Velocidi.getInstance().track(
                     new UserId("user_email_hash", "email_sha256"),
