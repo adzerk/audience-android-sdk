@@ -18,28 +18,34 @@ class MainActivity : AppCompatActivity() {
         val matchButton = findViewById<Button>(R.id.match_button)
 
         trackButton.setOnClickListener {
+            val eventJsonString =
+                """
+                {
+                  "clientId": "velocidi",
+                  "siteId": "velocidi.com",
+                  "type": "appView",
+                  "customFields": {
+                    "debug": true,
+                    "role": "superuser"
+                  },
+                  "title": "Welcome Screen"
+                }
+                """.trimIndent()
+
+            Velocidi.getInstance().track(
+                UserId("user_email_hash", "email_sha256"),
+                eventJsonString
+            )
+
             val eventJsonObj = mapOf(
-                "foo" to "exampleA",
-                "bar" to 42,
-                "baz" to true,
-                "quuxFoo" to arrayOf(
-                    mapOf(
-                        "a" to "1",
-                        "b" to 2,
-                        "c" to mapOf(
-                            "a" to arrayOf(
-                                1,
-                                2,
-                                3
-                            ),
-                            "b" to "bGrault",
-                            "c" to arrayOf<Any>(),
-                            "d" to mapOf<String, Any>()
-                        ),
-                        "d" to true
-                    )
-                ),
-                "corge" to false
+                "clientId" to "velocidi",
+                "siteId" to "velocidi.com",
+                "type" to "appView",
+                "title" to "Welcome Screen",
+                "customFields" to mapOf(
+                    "debug" to true,
+                    "role" to "superuser"
+                )
             )
 
             Velocidi.getInstance().track(

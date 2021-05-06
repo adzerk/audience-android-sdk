@@ -68,7 +68,11 @@ val eventJsonObj = mapOf(
     "clientId" to "velocidi",
     "siteId" to "velocidi.com",
     "type" to "appView",
-    "title" to "Welcome Screen"
+    "title" to "Welcome Screen",
+    "customFields" to mapOf(
+        "debug" to true,
+        "role" to "superuser"
+    )
 )
 
 Velocidi.getInstance().track(UserId("<Advertising ID>", "gaid"), JSONObject(eventJsonObj))
