@@ -64,13 +64,18 @@ val eventJsonString =
 Velocidi.getInstance().track(UserId("<Advertising ID>", "gaid"), eventJsonString)
 
 // Using a JSONObject
-val eventJsonObj = JSONObject()
-eventJsonObj.put("clientId", "velocidi")
-eventJsonObj.put("siteId", "velocidi.com")
-eventJsonObj.put("type", "appView")
-eventJsonObj.put("title", "Welcome Screen")
+val eventJsonObj = mapOf(
+    "clientId" to "velocidi",
+    "siteId" to "velocidi.com",
+    "type" to "appView",
+    "title" to "Welcome Screen",
+    "customFields" to mapOf(
+        "debug" to true,
+        "role" to "superuser"
+    )
+)
 
-Velocidi.getInstance().track(UserId("<Advertising ID>", "gaid"), eventJsonObj)
+Velocidi.getInstance().track(UserId("<Advertising ID>", "gaid"), JSONObject(eventJsonObj))
 ```
 
 ### Match

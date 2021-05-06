@@ -37,21 +37,20 @@ class MainActivity : AppCompatActivity() {
                 eventJsonString
             )
 
-            // OR using a JSONObject
-            val customFields = JSONObject()
-            customFields.put("debug", true)
-            customFields.put("role", "superuser")
-
-            val eventJsonObj = JSONObject()
-            eventJsonObj.put("clientId", "velocidi")
-            eventJsonObj.put("siteId", "velocidi.com")
-            eventJsonObj.put("type", "appView")
-            eventJsonObj.put("customFields", customFields)
-            eventJsonObj.put("title", "Welcome Screen")
+            val eventJsonObj = mapOf(
+                "clientId" to "velocidi",
+                "siteId" to "velocidi.com",
+                "type" to "appView",
+                "title" to "Welcome Screen",
+                "customFields" to mapOf(
+                    "debug" to true,
+                    "role" to "superuser"
+                )
+            )
 
             Velocidi.getInstance().track(
                 UserId("user_email_hash", "email_sha256"),
-                eventJsonObj
+                JSONObject(eventJsonObj)
             )
         }
 
