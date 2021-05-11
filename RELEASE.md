@@ -20,5 +20,4 @@ This document describes the process for releasing and deploying a new sdk versio
 1. Enter the new version for the SDK. By default it increments the patch version.
 1. Execute `git push && git push --tags`.    `
 1. Visit [Sonatype Nexus](https://oss.sonatype.org/#stagingRepositories) and verify the release was created. If everything is in order, `Close` it and `Release` it.
-1. Deploy documentation website by running `cd docs && ./deploy.sh`.
 1. Add the changes in `CHANGELOG.md` to the [release description on GitHub](https://github.com/velocidi/velocidi-android-sdk/releases).
