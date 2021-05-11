@@ -8,7 +8,7 @@ Open-source SDK to integrate Android Apps with Velocidi Private CDP.
 
 Velocidi SDK is published to Maven central as a single module. Please reference the badge above or go to the [release page](https://github.com/velocidi/velocidi-android-sdk/releases) to check our latest version.
 
-To install the SDk in your application you just need to add the following dependency to the `app/build.gradle` file.
+To install the SDK in your application you just need to add the following dependency to the `app/build.gradle` file.
 
 ```gradle
 dependencies {
