@@ -4,7 +4,7 @@ apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion 30
-
+    namespace "com.velocidi"
     defaultConfig {
         minSdkVersion 19
         targetSdkVersion 30
@@ -13,7 +13,9 @@ android {
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
-
+    buildFeatures {
+        buildConfig true
+    }
     buildTypes {
 
         debug {

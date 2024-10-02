@@ -4,6 +4,7 @@ apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion 30
+    namespace "com.velocidi.sampleapp"
     defaultConfig {
         applicationId "com.velocidi.sampleapp"
         minSdkVersion 19
