@@ -37,7 +37,7 @@ internal object Util {
             val applicationInfo = packageManager.getApplicationInfo(packageName, 0)
             val packageInfo = packageManager.getPackageInfo(packageName, 0)
 
-            val appName = packageManager.getApplicationLabel(applicationInfo) ?: packageName
+            val appName = packageManager.getApplicationLabel(applicationInfo)
             val appVersion =
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                     packageInfo.longVersionCode.toString()
