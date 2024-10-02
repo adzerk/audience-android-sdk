@@ -8,7 +8,6 @@ import com.velocidi.Velocidi
 import org.json.JSONObject
 
 class MainActivity : AppCompatActivity() {
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -34,23 +33,25 @@ class MainActivity : AppCompatActivity() {
 
             Velocidi.getInstance().track(
                 UserId("user_email_hash", "email_sha256"),
-                eventJsonString
+                eventJsonString,
             )
 
-            val eventJsonObj = mapOf(
-                "clientId" to "velocidi",
-                "siteId" to "velocidi.com",
-                "type" to "appView",
-                "title" to "Welcome Screen",
-                "customFields" to mapOf(
-                    "debug" to true,
-                    "role" to "superuser"
+            val eventJsonObj =
+                mapOf(
+                    "clientId" to "velocidi",
+                    "siteId" to "velocidi.com",
+                    "type" to "appView",
+                    "title" to "Welcome Screen",
+                    "customFields" to
+                        mapOf(
+                            "debug" to true,
+                            "role" to "superuser",
+                        ),
                 )
-            )
 
             Velocidi.getInstance().track(
                 UserId("user_email_hash", "email_sha256"),
-                JSONObject(eventJsonObj)
+                JSONObject(eventJsonObj),
             )
         }
 
@@ -59,8 +60,8 @@ class MainActivity : AppCompatActivity() {
                 "someProvider",
                 listOf(
                     UserId("user_email_hash", "email_sha256"),
-                    UserId("user_advertising_id", "gaid")
-                )
+                    UserId("user_advertising_id", "gaid"),
+                ),
             )
         }
     }

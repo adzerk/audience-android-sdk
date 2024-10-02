@@ -19,8 +19,10 @@ import org.json.JSONObject
  *
  * @param context Android application context
  */
-open class Velocidi internal constructor(val config: Config, context: Context) {
-
+open class Velocidi internal constructor(
+    val config: Config,
+    context: Context,
+) {
     private val client = HttpClient()
 
     private val appInfo = Util.getApplicationInfo(context)
@@ -34,7 +36,7 @@ open class Velocidi internal constructor(val config: Config, context: Context) {
     private fun handleTask(req: Request) {
         val headers =
             mapOf(
-                "User-Agent" to Util.buildUserAgent(appInfo)
+                "User-Agent" to Util.buildUserAgent(appInfo),
             )
 
         val commonParams = mapOf("cookies" to "false")
@@ -47,9 +49,11 @@ open class Velocidi internal constructor(val config: Config, context: Context) {
                         HttpClient.Verb.GET,
                         config.track.host,
                         parameters = entity,
-                        headers = headers
+                        headers = headers,
                     )
-                } else return
+                } else {
+                    return
+                }
             is Request.MatchRequest ->
                 if (config.match.enabled) {
                     val entity = commonParams + req.toQueryParams()
@@ -58,9 +62,11 @@ open class Velocidi internal constructor(val config: Config, context: Context) {
                         HttpClient.Verb.GET,
                         config.match.host,
                         parameters = entity,
-                        headers = headers
+                        headers = headers,
                     )
-                } else return
+                } else {
+                    return
+                }
         }
     }
 
@@ -74,7 +80,10 @@ open class Velocidi internal constructor(val config: Config, context: Context) {
      * @param event Json String with the event performed by the user
      * @throws JSONException if the parsing the event fails
      */
-    fun track(userId: UserId, event: String) {
+    fun track(
+        userId: UserId,
+        event: String,
+    ) {
         val obj = JSONObject(event)
 
         val request = Request.TrackRequest(userId, obj)
@@ -90,7 +99,10 @@ open class Velocidi internal constructor(val config: Config, context: Context) {
      * @param userId User identifier
      * @param event JSONObject with the event performed by the user
      */
-    fun track(userId: UserId, event: JSONObject) {
+    fun track(
+        userId: UserId,
+        event: JSONObject,
+    ) {
         val request = Request.TrackRequest(userId, event)
         handleTask(request)
     }
@@ -104,7 +116,10 @@ open class Velocidi internal constructor(val config: Config, context: Context) {
      * @param userIds List of user ids to be linked
      * @throws IllegalArgumentException Throws when providerId is empty or userIds size is smaller than 2
      */
-    fun match(providerId: String, userIds: List<UserId>) {
+    fun match(
+        providerId: String,
+        userIds: List<UserId>,
+    ) {
         require(providerId.isNotEmpty()) { "providerId cannot be empty" }
         require(userIds.size >= 2) { "must provide at least 2 userIds" }
 
@@ -128,7 +143,10 @@ open class Velocidi internal constructor(val config: Config, context: Context) {
          * @return Velocidi instance
          */
         @JvmStatic
-        fun init(config: Config, context: Context): Velocidi {
+        fun init(
+            config: Config,
+            context: Context,
+        ): Velocidi {
             if (!Util.checkPermission(context, Manifest.permission.INTERNET)) {
                 throw SecurityException("Velocidi SDK requires Internet permission")
             }
@@ -151,7 +169,7 @@ open class Velocidi internal constructor(val config: Config, context: Context) {
                 true -> instance
                 false -> throw IllegalStateException(
                     """Velocidi SDK is not initialized
-                            Make sure to call Velocidi.init first."""
+                            Make sure to call Velocidi.init first.""",
                 )
             }
     }
@@ -159,8 +177,15 @@ open class Velocidi internal constructor(val config: Config, context: Context) {
 
 // ADT with the supported requests
 internal sealed class Request {
-    data class TrackRequest(val userId: UserId, val event: JSONObject) : Request()
-    data class MatchRequest(val providerId: String, val userIds: List<UserId>) : Request() {
+    data class TrackRequest(
+        val userId: UserId,
+        val event: JSONObject,
+    ) : Request()
+
+    data class MatchRequest(
+        val providerId: String,
+        val userIds: List<UserId>,
+    ) : Request() {
         fun toQueryParams(): Map<String, String> {
             val userIdsMap = userIds.map { it.toPair() }.toMap()
             return userIdsMap + Pair("providerId", providerId)

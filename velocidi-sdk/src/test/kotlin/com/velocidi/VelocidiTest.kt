@@ -4,7 +4,6 @@ import android.content.Context
 import android.net.Uri
 import androidx.test.core.app.ApplicationProvider
 import com.velocidi.util.containsRequestLine
-import java.util.concurrent.TimeUnit
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.assertj.core.api.Assertions.assertThat
@@ -15,10 +14,10 @@ import org.junit.Test
 import org.junit.rules.Timeout
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import java.util.concurrent.TimeUnit
 
 @RunWith(RobolectricTestRunner::class)
 class VelocidiTest {
-
     var server = MockWebServer()
 
     @Rule
@@ -42,29 +41,31 @@ class VelocidiTest {
 
         val context: Context = ApplicationProvider.getApplicationContext()
 
-        val appView = """
-        {
-          "clientId": "velocidi",
-          "siteId": "velocidi.com",
-          "type": "appView",
-          "customFields": {
-            "debug": "true",
-            "roles": ["superuser", "sudoer", "default"]
-          },
-          "title": "Welcome Screen"
-        }
-        """.trimIndent()
+        val appView =
+            """
+            {
+              "clientId": "velocidi",
+              "siteId": "velocidi.com",
+              "type": "appView",
+              "customFields": {
+                "debug": "true",
+                "roles": ["superuser", "sudoer", "default"]
+              },
+              "title": "Welcome Screen"
+            }
+            """.trimIndent()
 
-        val appViewQueryParams = mapOf(
-            "clientId" to "velocidi",
-            "siteId" to "velocidi.com",
-            "type" to "appView",
-            "customFields[debug]" to "true",
-            "customFields[roles][0]" to "superuser",
-            "customFields[roles][1]" to "sudoer",
-            "customFields[roles][2]" to "default",
-            "title" to "Welcome Screen",
-        ).asIterable().joinToString("&")
+        val appViewQueryParams =
+            mapOf(
+                "clientId" to "velocidi",
+                "siteId" to "velocidi.com",
+                "type" to "appView",
+                "customFields[debug]" to "true",
+                "customFields[roles][0]" to "superuser",
+                "customFields[roles][1]" to "sudoer",
+                "customFields[roles][2]" to "default",
+                "title" to "Welcome Screen",
+            ).asIterable().joinToString("&")
 
         Velocidi.instance = Velocidi(config, context)
 
@@ -74,7 +75,7 @@ class VelocidiTest {
 
         val response = server.takeRequest()
         response.containsRequestLine(
-            "GET /tr?cookies=false&$appViewQueryParams&id_gaid=123 HTTP/1.1"
+            "GET /tr?cookies=false&$appViewQueryParams&id_gaid=123 HTTP/1.1",
         )
     }
 
@@ -108,14 +109,14 @@ class VelocidiTest {
                 UserId("123"),
                 UserId(
                     "81df589b1dceacc2fa7c8f536015fcdf854eee721fdf282a91ed9c4b0c54dc76",
-                    "email_sha256"
-                )
-            )
+                    "email_sha256",
+                ),
+            ),
         )
 
         val response = server.takeRequest()
         response.containsRequestLine(
-            "GET /match?cookies=false&id_gaid=123&id_email_sha256=81df589b1dceacc2fa7c8f536015fcdf854eee721fdf282a91ed9c4b0c54dc76&providerId=provider1 HTTP/1.1"
+            "GET /match?cookies=false&id_gaid=123&id_email_sha256=81df589b1dceacc2fa7c8f536015fcdf854eee721fdf282a91ed9c4b0c54dc76&providerId=provider1 HTTP/1.1",
         )
     }
 
@@ -133,9 +134,9 @@ class VelocidiTest {
                 UserId("123"),
                 UserId(
                     "81df589b1dceacc2fa7c8f536015fcdf854eee721fdf282a91ed9c4b0c54dc76",
-                    "email_sha256"
-                )
-            )
+                    "email_sha256",
+                ),
+            ),
         )
 
         val response = server.takeRequest(2, TimeUnit.SECONDS)
@@ -159,9 +160,9 @@ class VelocidiTest {
                     UserId("123"),
                     UserId(
                         "81df589b1dceacc2fa7c8f536015fcdf854eee721fdf282a91ed9c4b0c54dc76",
-                        "email_sha256"
-                    )
-                )
+                        "email_sha256",
+                    ),
+                ),
             )
         }
 
@@ -173,8 +174,8 @@ class VelocidiTest {
             Velocidi.getInstance().match(
                 "provider1",
                 listOf(
-                    UserId("123")
-                )
+                    UserId("123"),
+                ),
             )
         }
 
