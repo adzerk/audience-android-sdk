@@ -16,7 +16,6 @@ import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
 class HttpClientTest {
-
     var server = MockWebServer()
     private val url = Uri.parse(server.url("/").toString())
     private var client = HttpClient()
@@ -47,7 +46,7 @@ class HttpClientTest {
         client.sendRequest(
             HttpClient.Verb.GET,
             url,
-            headers = mapOf("User-Agent" to "CustomUA")
+            headers = mapOf("User-Agent" to "CustomUA"),
         )
 
         val response = server.takeRequest()
@@ -74,10 +73,11 @@ class HttpClientTest {
         client.sendRequest(
             HttpClient.Verb.POST,
             url,
-            parameters = mapOf(
-                "x" to "foo",
-                "y" to "bar"
-            )
+            parameters =
+                mapOf(
+                    "x" to "foo",
+                    "y" to "bar",
+                ),
         )
 
         val response = server.takeRequest()

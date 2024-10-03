@@ -77,9 +77,9 @@ release {
     newVersionCommitMessage = "Set version to"
 
     git {
-        signTag = true
-        requireBranch = 'master'
-        pushToRemote = ''
+        signTag.set(true)
+        requireBranch.set('master')
+        pushToRemote.set('')
     }
 }
 

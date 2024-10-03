@@ -8,7 +8,6 @@ import com.velocidi.Velocidi
 import org.json.JSONObject
 
 class MainActivity : AppCompatActivity() {
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -33,34 +32,48 @@ class MainActivity : AppCompatActivity() {
                 """.trimIndent()
 
             Velocidi.getInstance().track(
-                UserId("user_email_hash", "email_sha256"),
-                eventJsonString
+                // test@example.org
+                UserId(
+                    "388c735eec8225c4ad7a507944dd0a975296baea383198aa87177f29af2c6f69",
+                    "email_sha256",
+                ),
+                eventJsonString,
             )
 
-            val eventJsonObj = mapOf(
-                "clientId" to "velocidi",
-                "siteId" to "velocidi.com",
-                "type" to "appView",
-                "title" to "Welcome Screen",
-                "customFields" to mapOf(
-                    "debug" to true,
-                    "role" to "superuser"
+            val eventJsonObj =
+                mapOf(
+                    "clientId" to "velocidi",
+                    "siteId" to "velocidi.com",
+                    "type" to "appView",
+                    "title" to "Welcome Screen",
+                    "customFields" to
+                        mapOf(
+                            "debug" to true,
+                            "role" to "superuser",
+                        ),
                 )
-            )
 
             Velocidi.getInstance().track(
-                UserId("user_email_hash", "email_sha256"),
-                JSONObject(eventJsonObj)
+                // test@example.org
+                UserId(
+                    "388c735eec8225c4ad7a507944dd0a975296baea383198aa87177f29af2c6f69",
+                    "email_sha256",
+                ),
+                JSONObject(eventJsonObj),
             )
         }
 
         matchButton.setOnClickListener {
             Velocidi.getInstance().match(
-                "someProvider",
+                "web",
                 listOf(
-                    UserId("user_email_hash", "email_sha256"),
-                    UserId("user_advertising_id", "gaid")
-                )
+                    // test@example.org
+                    UserId(
+                        "388c735eec8225c4ad7a507944dd0a975296baea383198aa87177f29af2c6f69",
+                        "email_sha256",
+                    ),
+                    UserId("user_advertising_id", "gaid"),
+                ),
             )
         }
     }

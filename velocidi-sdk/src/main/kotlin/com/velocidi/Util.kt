@@ -11,7 +11,7 @@ internal data class ApplicationInfo(
     val appName: String,
     val appVersion: String,
     val androidSDK: String,
-    val device: String
+    val device: String,
 )
 
 internal object Util {
@@ -23,11 +23,12 @@ internal object Util {
      */
     fun getApplicationInfo(context: Context): ApplicationInfo {
         val sdkVersion = Build.VERSION.SDK_INT.toString()
-        val device = if (Build.MANUFACTURER != null && Build.MODEL != null) {
-            Build.MANUFACTURER + " " + Build.MODEL
-        } else {
-            Build.DEVICE ?: ""
-        }
+        val device =
+            if (Build.MANUFACTURER != null && Build.MODEL != null) {
+                Build.MANUFACTURER + " " + Build.MODEL
+            } else {
+                Build.DEVICE ?: ""
+            }
 
         return try {
             val packageManager = context.packageManager
@@ -36,12 +37,13 @@ internal object Util {
             val applicationInfo = packageManager.getApplicationInfo(packageName, 0)
             val packageInfo = packageManager.getPackageInfo(packageName, 0)
 
-            val appName = packageManager.getApplicationLabel(applicationInfo) ?: packageName
-            val appVersion = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                packageInfo.longVersionCode.toString()
-            } else {
-                packageInfo.versionName
-            }
+            val appName = packageManager.getApplicationLabel(applicationInfo)
+            val appVersion =
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                    packageInfo.longVersionCode.toString()
+                } else {
+                    packageInfo.versionName
+                }
 
             ApplicationInfo(appName.toString(), appVersion.toString(), sdkVersion, device)
         } catch (e: PackageManager.NameNotFoundException) {
@@ -63,7 +65,10 @@ internal object Util {
      * @param permission Permission string
      * @return true - has permission; otherwise - false
      */
-    fun checkPermission(context: Context, permission: String): Boolean {
+    fun checkPermission(
+        context: Context,
+        permission: String,
+    ): Boolean {
         val res = context.checkCallingOrSelfPermission(permission)
         return res == PackageManager.PERMISSION_GRANTED
     }
@@ -85,7 +90,11 @@ internal object Util {
     }
 
     fun JSONObject.toQueryParams(): Map<String, String> {
-        fun toQueryParamsAux(elem: Any?, qs: MutableMap<String, String>, path: String) {
+        fun toQueryParamsAux(
+            elem: Any?,
+            qs: MutableMap<String, String>,
+            path: String,
+        ) {
             when (elem) {
                 is JSONObject ->
                     for (key in elem.keys()) {

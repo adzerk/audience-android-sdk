@@ -8,7 +8,10 @@ package com.velocidi
  * @see <a href="https://docs.velocidi.com/collect/user-ids">https://docs.velocidi.com/collect/user-ids</a>
  * @throws IllegalArgumentException Throws when id or type is empty
  */
-data class UserId(val id: String, val type: String = "gaid") {
+data class UserId(
+    val id: String,
+    val type: String = "gaid",
+) {
     init {
         require(id.isNotEmpty()) { "id cannot be empty" }
         require(type.isNotEmpty()) { "type cannot be empty" }

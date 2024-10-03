@@ -8,17 +8,23 @@ import android.net.Uri
  * @property track Channel configuration for the track functionality
  * @property match Channel configuration for the match functionality
  */
-class Config(val track: Channel, val match: Channel) {
-
+class Config(
+    val track: Channel,
+    val match: Channel,
+) {
     constructor(url: Uri) : this(
         Channel(parseUrl(url, "tr", "events"), true),
-        Channel(parseUrl(url, "match", "match"), true)
+        Channel(parseUrl(url, "match", "match"), true),
     )
 
     internal companion object {
-
-        private fun parseUrl(url: Uri, prefix: String, endpoint: String): Uri =
-            Uri.Builder()
+        private fun parseUrl(
+            url: Uri,
+            prefix: String,
+            endpoint: String,
+        ): Uri =
+            Uri
+                .Builder()
                 .scheme(url.scheme)
                 .encodedAuthority("$prefix.${url.host}")
                 .appendEncodedPath(endpoint)
@@ -32,4 +38,7 @@ class Config(val track: Channel, val match: Channel) {
  * @property host endpoint URL
  * @property enabled
  */
-data class Channel(val host: Uri, val enabled: Boolean)
+data class Channel(
+    val host: Uri,
+    val enabled: Boolean,
+)

@@ -10,8 +10,10 @@ class SampleApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        val trackEndpoint = Channel(Uri.parse("http://tr.cdp.velocidi.com/events"), true)
-        val matchEndpoint = Channel(Uri.parse("http://match.cdp.velocidi.com/match"), true)
+        // Example: https://tr.cdp.example.audience.kevel.com/events
+        val trackEndpoint = Channel(Uri.parse("http://localhost"), true)
+        // Example: https://match.cdp.example.audience.kevel.com/events
+        val matchEndpoint = Channel(Uri.parse("http://localhost"), true)
         val config = Config(trackEndpoint, matchEndpoint)
 
         // OR
