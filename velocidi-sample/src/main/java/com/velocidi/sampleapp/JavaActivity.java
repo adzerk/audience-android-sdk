@@ -22,8 +22,10 @@ public class JavaActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Channel trackEndpoint = new Channel(Uri.parse("http://tr.cdp.velocidi.com/events"), true);
-        Channel matchEndpoint = new Channel(Uri.parse("http://match.cdp.velocidi.com/match"), true);
+        // Example: https://tr.cdp.example.audience.kevel.com/events
+        Channel trackEndpoint = new Channel(Uri.parse("http://localhost"), true);
+        // Example: https://match.cdp.example.audience.kevel.com/events
+        Channel matchEndpoint = new Channel(Uri.parse("http://localhost"), true);
         Config config = new Config(trackEndpoint, matchEndpoint);
 
         Velocidi.init(config, this);
