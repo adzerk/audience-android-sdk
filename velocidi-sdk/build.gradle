@@ -10,14 +10,17 @@ android {
         targetSdkVersion 33
         versionCode 1
         versionName "1.0"
+        aarMetadata {
+          minCompileSdk 33
+        }
 
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+      testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+
     buildFeatures {
         buildConfig true
     }
     buildTypes {
-
         debug {
             buildConfigField "String", "SDK_VERSION", "\"${project.property('version')}\""
             testCoverageEnabled true

@@ -13,12 +13,24 @@ project.ext.description = 'Velocidi Android SDK'
 project.ext.url = 'https://github.com/velocidi/velocidi-android-sdk'
 project.version = version
 
+android {
+  publishing {
+    singleVariant('release') {
+        withSourcesJar()
+    }
+  }
+}
+
 publishing {
     publications {
         release(MavenPublication) {
             artifactId project.ext.artifactId
             groupId project.group
             version project.version
+
+            afterEvaluate {
+              from components.release
+            }
 
             pom {
                 name = project.ext.name
