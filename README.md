@@ -1,8 +1,9 @@
-# Kevel Audience SDK
-![Build Status](https://github.com/velocidi/velocidi-android-sdk/workflows/Android%20CI/badge.svg)
+# DEPRECATED Kevel Audience SDK
+
+[![No Maintenance Intended](http://unmaintained.tech/badge.svg)](http://unmaintained.tech/)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.velocidi/velocidi-android-sdk/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.velocidi/velocidi-android-sdk)
 
-Open-source SDK to integrate Android Apps with Kevel Audience.
+This **SDK has been deprecated** and is no longer maintained. We suggest using our [Android platform guide](https://docs.audience.kevel.com/platform-guides/android) instead.
 
 ## Installation
 
